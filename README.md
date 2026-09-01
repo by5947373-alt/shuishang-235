@@ -12,6 +12,10 @@ npm start                       # http://localhost:8080
 ADMIN_PASSWORD=你的密碼 npm start   # 加上後台
 ```
 
+設 `SITE_URL=https://你的網域` 之後，頁面才會帶上 `og:image`、`canonical`
+與 `sitemap.xml`（這些不能用相對路徑）。沒設的話網站照常運作，只是分享到
+LINE／FB 不會有預覽卡片。
+
 後台在 **/admin.html**。沒設 `ADMIN_PASSWORD` 就無法登入也無法儲存（唯讀）。
 
 ## 建置
@@ -72,6 +76,10 @@ scripts: assets/map.js
 | `lib/render.mjs` | 渲染邏輯，CLI 與伺服器共用 |
 | `build.js` | 本機建置指令 |
 | `admin.html` | 後台（登入 + 編輯 + 發佈） |
+| `404.html` | 找不到頁面時顯示（由 `src/pages/404.html` 產生） |
+| `robots.txt` / `sitemap.xml` | 給搜尋引擎，建置時產生 |
+| `assets/og.png` | 分享到 LINE／FB 的預覽圖（1200×630） |
+| `assets/favicon.svg`／`icon-180.png` | 瀏覽器分頁圖示與 iOS 加到主畫面的圖示 |
 | `lib/github.mjs` | 自動 commit 回 GitHub |
 | `sync.js` | 手動把線上內容抓回 `src/content.json`（`npm run sync`） |
 | `tools/build_map.py` | 由 OpenStreetMap 資料產生地圖幾何（僅在需要重繪地圖時使用） |
@@ -170,6 +178,8 @@ SITE_URL=https://你的網域 ADMIN_PASSWORD=你的密碼 npm run sync
 
 ## 尚未完成
 
+- **分享預覽圖是通用的一張**（`assets/og.png`），所有頁面共用。要各頁不同圖的話
+  可以在 `src/pages/*.html` 的 front-matter 加欄位再改 `lib/render.mjs`。
 - **AI 客服**（需求書列為 v2）尚未實作。
 - **使用者回饋**（v2）尚未實作。後端已經有了，要加的話可以沿用同一支 `server.js`。
 - 後台只有單一組密碼，沒有多帳號。修改紀錄靠自動同步產生的 git commit。

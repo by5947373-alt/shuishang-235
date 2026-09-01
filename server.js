@@ -18,6 +18,8 @@ const SEED_FILE = join(ROOT, 'src', 'content.json');
 
 // 後台密碼只從環境變數來，絕不寫進程式碼。沒設就等於停用後台寫入。
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+// 網站對外網址：填了才會輸出 og:image、canonical 與 sitemap.xml（這些不能用相對路徑）
+const SITE_URL = (process.env.SITE_URL || '').replace(/\/+$/, '');
 const SESSION_HOURS = 12;
 const COOKIE = 'sh_admin';
 
@@ -38,7 +40,7 @@ async function pushNow() {
   pushing = true;
   clearTimeout(pushTimer);
   try {
-    const files = { 'src/content.json': JSON.stringify(content, null, 2) + '\n', ...renderSite(content) };
+    const files = { 'src/content.json': JSON.stringify(content, null, 2) + '\n', ...renderSite(content, SITE_URL) };
     const n = ['taste', 'culture', 'grow'].reduce((a, c) => a + (content.venues?.[c]?.length || 0), 0);
     const msg = `後台更新內容（${n} 個據點・${content.crops?.length || 0} 項農產・${content.news?.length || 0} 則報導）`;
     const r = await gh.commitFiles(files, msg);
@@ -168,6 +170,7 @@ const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8',
   '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg',
+  '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml; charset=utf-8',
   '.webp': 'image/webp', '.ico': 'image/x-icon', '.woff2': 'font/woff2',
 };
 // 原始碼與資料不對外提供。
@@ -194,19 +197,29 @@ function readBody(req, limit = 1_000_000) {
   });
 }
 
+/** 找不到頁面時回自訂的 404 頁；讀不到就退回純文字。 */
+async function notFound(res) {
+  try {
+    const body = await readFile(join(ROOT, '404.html'));
+    return send(res, 404, body, TYPES['.html'], { 'cache-control': 'no-cache' });
+  } catch {
+    return send(res, 404, '找不到頁面');
+  }
+}
+
 async function serveStatic(req, res, pathname) {
   let rel = normalize(decodeURIComponent(pathname)).replace(/^(\.\.[/\\])+/, '').replace(/^\/+/, '');
   if (rel === '' ) rel = 'index.html';
   if (rel.endsWith('/')) rel += 'index.html';
   if (rel.includes('..') || BLOCKED.some((b) => rel.startsWith(b)) || BLOCKED_FILES.includes(rel))
-    return send(res, 404, '找不到頁面');
+    return notFound(res);
   const ext = extname(rel).toLowerCase();
-  if (!TYPES[ext]) return send(res, 404, '找不到頁面');
+  if (!TYPES[ext]) return notFound(res);
   try {
     const body = await readFile(join(ROOT, rel));
     send(res, 200, body, TYPES[ext], { 'cache-control': ext === '.html' ? 'no-cache' : 'public, max-age=3600' });
   } catch {
-    send(res, 404, '找不到頁面');
+    await notFound(res);
   }
 }
 
@@ -271,7 +284,7 @@ const server = createServer(async (req, res) => {
         const body = JSON.stringify(next, null, 2) + '\n';
         await writeFile(CONTENT_FILE, body, 'utf8');
         content = next;
-        const files = writeSite(content);            // 立刻重新產生所有頁面
+        const files = writeSite(content, SITE_URL);  // 立刻重新產生所有頁面
         console.log(`[${new Date().toISOString()}] 內容已更新，重新產生 ${Object.keys(files).length} 個檔案`);
         schedulePush();                              // 停手一段時間後同步回 GitHub
         return json(res, 200, { ok: true, files: Object.keys(files), sync: syncStatus() });
@@ -288,8 +301,10 @@ const server = createServer(async (req, res) => {
 });
 
 await loadContent();
-writeSite(content);                                  // 開機就把頁面重新產生一次
+writeSite(content, SITE_URL);                        // 開機就把頁面重新產生一次
 console.log(`內容：${CONTENT_FILE}`);
+console.log(SITE_URL ? `對外網址：${SITE_URL}（og:image / canonical / sitemap.xml 已啟用）`
+                     : '對外網址：未設定 SITE_URL —— 分享預覽圖與 sitemap.xml 不會輸出');
 console.log(ADMIN_PASSWORD ? '後台：已啟用（ADMIN_PASSWORD 已設定）'
                            : '後台：唯讀（未設定 ADMIN_PASSWORD，無法登入或儲存）');
 console.log(gh.configured()

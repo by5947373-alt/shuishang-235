@@ -1,4 +1,5 @@
 {
+  "url": "",
   "nav": [
     [
       "index.html",
@@ -24,5 +25,8 @@
       "contact.html",
       "聯絡我們"
     ]
+  ],
+  "extraPages": [
+    "404.html"
   ]
 }
