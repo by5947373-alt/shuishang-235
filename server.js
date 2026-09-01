@@ -14,6 +14,10 @@ import * as gh from './lib/github.mjs';
 const PORT = process.env.PORT || 8080;
 const DATA_DIR = process.env.DATA_DIR || join(ROOT, 'data');
 const CONTENT_FILE = join(DATA_DIR, 'content.json');
+// 使用者回饋含訪客 email，只留在磁碟上，不會被同步到 GitHub。
+const FEEDBACK_FILE = join(DATA_DIR, 'feedback.json');
+const FEEDBACK_KEEP = 500;          // 最多保留幾筆
+const FEEDBACK_PER_HOUR = 5;        // 同一個 IP 一小時最多幾筆
 const SEED_FILE = join(ROOT, 'src', 'content.json');
 
 // 後台密碼只從環境變數來，絕不寫進程式碼。沒設就等於停用後台寫入。
@@ -117,6 +121,49 @@ function validate(c) {
     if (u && !/^https?:\/\//i.test(u)) err(`news[${i}].url 只能是 http(s) 網址`);
   }
   return c;
+}
+
+// ── 使用者回饋 ────────────────────────────────────────────
+let feedback = [];
+const fbLimit = new Map();          // ip -> [送出時間, …]
+
+async function loadFeedback() {
+  try {
+    feedback = JSON.parse(await readFile(FEEDBACK_FILE, 'utf8'));
+    if (!Array.isArray(feedback)) feedback = [];
+  } catch { feedback = []; }
+}
+const saveFeedback = () =>
+  writeFile(FEEDBACK_FILE, JSON.stringify(feedback, null, 2) + '\n', 'utf8');
+
+function fbThrottled(ip) {
+  const now = Date.now();
+  const hits = (fbLimit.get(ip) || []).filter((t) => now - t < 3600_000);
+  fbLimit.set(ip, hits);
+  return hits.length >= FEEDBACK_PER_HOUR;
+}
+
+/** 只接受預期的欄位，長度超過就直接拒絕。 */
+function readFeedback(raw) {
+  const err = (m) => { throw new Error(m); };
+  const str = (v, max, label, required) => {
+    const t = typeof v === 'string' ? v.trim() : '';
+    if (!t && required) err(`請填寫${label}`);
+    if (t.length > max) err(`${label}太長了（上限 ${max} 字）`);
+    return t;
+  };
+  const message = str(raw.message, 1000, '建議內容', true);
+  const email = str(raw.email, 120, 'Email', false);
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) err('Email 格式看起來不對');
+  return {
+    id: randomUUID(),
+    name: str(raw.name, 40, '稱呼', false),
+    email,
+    message,
+    page: str(raw.page, 200, '頁面', false),
+    at: new Date().toISOString(),
+    read: false,
+  };
 }
 
 // ── 登入 ──────────────────────────────────────────────────
@@ -268,6 +315,57 @@ const server = createServer(async (req, res) => {
       return json(res, 200, { ok: true }, { 'set-cookie': `${COOKIE}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0` });
     }
 
+    if (url.pathname === '/api/feedback') {
+      // 訪客送出建議（公開，不需登入）
+      if (req.method === 'POST') {
+        let raw;
+        try { raw = JSON.parse(await readBody(req, 20_000) || '{}'); }
+        catch { return json(res, 400, { error: '格式不對' }); }
+
+        // 蜜罐欄位：正常人看不到也不會填，機器人會。裝作成功但不存。
+        if (typeof raw.website === 'string' && raw.website.trim()) {
+          return json(res, 200, { ok: true });
+        }
+        if (fbThrottled(ip)) {
+          return json(res, 429, { error: '送出太頻繁了，請稍後再試。' });
+        }
+        let item;
+        try { item = readFeedback(raw); }
+        catch (e) { return json(res, 400, { error: e.message }); }
+
+        feedback.unshift(item);
+        if (feedback.length > FEEDBACK_KEEP) feedback.length = FEEDBACK_KEEP;
+        fbLimit.set(ip, [...(fbLimit.get(ip) || []), Date.now()]);
+        await saveFeedback();
+        console.log(`[${new Date().toISOString()}] 收到使用者建議（目前 ${feedback.length} 筆）`);
+        return json(res, 200, { ok: true });
+      }
+
+      // 以下都要登入
+      if (!isAuthed(req)) return json(res, 401, { error: '請先登入。' });
+
+      if (req.method === 'GET') {
+        return json(res, 200, { items: feedback, unread: feedback.filter((f) => !f.read).length });
+      }
+      if (req.method === 'PATCH') {
+        const { id, read } = JSON.parse(await readBody(req, 4096) || '{}');
+        const it = feedback.find((f) => f.id === id);
+        if (!it) return json(res, 404, { error: '找不到這筆' });
+        it.read = !!read;
+        await saveFeedback();
+        return json(res, 200, { ok: true });
+      }
+      if (req.method === 'DELETE') {
+        const id = url.searchParams.get('id');
+        const n = feedback.length;
+        feedback = feedback.filter((f) => f.id !== id);
+        if (feedback.length === n) return json(res, 404, { error: '找不到這筆' });
+        await saveFeedback();
+        return json(res, 200, { ok: true, left: feedback.length });
+      }
+      return json(res, 405, { error: '不支援的方法' });
+    }
+
     if (url.pathname === '/api/content') {
       if (req.method === 'GET') {
         if (!isAuthed(req)) return json(res, 401, { error: '請先登入。' });
@@ -301,8 +399,10 @@ const server = createServer(async (req, res) => {
 });
 
 await loadContent();
+await loadFeedback();
 writeSite(content, SITE_URL);                        // 開機就把頁面重新產生一次
 console.log(`內容：${CONTENT_FILE}`);
+console.log(`使用者建議：${FEEDBACK_FILE}（目前 ${feedback.length} 筆）`);
 console.log(SITE_URL ? `對外網址：${SITE_URL}（og:image / canonical / sitemap.xml 已啟用）`
                      : '對外網址：未設定 SITE_URL —— 分享預覽圖與 sitemap.xml 不會輸出');
 console.log(ADMIN_PASSWORD ? '後台：已啟用（ADMIN_PASSWORD 已設定）'

@@ -1,5 +1,6 @@
 title: 聯絡我們｜23.5° 剛剛好的城市
 desc: 嘉義水上鄉觀光指南的聯絡資訊、協作單位與 Google 地圖交通指引。
+scripts: assets/feedback.js
 ---
   <section class="sec sec-sand">
     <div class="wrap">
@@ -48,6 +49,40 @@ desc: 嘉義水上鄉觀光指南的聯絡資訊、協作單位與 Google 地圖
                   src="https://maps.google.com/maps?q=%E5%98%89%E7%BE%A9%E7%B8%A3%E6%B0%B4%E4%B8%8A%E9%84%89&amp;z=12&amp;hl=zh-TW&amp;output=embed"></iframe>
         </div>
       </div>
+
+      <div class="sec-head rise" style="margin-top:3.5rem">
+        <p class="en">TELL US</p>
+        <h2>給我們一點建議</h2>
+        <p>發現資訊有誤、想推薦沒收錄到的店家，或單純想說點什麼，都歡迎留言。</p>
+      </div>
+      <form class="fb sticker rise" id="fbForm" novalidate>
+        <div class="fb-row">
+          <div class="fb-fld">
+            <label for="fbName">怎麼稱呼你？<span class="fb-opt">選填</span></label>
+            <input id="fbName" name="name" maxlength="40" autocomplete="name">
+          </div>
+          <div class="fb-fld">
+            <label for="fbEmail">Email<span class="fb-opt">選填，想收到回覆再填</span></label>
+            <input id="fbEmail" name="email" type="email" maxlength="120" autocomplete="email">
+          </div>
+        </div>
+        <div class="fb-fld">
+          <label for="fbMsg">想說的話</label>
+          <textarea id="fbMsg" name="message" maxlength="1000" required
+                    placeholder="例如：某家店的營業時間改了、想推薦一家沒收錄到的店⋯⋯"></textarea>
+          <p class="fb-count"><span id="fbCount">0</span> / 1000</p>
+        </div>
+        <p class="fb-hp" aria-hidden="true">
+          <label for="fbSite">網址（請留空）</label>
+          <input id="fbSite" name="website" tabindex="-1" autocomplete="off">
+        </p>
+        <div class="fb-foot">
+          <button class="btn btn-sun" type="submit" id="fbSend">送出建議</button>
+          <p class="fb-msg" id="fbMsgOut" role="status"></p>
+        </div>
+        <p class="fb-note">留下的 Email 只會用來回覆你這則建議，不會用在其他地方，也不會公開在網站上。</p>
+        <noscript><p class="fb-note">這個表單需要 JavaScript。你也可以直接寫信給上面列出的單位。</p></noscript>
+      </form>
 
       <div class="sec-head rise" style="margin-top:3.5rem">
         <p class="en">GETTING HERE</p>

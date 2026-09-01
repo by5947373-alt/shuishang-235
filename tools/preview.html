@@ -365,6 +365,28 @@ a{color:var(--ink)}
   .pin-mark{transition:none}
 }
 
+/* ══ 使用者回饋表單 ═══════════════════════════════════════ */
+.fb{padding:1.7rem 1.6rem; display:grid; gap:1.1rem; margin-top:1.5rem}
+.fb-row{display:grid; gap:1.1rem}
+@media (min-width:640px){.fb-row{grid-template-columns:1fr 1fr}}
+.fb-fld{display:grid; gap:.35rem}
+.fb-fld label{font-size:var(--fs-sm); font-weight:800}
+.fb-opt{font-weight:400; font-size:var(--fs-xs); color:var(--ink-3); margin-left:.5rem}
+.fb-fld input,.fb-fld textarea{
+  font:inherit; font-size:var(--fs-sm); color:var(--ink); background:var(--cream);
+  border:2px solid var(--line); border-radius:14px; padding:.6rem .8rem; width:100%;
+}
+.fb-fld textarea{min-height:8rem; line-height:1.85; resize:vertical}
+.fb-fld input:focus,.fb-fld textarea:focus{border-color:var(--sun); outline:none}
+.fb-fld input[aria-invalid="true"],.fb-fld textarea[aria-invalid="true"]{border-color:var(--taste)}
+.fb-count{font-family:var(--num); font-size:var(--fs-xs); color:var(--ink-3); text-align:right}
+.fb-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
+.fb-foot{display:flex; gap:1rem; align-items:center; flex-wrap:wrap}
+.fb-msg{font-size:var(--fs-sm); font-weight:700}
+.fb-msg.ok{color:var(--grow)}
+.fb-msg.err{color:var(--taste)}
+.fb-note{font-size:var(--fs-xs); color:var(--ink-3); line-height:1.8}
+
 .pv-nav,.pv-link{font:inherit; cursor:pointer; background:none; border:0; color:inherit; padding:0}
 .nav .pv-nav{font-size:var(--fs-sm); font-weight:700; padding:.42rem .85rem; border-radius:999px; border:2px solid transparent}
 .nav .pv-nav:hover{background:var(--sand)}
@@ -912,6 +934,40 @@ a{color:var(--ink)}
 
         <div class="gembed rise"><p class="gembed-note"><b>Google 地圖嵌入</b><br>預覽環境不允許載入外部 iframe，實際網站上這裡是可縮放的 Google 地圖。<br><a class="btn" style="margin-top:.8rem" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%98%89%E7%BE%A9%E7%B8%A3%E6%B0%B4%E4%B8%8A%E9%84%89">在 Google 地圖開啟 →</a></p></div>
       </div>
+
+      <div class="sec-head rise" style="margin-top:3.5rem">
+        <p class="en">TELL US</p>
+        <h2>給我們一點建議</h2>
+        <p>發現資訊有誤、想推薦沒收錄到的店家，或單純想說點什麼，都歡迎留言。</p>
+      </div>
+      <form class="fb sticker rise" id="fbForm" novalidate>
+        <div class="fb-row">
+          <div class="fb-fld">
+            <label for="fbName">怎麼稱呼你？<span class="fb-opt">選填</span></label>
+            <input id="fbName" name="name" maxlength="40" autocomplete="name">
+          </div>
+          <div class="fb-fld">
+            <label for="fbEmail">Email<span class="fb-opt">選填，想收到回覆再填</span></label>
+            <input id="fbEmail" name="email" type="email" maxlength="120" autocomplete="email">
+          </div>
+        </div>
+        <div class="fb-fld">
+          <label for="fbMsg">想說的話</label>
+          <textarea id="fbMsg" name="message" maxlength="1000" required
+                    placeholder="例如：某家店的營業時間改了、想推薦一家沒收錄到的店⋯⋯"></textarea>
+          <p class="fb-count"><span id="fbCount">0</span> / 1000</p>
+        </div>
+        <p class="fb-hp" aria-hidden="true">
+          <label for="fbSite">網址（請留空）</label>
+          <input id="fbSite" name="website" tabindex="-1" autocomplete="off">
+        </p>
+        <div class="fb-foot">
+          <button class="btn btn-sun" type="submit" id="fbSend">送出建議</button>
+          <p class="fb-msg" id="fbMsgOut" role="status"></p>
+        </div>
+        <p class="fb-note">留下的 Email 只會用來回覆你這則建議，不會用在其他地方，也不會公開在網站上。</p>
+        <noscript><p class="fb-note">這個表單需要 JavaScript。你也可以直接寫信給上面列出的單位。</p></noscript>
+      </form>
 
       <div class="sec-head rise" style="margin-top:3.5rem">
         <p class="en">GETTING HERE</p>

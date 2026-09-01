@@ -358,3 +358,25 @@ a{color:var(--ink)}
   .pin.ping::after{animation:none}
   .pin-mark{transition:none}
 }
+
+/* ══ 使用者回饋表單 ═══════════════════════════════════════ */
+.fb{padding:1.7rem 1.6rem; display:grid; gap:1.1rem; margin-top:1.5rem}
+.fb-row{display:grid; gap:1.1rem}
+@media (min-width:640px){.fb-row{grid-template-columns:1fr 1fr}}
+.fb-fld{display:grid; gap:.35rem}
+.fb-fld label{font-size:var(--fs-sm); font-weight:800}
+.fb-opt{font-weight:400; font-size:var(--fs-xs); color:var(--ink-3); margin-left:.5rem}
+.fb-fld input,.fb-fld textarea{
+  font:inherit; font-size:var(--fs-sm); color:var(--ink); background:var(--cream);
+  border:2px solid var(--line); border-radius:14px; padding:.6rem .8rem; width:100%;
+}
+.fb-fld textarea{min-height:8rem; line-height:1.85; resize:vertical}
+.fb-fld input:focus,.fb-fld textarea:focus{border-color:var(--sun); outline:none}
+.fb-fld input[aria-invalid="true"],.fb-fld textarea[aria-invalid="true"]{border-color:var(--taste)}
+.fb-count{font-family:var(--num); font-size:var(--fs-xs); color:var(--ink-3); text-align:right}
+.fb-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
+.fb-foot{display:flex; gap:1rem; align-items:center; flex-wrap:wrap}
+.fb-msg{font-size:var(--fs-sm); font-weight:700}
+.fb-msg.ok{color:var(--grow)}
+.fb-msg.err{color:var(--taste)}
+.fb-note{font-size:var(--fs-xs); color:var(--ink-3); line-height:1.8}

@@ -120,7 +120,8 @@
     {id:'culture', label:'回歸 景點',   kind:'venue', path:['venues','culture']},
     {id:'grow',    label:'生長 店家',   kind:'venue', path:['venues','grow']},
     {id:'crops',   label:'三大農產',    kind:'crop',  path:['crops']},
-    {id:'news',    label:'相關報導',    kind:'news',  path:['news']}
+    {id:'news',    label:'相關報導',    kind:'news',  path:['news']},
+    {id:'fb',      label:'使用者回饋',  kind:'fb'}
   ];
   var NEWS_KINDS = [
     ['k-news','新聞報導'], ['k-civic','公民新聞'],
@@ -129,9 +130,10 @@
   var META_KEYS = ['地址','電話','營業','Email','合作','別名','全名','產品'];
 
   var data = null, tab = TABS[0], sel = -1, dirty = false, sync = null;
+  var fb = null;   // 使用者回饋（跟內容分開存，不會同步到 GitHub）
   var $ = function(id){ return document.getElementById(id); };
 
-  function coll(t){ return t.path.reduce(function(o,k){ return o[k]; }, data); }
+  function coll(t){ return t.kind === 'fb' ? (fb || []) : t.path.reduce(function(o,k){ return o[k]; }, data); }
   function mark(d){
     dirty = d;
     $('state').textContent = d ? '有未儲存的修改（已暫存於瀏覽器）' : '已載入';
@@ -284,11 +286,83 @@
       var b = document.createElement('button');
       b.type = 'button'; b.className = 'tab2';
       b.setAttribute('aria-pressed', String(t === tab));
-      b.textContent = t.label + '（' + coll(t).length + '）';
-      b.onclick = function(){ tab = t; sel = -1; render(); };
+      if(t.kind === 'fb'){
+        var un = (fb || []).filter(function(x){ return !x.read; }).length;
+        b.textContent = t.label + '（' + (fb ? fb.length : '…') + (un ? ' · ' + un + ' 未讀' : '') + '）';
+      } else {
+        b.textContent = t.label + '（' + coll(t).length + '）';
+      }
+      b.onclick = function(){
+        tab = t; sel = -1;
+        if(t.kind === 'fb' && fb === null) loadFeedback(); else render();
+      };
       $('tabs').appendChild(b);
     });
   }
+  function loadFeedback(){
+    fetch('api/feedback', {cache:'no-store'})
+      .then(function(r){ if(r.status === 401){ show('login'); throw new Error('__auth__'); } return r.json(); })
+      .then(function(j){ fb = j.items || []; render(); })
+      .catch(function(e){ if(e.message !== '__auth__'){ fb = []; render(); alert('讀不到回饋：' + e.message); } });
+  }
+
+  function renderFeedback(){
+    $('list').innerHTML = '';
+    $('form').innerHTML = '';
+    $('prevWrap').hidden = true;
+    var box = $('form');
+    if(!fb || !fb.length){
+      box.appendChild(el('p', 'empty', fb ? '目前沒有任何使用者建議。' : '載入中…'));
+      return;
+    }
+    fb.forEach(function(item){
+      var card = el('div', 'sticker');
+      card.style.cssText = 'padding:1.2rem 1.3rem; display:grid; gap:.5rem; margin-bottom:1rem' +
+        (item.read ? '; opacity:.6' : '');
+      var top = el('div');
+      top.style.cssText = 'display:flex; gap:.6rem; align-items:center; flex-wrap:wrap';
+      top.appendChild(el('span', 'kind ' + (item.read ? 'k-gov' : 'k-news'), item.read ? '已讀' : '未讀'));
+      var who = [item.name || '匿名', item.email].filter(Boolean).join('　·　');
+      top.appendChild(el('span', 'item-src', who));
+      top.appendChild(el('span', 'item-src', new Date(item.at).toLocaleString('zh-TW', {hour12:false})));
+      if(item.page) top.appendChild(el('span', 'item-src', '來自 ' + item.page));
+      card.appendChild(top);
+
+      var body = el('p', null, item.message);
+      body.style.cssText = 'font-size:var(--fs-sm); white-space:pre-wrap; line-height:1.9';
+      card.appendChild(body);
+
+      var acts = el('div');
+      acts.style.cssText = 'display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.2rem';
+      var toggle = el('button', 'btn', item.read ? '標成未讀' : '標成已讀');
+      toggle.type = 'button';
+      toggle.style.fontSize = 'var(--fs-xs)';
+      toggle.onclick = function(){
+        fetch('api/feedback', {method:'PATCH', headers:{'content-type':'application/json'},
+                               body: JSON.stringify({id:item.id, read:!item.read})})
+          .then(function(){ item.read = !item.read; render(); });
+      };
+      acts.appendChild(toggle);
+      if(item.email){
+        var mail = el('a', 'btn', '回信');
+        mail.href = 'mailto:' + item.email + '?subject=' + encodeURIComponent('回覆你在 23.5° 剛剛好的城市留下的建議');
+        mail.style.fontSize = 'var(--fs-xs)';
+        acts.appendChild(mail);
+      }
+      var del = el('button', 'btn', '刪除');
+      del.type = 'button';
+      del.style.fontSize = 'var(--fs-xs)';
+      del.onclick = function(){
+        if(!confirm('確定刪除這則建議？刪掉就找不回來了。')) return;
+        fetch('api/feedback?id=' + encodeURIComponent(item.id), {method:'DELETE'})
+          .then(function(){ fb = fb.filter(function(x){ return x.id !== item.id; }); render(); });
+      };
+      acts.appendChild(del);
+      card.appendChild(acts);
+      box.appendChild(card);
+    });
+  }
+
   function renderList(){
     var items = coll(tab);
     $('list').innerHTML = '';
@@ -505,7 +579,15 @@
     else newsForm(item);
   }
 
-  function render(){ renderTabs(); renderList(); renderForm(); renderPreview(); }
+  function render(){
+    renderTabs();
+    var isFb = tab.kind === 'fb';
+    // 回饋是唯讀資料，用不到新增按鈕與存檔流程
+    $('add').hidden = isFb;
+    $('save').hidden = isFb || !live;
+    if(isFb){ renderFeedback(); return; }
+    renderList(); renderForm(); renderPreview();
+  }
 
   // ── 動作 ───────────────────────────────────────────────
   $('add').onclick = function(){
