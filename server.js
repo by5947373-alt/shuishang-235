@@ -311,7 +311,12 @@ const server = createServer(async (req, res) => {
     if (url.pathname === '/api/chat-enabled') {
       // 設定有問題時就不要讓按鈕出現 —— 點了只會失敗，比沒有更糟。
       // model 不是機密（README 就寫了預設值），放出來方便從外部確認設定有沒有吃到。
-      return json(res, 200, { enabled: chatUsable(), model: chat.cfg.model });
+      // 只放 HTTP 狀態碼（不是機密），足以判斷錯誤性質有沒有改變；
+      // 完整的錯誤訊息仍然只有登入後台看得到。
+      return json(res, 200, {
+        enabled: chatUsable(), model: chat.cfg.model,
+        lastErrorStatus: chatLastError ? chatLastError.status : null,
+      });
     }
 
     if (url.pathname === '/api/session') {
