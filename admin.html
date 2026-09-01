@@ -29,7 +29,9 @@
   /* grid / flex 子元素預設 min-width:auto，長標題會撐爆欄位、蓋到隔壁，
      而且 text-overflow:ellipsis 完全不會生效。必須明確歸零。 */
   .cols > *{min-width:0}
-  @media (min-width:960px){.cols{grid-template-columns:300px 1fr}}
+  /* 573px 剛好容得下最長的一則報導標題，不會被截字。
+     右邊面板吃掉剩下的寬度；空間不夠時整個改成上下排列。 */
+  @media (min-width:1080px){.cols{grid-template-columns:573px minmax(0,1fr)}}
   .list{display:grid; gap:.5rem; align-content:start}
   .row{display:flex; gap:.35rem; align-items:stretch; min-width:0}
   .row-pick{flex:1 1 0; min-width:0; text-align:left; font:inherit; font-size:var(--fs-sm); font-weight:700;
