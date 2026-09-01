@@ -128,6 +128,9 @@ function validate(c) {
 // 每一則訊息都是真的花錢，所以同時有「單一 IP 每小時」和「全站每日」兩道上限。
 let chatSystem = null;              // 內容變動時重建
 let chatLastError = null;           // 最近一次失敗，只給登入後的後台看
+let chatDegraded = 0;               // 帳務／認證失敗後暫時關閉，避免訪客一直碰到壞掉的按鈕
+const DEGRADE_MS = 10 * 60_000;
+const chatUsable = () => chat.configured() && Date.now() > chatDegraded;
 const chatHits = new Map();         // ip -> [時間, …]
 let chatDay = { day: '', n: 0 };
 
@@ -306,7 +309,8 @@ const server = createServer(async (req, res) => {
 
   try {
     if (url.pathname === '/api/chat-enabled') {
-      return json(res, 200, { enabled: chat.configured() });
+      // 設定有問題時就不要讓按鈕出現 —— 點了只會失敗，比沒有更糟
+      return json(res, 200, { enabled: chatUsable() });
     }
 
     if (url.pathname === '/api/session') {
@@ -314,7 +318,9 @@ const server = createServer(async (req, res) => {
         configured: !!ADMIN_PASSWORD, authed: isAuthed(req),
         sync: isAuthed(req) ? syncStatus() : undefined,
         chat: isAuthed(req)
-          ? { enabled: chat.configured(), model: chat.cfg.model, effort: chat.cfg.effort || null,
+          ? { enabled: chat.configured(), usable: chatUsable(),
+              degradedUntil: chatDegraded > Date.now() ? chatDegraded : null,
+              model: chat.cfg.model, effort: chat.cfg.effort || null,
               perHour: chat.cfg.perHour, dailyLimit: chat.cfg.dailyLimit,
               usedToday: chatDay.day === new Date().toISOString().slice(0, 10) ? chatDay.n : 0,
               lastError: chatLastError }
@@ -348,8 +354,8 @@ const server = createServer(async (req, res) => {
 
     if (url.pathname === '/api/chat') {
       if (req.method !== 'POST') return json(res, 405, { error: '不支援的方法' });
-      if (!chat.configured())
-        return json(res, 503, { error: '這個網站還沒開啟 AI 客服。' });
+      if (!chatUsable())
+        return json(res, 503, { error: '這個網站的 AI 客服暫時無法使用。' });
 
       const over = chatQuota(ip);
       if (over) return json(res, 429, { error: over });
@@ -378,7 +384,12 @@ const server = createServer(async (req, res) => {
         if (e instanceof Error && /太長|請先輸入/.test(e.message))
           return json(res, 400, { error: e.message });
         chatLastError = { at: Date.now(), status: e.status ?? null, message: String(e.message).slice(0, 300) };
-        console.error('客服失敗：', e.status ?? '', e.message);
+        // 額度不足、key 無效這類設定問題不會自己好，暫時停用十分鐘再自動恢復，
+        // 免得每個訪客都點到一個壞掉的客服。
+        const setup = e.status === 401 || e.status === 403 ||
+          (e.status === 400 && /credit|balance|quota|tier/i.test(String(e.message)));
+        if (setup) chatDegraded = Date.now() + DEGRADE_MS;
+        console.error('客服失敗：', e.status ?? '', e.message, setup ? '（設定問題，暫停 10 分鐘）' : '');
         // 錯誤細節只留在伺服器與後台，不送給訪客
         return json(res, 502, { error: '客服暫時無法回應，請稍後再試，或到「聯絡我們」留言。' });
       }

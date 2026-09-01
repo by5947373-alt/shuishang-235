@@ -217,6 +217,13 @@
       n.style.color = 'var(--ink-3)';
       return;
     }
+    if(chatInfo.degradedUntil){
+      n.textContent = 'AI 客服：因設定問題暫時停用（前台按鈕已隱藏），' +
+        new Date(chatInfo.degradedUntil).toLocaleTimeString('zh-TW', {hour12:false}) + ' 後自動重試。' +
+        (chatInfo.lastError ? '　原因（HTTP ' + (chatInfo.lastError.status || '?') + '）：' + chatInfo.lastError.message : '');
+      n.style.color = 'var(--taste)';
+      return;
+    }
     var t = 'AI 客服：' + chatInfo.model +
       (chatInfo.effort ? '（effort ' + chatInfo.effort + '）' : '') +
       '　今天已用 ' + chatInfo.usedToday + '/' + chatInfo.dailyLimit + ' 則';
