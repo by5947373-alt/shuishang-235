@@ -309,8 +309,9 @@ const server = createServer(async (req, res) => {
 
   try {
     if (url.pathname === '/api/chat-enabled') {
-      // 設定有問題時就不要讓按鈕出現 —— 點了只會失敗，比沒有更糟
-      return json(res, 200, { enabled: chatUsable() });
+      // 設定有問題時就不要讓按鈕出現 —— 點了只會失敗，比沒有更糟。
+      // model 不是機密（README 就寫了預設值），放出來方便從外部確認設定有沒有吃到。
+      return json(res, 200, { enabled: chatUsable(), model: chat.cfg.model });
     }
 
     if (url.pathname === '/api/session') {
