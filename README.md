@@ -81,6 +81,8 @@ scripts: assets/map.js
 | `assets/og.png` | 分享到 LINE／FB 的預覽圖（1200×630） |
 | `assets/favicon.svg`／`icon-180.png` | 瀏覽器分頁圖示與 iOS 加到主畫面的圖示 |
 | `lib/github.mjs` | 自動 commit 回 GitHub |
+| `lib/chat.mjs` | AI 客服：用網站內容組系統提示詞並呼叫 Claude |
+| `assets/chat.js` | 前台右下角的客服小視窗 |
 | `sync.js` | 手動把線上內容抓回 `src/content.json`（`npm run sync`） |
 | `tools/build_map.py` | 由 OpenStreetMap 資料產生地圖幾何（僅在需要重繪地圖時使用） |
 | `tools/preview.html` | 六頁打包成單檔的預覽版，由 `build.py` 產生，網站本身用不到 |
@@ -134,6 +136,30 @@ python3 -m http.server 8000
 GITHUB_TOKEN=… GITHUB_REPO=by5947373-alt/shuishang-235 npm run gh:check
 ```
 
+## AI 客服
+
+右下角的「問問水上」小視窗，用網站自己的內容回答訪客問題。
+**沒設 `ANTHROPIC_API_KEY` 時整個功能停用**，按鈕也不會出現。
+
+| 環境變數 | 說明 |
+|---|---|
+| `ANTHROPIC_API_KEY` | 到 https://console.anthropic.com 申請 |
+| `AI_MODEL` | 預設 `claude-opus-5` |
+| `AI_EFFORT` | 預設 `low`（觀光問答不需要深度推理，這樣又快又省）。換成不支援 effort 的舊模型時設成空字串 |
+| `AI_DAILY_LIMIT` | 全站每日訊息上限，預設 `300` |
+| `AI_PER_HOUR` | 同一個 IP 每小時上限，預設 `12` |
+
+**每一則對話都是真的花錢**，所以有兩道上限：單一 IP 每小時，以及全站每日。
+額度在呼叫 API 之前就先扣，失敗的請求也算 —— 否則有人可以靠製造錯誤無限呼叫。
+輸入格式問題（空白、超長）在扣額度前就擋掉，不會浪費配額。
+
+系統提示詞由 `lib/content.json` 的內容自動組成，你在後台改完店家資料，
+客服的回答依據也會同步更新，不用另外維護一份問答集。
+
+提示詞裡明確要求：只依據網站資料回答、資料裡沒有的就說不知道、
+不要編造營業時間或價格、與水上鄉無關的要求一律婉拒。
+但 AI 仍有可能出錯，所以視窗下方有標註「重要資訊請以店家公告為準」。
+
 ### 手動把線上內容抓回本機
 
 ```bash
@@ -180,10 +206,12 @@ SITE_URL=https://你的網域 ADMIN_PASSWORD=你的密碼 npm run sync
 
 - **分享預覽圖是通用的一張**（`assets/og.png`），所有頁面共用。要各頁不同圖的話
   可以在 `src/pages/*.html` 的 front-matter 加欄位再改 `lib/render.mjs`。
-- **AI 客服**（需求書列為 v2）尚未實作。
-- **使用者回饋**（v2）尚未實作。後端已經有了，要加的話可以沿用同一支 `server.js`。
+- AI 客服的**實際模型呼叫沒有經過實測** —— 開發時沒有 API key，
+  驗證到的是：停用狀態、輸入驗證、額度控管、API 失敗時的降級、前台介面。
+  設好 key 之後請自己問幾個問題確認。
 - 後台只有單一組密碼，沒有多帳號。修改紀錄靠自動同步產生的 git commit。
 - 頁面框架文字（單元標題、引言、散策路線、聯絡資訊）還是要改 `src/` 再重新部署，
   後台目前只管內容資料。
+- 客服對話不會留存，重新整理頁面就清空；也沒有記錄可供事後查看。
 - 專案本身的對外聯絡信箱待補，目前 `src/pages/contact.html` 標示為「待補」。
 - 待收錄據點：尼克牛排、水上機場、二馬肉鬆 —— 手冊原稿只有名稱，沒有店家資訊。

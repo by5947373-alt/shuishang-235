@@ -10,6 +10,7 @@ import { join, normalize, extname } from 'node:path';
 import { createHmac, timingSafeEqual, randomUUID } from 'node:crypto';
 import { writeSite, renderSite, ROOT } from './lib/render.mjs';
 import * as gh from './lib/github.mjs';
+import * as chat from './lib/chat.mjs';
 
 const PORT = process.env.PORT || 8080;
 const DATA_DIR = process.env.DATA_DIR || join(ROOT, 'data');
@@ -121,6 +122,25 @@ function validate(c) {
     if (u && !/^https?:\/\//i.test(u)) err(`news[${i}].url 只能是 http(s) 網址`);
   }
   return c;
+}
+
+// ── AI 客服 ───────────────────────────────────────────────
+// 每一則訊息都是真的花錢，所以同時有「單一 IP 每小時」和「全站每日」兩道上限。
+let chatSystem = null;              // 內容變動時重建
+const chatHits = new Map();         // ip -> [時間, …]
+let chatDay = { day: '', n: 0 };
+
+const rebuildChatSystem = () => { chatSystem = chat.configured() ? chat.buildSystem(content) : null; };
+
+function chatQuota(ip) {
+  const today = new Date().toISOString().slice(0, 10);
+  if (chatDay.day !== today) chatDay = { day: today, n: 0 };
+  if (chatDay.n >= chat.cfg.dailyLimit) return '今天的客服對話量已達上限，請明天再來，或到「聯絡我們」留言。';
+  const now = Date.now();
+  const hits = (chatHits.get(ip) || []).filter((t) => now - t < 3600_000);
+  chatHits.set(ip, hits);
+  if (hits.length >= chat.cfg.perHour) return '你問得有點快，休息一下再繼續吧。';
+  return null;
 }
 
 // ── 使用者回饋 ────────────────────────────────────────────
@@ -284,6 +304,10 @@ const server = createServer(async (req, res) => {
   const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '?';
 
   try {
+    if (url.pathname === '/api/chat-enabled') {
+      return json(res, 200, { enabled: chat.configured() });
+    }
+
     if (url.pathname === '/api/session') {
       return json(res, 200, {
         configured: !!ADMIN_PASSWORD, authed: isAuthed(req),
@@ -313,6 +337,42 @@ const server = createServer(async (req, res) => {
 
     if (url.pathname === '/api/logout' && req.method === 'POST') {
       return json(res, 200, { ok: true }, { 'set-cookie': `${COOKIE}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0` });
+    }
+
+    if (url.pathname === '/api/chat') {
+      if (req.method !== 'POST') return json(res, 405, { error: '不支援的方法' });
+      if (!chat.configured())
+        return json(res, 503, { error: '這個網站還沒開啟 AI 客服。' });
+
+      const over = chatQuota(ip);
+      if (over) return json(res, 429, { error: over });
+
+      let body;
+      try { body = JSON.parse(await readBody(req, 40_000) || '{}'); }
+      catch { return json(res, 400, { error: '格式不對' }); }
+
+      // 長度／空白這類問題先擋掉，不佔用額度也不呼叫 API
+      const q = typeof body.message === 'string' ? body.message.trim() : '';
+      if (!q) return json(res, 400, { error: '請先輸入問題' });
+      if (q.length > 500) return json(res, 400, { error: '問題太長了（上限 500 字）' });
+
+      try {
+        const t0 = Date.now();
+        // 先扣額度再打 API：失敗的請求也要計入，否則有人可以靠製造錯誤無限呼叫。
+        chatHits.set(ip, [...(chatHits.get(ip) || []), Date.now()]);
+        chatDay.n += 1;
+        const out = await chat.ask(chatSystem, body.history, body.message);
+        const u = out.usage || {};
+        console.log(`[${new Date().toISOString()}] 客服問答 ${Date.now() - t0}ms ` +
+          `in=${u.input_tokens ?? '?'} cached=${u.cache_read_input_tokens ?? 0} out=${u.output_tokens ?? '?'} ` +
+          `（今日第 ${chatDay.n}/${chat.cfg.dailyLimit} 則）`);
+        return json(res, 200, { reply: out.reply });
+      } catch (e) {
+        if (e instanceof Error && /太長|請先輸入/.test(e.message))
+          return json(res, 400, { error: e.message });
+        console.error('客服失敗：', e.message);
+        return json(res, 502, { error: '客服暫時無法回應，請稍後再試，或到「聯絡我們」留言。' });
+      }
     }
 
     if (url.pathname === '/api/feedback') {
@@ -383,6 +443,7 @@ const server = createServer(async (req, res) => {
         await writeFile(CONTENT_FILE, body, 'utf8');
         content = next;
         const files = writeSite(content, SITE_URL);  // 立刻重新產生所有頁面
+        rebuildChatSystem();                         // 客服的參考資料也跟著更新
         console.log(`[${new Date().toISOString()}] 內容已更新，重新產生 ${Object.keys(files).length} 個檔案`);
         schedulePush();                              // 停手一段時間後同步回 GitHub
         return json(res, 200, { ok: true, files: Object.keys(files), sync: syncStatus() });
@@ -400,6 +461,7 @@ const server = createServer(async (req, res) => {
 
 await loadContent();
 await loadFeedback();
+rebuildChatSystem();
 writeSite(content, SITE_URL);                        // 開機就把頁面重新產生一次
 console.log(`內容：${CONTENT_FILE}`);
 console.log(`使用者建議：${FEEDBACK_FILE}（目前 ${feedback.length} 筆）`);
@@ -407,6 +469,10 @@ console.log(SITE_URL ? `對外網址：${SITE_URL}（og:image / canonical / site
                      : '對外網址：未設定 SITE_URL —— 分享預覽圖與 sitemap.xml 不會輸出');
 console.log(ADMIN_PASSWORD ? '後台：已啟用（ADMIN_PASSWORD 已設定）'
                            : '後台：唯讀（未設定 ADMIN_PASSWORD，無法登入或儲存）');
+console.log(chat.configured()
+  ? `AI 客服：已啟用（${chat.cfg.model}${chat.cfg.effort ? '，effort ' + chat.cfg.effort : ''}，` +
+    `每日上限 ${chat.cfg.dailyLimit} 則、每 IP 每小時 ${chat.cfg.perHour} 則）`
+  : 'AI 客服：停用（未設定 ANTHROPIC_API_KEY）');
 console.log(gh.configured()
   ? `GitHub 同步：已啟用 → ${gh.cfg.repo} (${gh.cfg.branch})，路徑前綴 ${gh.cfg.prefix || '(根目錄)'}，停手 ${humanDelay(gh.cfg.delayMs)}後推送`
   : 'GitHub 同步：停用（未設定 GITHUB_TOKEN / GITHUB_REPO）');
