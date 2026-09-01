@@ -10,9 +10,9 @@
      label   = 地圖上顯示的短名（可省略，預設用據點全名） */
 (function(){
   var CAT = {
-    taste:   {label:'品味 CUISINE',     v:'var(--taste)'},
-    culture: {label:'回歸 CULTURE',     v:'var(--culture)'},
-    grow:    {label:'生長 AGRICULTURE', v:'var(--grow)'}
+    taste:   {label:'品味 CUISINE',     v:'var(--taste)',   ink:'var(--taste-ink)'},
+    culture: {label:'回歸 CULTURE',     v:'var(--culture)', ink:'var(--culture-ink)'},
+    grow:    {label:'生長 AGRICULTURE', v:'var(--grow)',    ink:'var(--grow-ink)'}
   };
 
   // 據點資料由 build.py 從 src/content.json 產生，寫在 assets/map-data.js。
@@ -71,6 +71,7 @@
     if(!reduce){ pin.classList.remove('ping'); void pin.offsetWidth; pin.classList.add('ping'); }
 
     card.style.setProperty('--acc', CAT[s.c].v);
+    card.style.setProperty('--acc-ink', CAT[s.c].ink);
     card.innerHTML =
       '<div class="mc-head"><p class="mc-cat">'+CAT[s.c].label+'</p><p class="mc-name">'+s.n+'</p></div>'+
       '<div class="mc-body"><p class="mc-feat">'+s.f+'</p>'+

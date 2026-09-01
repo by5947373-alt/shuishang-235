@@ -4,10 +4,13 @@
 /* ── tokens：淺色（主）─────────────────────────────────── */
 :root{
   --cream:#FBF3E2; --paper:#FFFCF4; --sand:#F4E7CC;
-  --ink:#3E2B18; --ink-2:#6E5537; --ink-3:#9C8564;
+  --ink:#3E2B18; --ink-2:#6E5537; --ink-3:#74603F;
   --line:#E0CDA6; --shadow:#E3CFA6;
   --sun:#F2A71B; --wood:#A9713B;
   --taste:#CE5230; --culture:#2F6E76; --grow:#6B8A38;
+  /* 原本的 --sun / --taste / --grow 在淺色底上當「文字」對比不足（1.7–3.6），
+     但當填色與邊框很好看。所以另外備一組只用於文字的深色變體。 */
+  --sun-ink:#8C5C06; --taste-ink:#A83A1C; --culture-ink:#2A6169; --grow-ink:#4E6B22;
   --taste-soft:#FBE7DC; --culture-soft:#DDEDEC; --grow-soft:#EAF0DA;
 
   --map-sky1:#DCEDF0; --map-sky2:#F2F4E4; --map-land:#FBF0D6;
@@ -28,10 +31,11 @@
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --cream:#241A11; --paper:#2E2217; --sand:#392A1C;
-    --ink:#F7EEDC; --ink-2:#D3C1A5; --ink-3:#A18E72;
+    --ink:#F7EEDC; --ink-2:#D3C1A5; --ink-3:#A89579;
     --line:#4C3926; --shadow:#150F08;
     --sun:#F9C255; --wood:#C99A63;
     --taste:#F09068; --culture:#6FB6BC; --grow:#A9C86D;
+    --sun-ink:#F9C255; --taste-ink:#F09068; --culture-ink:#6FB6BC; --grow-ink:#A9C86D;
     --taste-soft:#3A2418; --culture-soft:#16302F; --grow-soft:#26301A;
     --map-sky1:#1B2A2C; --map-sky2:#212418; --map-land:#3A2C1C;
     --map-edge:#7A5C36; --map-water:#3E717A; --map-rail:#6A5234; --map-cloud:#33291D;
@@ -40,10 +44,11 @@
 }
 :root[data-theme="dark"]{
   --cream:#241A11; --paper:#2E2217; --sand:#392A1C;
-  --ink:#F7EEDC; --ink-2:#D3C1A5; --ink-3:#A18E72;
+  --ink:#F7EEDC; --ink-2:#D3C1A5; --ink-3:#A89579;
   --line:#4C3926; --shadow:#150F08;
   --sun:#F9C255; --wood:#C99A63;
   --taste:#F09068; --culture:#6FB6BC; --grow:#A9C86D;
+  --sun-ink:#F9C255; --taste-ink:#F09068; --culture-ink:#6FB6BC; --grow-ink:#A9C86D;
   --taste-soft:#3A2418; --culture-soft:#16302F; --grow-soft:#26301A;
   --map-sky1:#1B2A2C; --map-sky2:#212418; --map-land:#3A2C1C;
   --map-edge:#7A5C36; --map-water:#3E717A; --map-rail:#6A5234; --map-cloud:#33291D;
@@ -84,7 +89,7 @@ a{color:var(--ink)}
 .brand{display:flex; align-items:center; gap:.6rem; text-decoration:none; margin-right:auto; padding:.4rem 0}
 .brand-mark{flex:none; width:38px; height:38px}
 .brand-txt{display:grid; line-height:1.25}
-.brand-txt b{font-family:var(--disp); font-size:1.15rem; color:var(--sun); font-weight:800}
+.brand-txt b{font-family:var(--disp); font-size:1.15rem; color:var(--sun-ink); font-weight:800}
 .brand-txt span{font-size:var(--fs-xs); font-weight:700; letter-spacing:.06em}
 .nav{display:flex; gap:.3rem; flex-wrap:wrap; padding-bottom:.4rem}
 .nav a{
@@ -114,9 +119,13 @@ a{color:var(--ink)}
 .btn{
   display:inline-flex; align-items:center; gap:.5rem; text-decoration:none;
   font-weight:800; font-size:var(--fs-sm); padding:.72rem 1.35rem;
+  /* 一定要自己宣告顏色：<a> 會繼承，但 <button> 會拿到瀏覽器預設的黑色，
+     在深色主題上等於看不見 */
+  color:var(--ink); font-family:inherit;
   border:2px solid var(--ink); border-radius:999px; background:var(--paper);
   box-shadow:4px 4px 0 var(--shadow); transition:transform .15s, box-shadow .15s;
 }
+.btn:disabled{opacity:.55; cursor:default}
 .btn:hover{transform:translate(2px,2px); box-shadow:2px 2px 0 var(--shadow)}
 .btn-sun{background:var(--sun); color:#3E2B18}
 .hero-art{justify-self:center; width:min(420px,100%)}
@@ -125,7 +134,7 @@ a{color:var(--ink)}
 .sec{padding:clamp(3rem,7vw,5rem) 0}
 .sec-sand{background:var(--sand); border-block:2px solid var(--ink)}
 .sec-head{display:grid; gap:.5rem; margin-bottom:2.2rem; max-width:60ch}
-.sec-head .en{font-size:var(--fs-sm); color:var(--sun); letter-spacing:.14em}
+.sec-head .en{font-size:var(--fs-sm); color:var(--sun-ink); letter-spacing:.14em}
 .sec-head h2{font-size:var(--fs-2xl)}
 .sec-head p{color:var(--ink-2); margin-top:.5rem}
 .lede{max-width:62ch; color:var(--ink-2)}
@@ -142,24 +151,26 @@ a{color:var(--ink)}
 .cat:hover{transform:translate(-2px,-3px); box-shadow:8px 10px 0 var(--shadow)}
 .cat-art{width:76px; height:76px}
 .cat h3{font-size:var(--fs-xl)}
-.cat .en{font-size:var(--fs-xs); color:var(--acc); letter-spacing:.16em}
+.cat .en{font-size:var(--fs-xs); color:var(--acc-ink); letter-spacing:.16em}
 .cat p{font-size:var(--fs-sm); color:var(--ink-2)}
 .cat-go{
   justify-self:start; margin-top:.5rem; font-weight:800; font-size:var(--fs-sm);
-  color:#FFFCF4; background:var(--acc); border:2px solid var(--ink);
+  color:var(--cream); background:var(--acc-ink); border:2px solid var(--ink);
   border-radius:999px; padding:.3rem .9rem;
 }
-.c-taste{--acc:var(--taste)} .c-culture{--acc:var(--culture)} .c-grow{--acc:var(--grow)}
+.c-taste{--acc:var(--taste); --acc-ink:var(--taste-ink)}
+.c-culture{--acc:var(--culture); --acc-ink:var(--culture-ink)}
+.c-grow{--acc:var(--grow); --acc-ink:var(--grow-ink)}
 
 /* ── 據點卡（分類頁）───────────────────────────────────── */
 .venues{display:grid; gap:1.4rem}
 @media (min-width:860px){.venues{grid-template-columns:1fr 1fr}}
 .venue{padding:1.7rem 1.6rem; display:grid; gap:.8rem; align-content:start}
-.venue-idx{font-family:var(--num); font-weight:700; font-size:var(--fs-xs); letter-spacing:.14em; color:var(--acc)}
+.venue-idx{font-family:var(--num); font-weight:700; font-size:var(--fs-xs); letter-spacing:.14em; color:var(--acc-ink)}
 .venue h3{font-size:var(--fs-xl)}
 .venue .feat{
   justify-self:start; font-size:var(--fs-sm); font-weight:700; line-height:1.7;
-  background:var(--acc-soft); color:var(--acc); border-radius:999px; padding:.28rem .85rem;
+  background:var(--acc-soft); color:var(--acc-ink); border-radius:999px; padding:.28rem .85rem;
 }
 .venue p{font-size:var(--fs-sm); color:var(--ink-2)}
 .meta{display:grid; gap:.4rem; margin-top:.3rem; border-top:2px dotted var(--line); padding-top:.9rem}
@@ -179,7 +190,7 @@ a{color:var(--ink)}
 .crop{padding:1.8rem 1.7rem; display:grid; gap:1.2rem}
 @media (min-width:900px){.crop{grid-template-columns:minmax(190px,.8fr) 2fr; gap:2.2rem}}
 .crop-id{display:grid; gap:.5rem; align-content:start}
-.crop-id .n{font-family:var(--disp); font-size:2.6rem; line-height:1; color:var(--grow); font-weight:800}
+.crop-id .n{font-family:var(--disp); font-size:2.6rem; line-height:1; color:var(--grow-ink); font-weight:800}
 .crop-id h3{font-size:var(--fs-xl)}
 .tag{
   justify-self:start; font-family:var(--num); font-size:var(--fs-xs); font-weight:700;
@@ -187,7 +198,7 @@ a{color:var(--ink)}
 }
 .crop section{display:grid; gap:.4rem; margin-bottom:1.1rem}
 .crop section:last-child{margin-bottom:0}
-.crop h4{font-size:var(--fs-sm); color:var(--grow)}
+.crop h4{font-size:var(--fs-sm); color:var(--grow-ink)}
 .crop p{font-size:var(--fs-sm); color:var(--ink-2)}
 
 /* ── 悄悄話 ───────────────────────────────────────────── */
@@ -207,7 +218,7 @@ a{color:var(--ink)}
 .route h3{font-size:var(--fs-lg)}
 .stops{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:.3rem .1rem; align-items:center}
 .stops li{font-size:var(--fs-sm); font-weight:700}
-.stops li::after{content:"→"; color:var(--sun); margin:0 .45rem; font-weight:800}
+.stops li::after{content:"→"; color:var(--sun-ink); margin:0 .45rem; font-weight:800}
 .stops li:last-child::after{content:""}
 .route p{font-size:var(--fs-sm); color:var(--ink-2)}
 
@@ -223,12 +234,12 @@ a{color:var(--ink)}
   font-size:var(--fs-xs); font-weight:800; border:2px solid var(--ink);
   border-radius:999px; padding:.1rem .65rem; background:var(--k-bg,var(--sand));
 }
-.k-news{--k-bg:var(--sun)} .k-civic{--k-bg:var(--culture-soft)}
+.k-news{--k-bg:var(--sun); color:#3E2B18} .k-civic{--k-bg:var(--culture-soft)}
 .k-gov{--k-bg:var(--grow-soft)} .k-blog{--k-bg:var(--taste-soft)}
 .item-src{font-family:var(--num); font-size:var(--fs-xs); font-weight:700; color:var(--ink-3)}
 .item h3{font-size:var(--fs-lg); line-height:1.5}
 .item p{font-size:var(--fs-sm); color:var(--ink-2)}
-.item-go{font-size:var(--fs-xs); font-weight:800; color:var(--sun)}
+.item-go{font-size:var(--fs-xs); font-weight:800; color:var(--sun-ink)}
 
 /* ── 聯絡 ─────────────────────────────────────────────── */
 .contact-grid{display:grid; gap:1.6rem}
@@ -295,7 +306,7 @@ a{color:var(--ink)}
 .mp-rail{fill:none; stroke:var(--map-rail); stroke-width:3; stroke-dasharray:9 7; stroke-linecap:round}
 .mp-tropic{stroke:var(--sun); stroke-width:3; stroke-dasharray:15 10; stroke-linecap:round}
 .map-svg .lbl{font-family:var(--num); font-size:13px; font-weight:700; fill:var(--ink-3)}
-.map-svg .lbl-sun{fill:var(--sun)}
+.map-svg .lbl-sun{fill:var(--sun-ink)}
 .map-svg .lbl-out{font-family:var(--sans); font-size:16px; font-weight:700; letter-spacing:.18em; fill:var(--ink-3); opacity:.65}
 .map-noscript{position:absolute; inset:auto 1rem 1rem; font-size:var(--fs-sm); color:var(--ink-2)}
 
@@ -345,11 +356,11 @@ a{color:var(--ink)}
 .mc-cat{font-family:var(--num); font-size:.7rem; font-weight:800; letter-spacing:.12em; opacity:.9}
 .mc-name{font-size:1.06rem; font-weight:900; line-height:1.4}
 .mc-body{padding:.9rem; display:grid; gap:.5rem}
-.mc-feat{font-size:.84rem; font-weight:700; color:var(--acc); line-height:1.6}
+.mc-feat{font-size:.84rem; font-weight:700; color:var(--acc-ink); line-height:1.6}
 .mc-row{display:grid; grid-template-columns:2.9rem 1fr; gap:.5rem; font-size:.72rem; line-height:1.7}
 .mc-k{font-weight:800; color:var(--ink-3)}
 .mc-v{font-family:var(--num); color:var(--ink-2); word-break:break-word}
-.mc-link{font-size:.72rem; font-weight:800; color:var(--sun); text-decoration:none}
+.mc-link{font-size:.72rem; font-weight:800; color:var(--sun-ink); text-decoration:none}
 .map-credit{font-family:var(--num); font-size:var(--fs-xs); color:var(--ink-3); margin-top:.7rem}
 .map-swipe{display:none}
 @media (max-width:700px){.map-swipe{display:inline}}
@@ -377,8 +388,8 @@ a{color:var(--ink)}
 .fb-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
 .fb-foot{display:flex; gap:1rem; align-items:center; flex-wrap:wrap}
 .fb-msg{font-size:var(--fs-sm); font-weight:700}
-.fb-msg.ok{color:var(--grow)}
-.fb-msg.err{color:var(--taste)}
+.fb-msg.ok{color:var(--grow-ink)}
+.fb-msg.err{color:var(--taste-ink)}
 .fb-note{font-size:var(--fs-xs); color:var(--ink-3); line-height:1.8}
 
 /* ══ AI 客服小視窗 ═══════════════════════════════════════ */
@@ -412,7 +423,7 @@ a{color:var(--ink)}
 .chat-bot{background:var(--sand); justify-self:start; border-bottom-left-radius:5px}
 .chat-me{background:var(--grow); color:#FFFCF4; justify-self:end; border-bottom-right-radius:5px}
 .chat-wait{opacity:.65; font-style:italic}
-.chat-err{background:var(--taste-soft); border-color:var(--taste); color:var(--taste)}
+.chat-err{background:var(--taste-soft); border-color:var(--taste); color:var(--taste-ink)}
 .chat-chips{display:grid; gap:.4rem; justify-items:start}
 .chat-chip{
   font:inherit; font-size:var(--fs-xs); font-weight:700; cursor:pointer; text-align:left;

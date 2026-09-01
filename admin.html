@@ -8,33 +8,34 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=Nunito:wght@400;600;700;800&display=swap">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v=a90ba3c1">
 <style>
   body{padding-bottom:4rem}
   .ad-head{background:var(--sand); border-bottom:2px solid var(--ink); padding:1.2rem 0}
   .ad-head-in{width:var(--col); margin-inline:auto; display:flex; gap:1rem; align-items:center; flex-wrap:wrap}
   .ad-title{font-size:1.3rem; font-weight:900; margin-right:auto}
-  .ad-title span{font-family:var(--disp); color:var(--sun)}
-  .ad-state{font-family:var(--num); font-size:var(--fs-xs); font-weight:700; color:var(--ink-3)}
-  .ad-state.dirty{color:var(--taste)}
+  .ad-title span{font-family:var(--disp); color:var(--sun-ink)}
+  .ad-state{font-family:var(--num); font-size:var(--fs-xs); font-weight:700; color:var(--ink-2)}
+  .ad-state.dirty{color:var(--taste-ink)}
   .warn{background:var(--taste-soft); border:2px solid var(--taste); border-radius:var(--round);
         padding:1rem 1.2rem; margin:1.5rem 0; font-size:var(--fs-sm); color:var(--ink)}
   .warn b{display:block; margin-bottom:.3rem}
   .tabs2{display:flex; gap:.4rem; flex-wrap:wrap; margin:1.5rem 0 1rem}
   .tab2{font-family:var(--num); font-weight:800; font-size:var(--fs-sm); cursor:pointer;
         padding:.4rem .95rem; border:2px solid var(--ink); border-radius:999px;
-        background:var(--paper); box-shadow:3px 3px 0 var(--shadow)}
+        color:var(--ink); background:var(--paper); box-shadow:3px 3px 0 var(--shadow)}
   .tab2[aria-pressed="true"]{background:var(--sun); color:#3E2B18}
   .cols{display:grid; gap:1.4rem}
   @media (min-width:960px){.cols{grid-template-columns:300px 1fr}}
   .list{display:grid; gap:.5rem; align-content:start}
   .row{display:flex; gap:.35rem; align-items:stretch}
   .row-pick{flex:1; text-align:left; font:inherit; font-size:var(--fs-sm); font-weight:700; cursor:pointer;
-            background:var(--paper); border:2px solid var(--ink); border-radius:12px; padding:.5rem .7rem;
-            overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+            color:var(--ink); background:var(--paper); border:2px solid var(--ink); border-radius:12px;
+            padding:.5rem .7rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
   .row-pick[aria-current="true"]{background:var(--sun); color:#3E2B18}
   .mini{font:inherit; font-size:.75rem; font-weight:800; cursor:pointer; width:2rem;
-        background:var(--paper); border:2px solid var(--ink); border-radius:10px}
+        color:var(--ink); background:var(--paper); border:2px solid var(--ink); border-radius:10px}
+  .mini:disabled{color:var(--ink-3); opacity:1; cursor:default}
   .mini:hover{background:var(--sand)}
   .mini.del:hover{background:var(--taste); color:#FFFCF4}
   .form{display:grid; gap:.9rem; align-content:start; padding:1.4rem}
@@ -75,7 +76,7 @@
       <input id="pw" type="password" autocomplete="current-password">
     </div>
     <button type="button" class="btn btn-sun" id="doLogin" style="justify-self:start">登入</button>
-    <p class="hint" id="loginErr" style="color:var(--taste)"></p>
+    <p class="hint" id="loginErr" style="color:var(--taste-ink)"></p>
   </div>
 </div>
 
@@ -227,7 +228,7 @@
         ' 因設定問題暫時停用（前台按鈕已隱藏），' +
         new Date(chatInfo.degradedUntil).toLocaleTimeString('zh-TW', {hour12:false}) + ' 後自動重試。' +
         (chatInfo.lastError ? '　原因（HTTP ' + (chatInfo.lastError.status || '?') + '）：' + chatInfo.lastError.message : '');
-      n.style.color = 'var(--taste)';
+      n.style.color = 'var(--taste-ink)';
       return;
     }
     var t = 'AI 客服：' + chatInfo.model +
@@ -238,7 +239,7 @@
       t += '　⚠ 最近一次失敗' +
         (e.status ? '（HTTP ' + e.status + '）' : '') + '：' + e.message +
         '　· ' + new Date(e.at).toLocaleString('zh-TW', {hour12:false});
-      n.style.color = 'var(--taste)';
+      n.style.color = 'var(--taste-ink)';
     } else {
       n.style.color = 'var(--ink-3)';
     }
