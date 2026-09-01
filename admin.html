@@ -221,7 +221,10 @@
     }
     $('chatRetry').hidden = !chatInfo.degradedUntil;
     if(chatInfo.degradedUntil){
-      n.textContent = 'AI 客服：因設定問題暫時停用（前台按鈕已隱藏），' +
+      // 停用時也要顯示模型 —— 排查設定問題時這是最需要的資訊
+      n.textContent = 'AI 客服：' + chatInfo.model +
+        (chatInfo.effort ? '（effort ' + chatInfo.effort + '）' : '') +
+        ' 因設定問題暫時停用（前台按鈕已隱藏），' +
         new Date(chatInfo.degradedUntil).toLocaleTimeString('zh-TW', {hour12:false}) + ' 後自動重試。' +
         (chatInfo.lastError ? '　原因（HTTP ' + (chatInfo.lastError.status || '?') + '）：' + chatInfo.lastError.message : '');
       n.style.color = 'var(--taste)';
