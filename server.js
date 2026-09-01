@@ -328,6 +328,14 @@ const server = createServer(async (req, res) => {
       });
     }
 
+    // 排查設定問題時，不用等十分鐘冷卻
+    if (url.pathname === '/api/chat-retry' && req.method === 'POST') {
+      if (!isAuthed(req)) return json(res, 401, { error: '請先登入。' });
+      chatDegraded = 0;
+      chatLastError = null;
+      return json(res, 200, { ok: true, usable: chatUsable() });
+    }
+
     // 讓後台可以「現在就同步」，不用等計時器
     if (url.pathname === '/api/sync' && req.method === 'POST') {
       if (!isAuthed(req)) return json(res, 401, { error: '請先登入。' });
