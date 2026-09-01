@@ -189,6 +189,7 @@
   }
 
   function renderSync(){
+    renderChatNote();   // 兩條路徑都要跑到，別放在函式尾巴
     var note = $('syncNote'), btn = $('syncNow');
     if(!live || !sync || !sync.enabled){
       note.textContent = live ? '（沒有設定 GitHub 自動同步，線上內容不會寫回 repo。）' : '';
@@ -206,7 +207,6 @@
     else if(l && l.state === 'skipped') msg += '　✓ ' + l.reason + '（' + when(l.at) + '）';
     else if(l && l.state === 'error') msg += '　⚠ 上次失敗：' + l.error;
     note.textContent = msg;
-    renderChatNote();
   }
 
   function renderChatNote(){
