@@ -92,7 +92,8 @@
     <button type="button" class="btn" id="syncNow" hidden>立刻同步到 GitHub</button>
     <button type="button" class="btn" id="logout" hidden>登出</button>
   </div>
-  <p class="hint" id="syncNote" style="margin:-.6rem 0 1rem"></p>
+  <p class="hint" id="syncNote" style="margin:-.6rem 0 .4rem"></p>
+  <p class="hint" id="chatNote" style="margin:0 0 1rem"></p>
 
   <div class="tabs2" role="group" aria-label="選擇要編輯的區塊" id="tabs"></div>
 
@@ -129,7 +130,7 @@
   ];
   var META_KEYS = ['地址','電話','營業','Email','合作','別名','全名','產品'];
 
-  var data = null, tab = TABS[0], sel = -1, dirty = false, sync = null;
+  var data = null, tab = TABS[0], sel = -1, dirty = false, sync = null, chatInfo = null;
   var fb = null;   // 使用者回饋（跟內容分開存，不會同步到 GitHub）
   var $ = function(id){ return document.getElementById(id); };
 
@@ -169,6 +170,7 @@
         return;
       }
       sync = sess.sync || null;
+      chatInfo = sess.chat || null;
       if(sess.authed) enter(); else show('login');
     });
   }
@@ -204,6 +206,30 @@
     else if(l && l.state === 'skipped') msg += '　✓ ' + l.reason + '（' + when(l.at) + '）';
     else if(l && l.state === 'error') msg += '　⚠ 上次失敗：' + l.error;
     note.textContent = msg;
+    renderChatNote();
+  }
+
+  function renderChatNote(){
+    var n = $('chatNote');
+    if(!chatInfo){ n.textContent = ''; return; }
+    if(!chatInfo.enabled){
+      n.textContent = 'AI 客服：停用（伺服器沒有設定 ANTHROPIC_API_KEY）。';
+      n.style.color = 'var(--ink-3)';
+      return;
+    }
+    var t = 'AI 客服：' + chatInfo.model +
+      (chatInfo.effort ? '（effort ' + chatInfo.effort + '）' : '') +
+      '　今天已用 ' + chatInfo.usedToday + '/' + chatInfo.dailyLimit + ' 則';
+    var e = chatInfo.lastError;
+    if(e){
+      t += '　⚠ 最近一次失敗' +
+        (e.status ? '（HTTP ' + e.status + '）' : '') + '：' + e.message +
+        '　· ' + new Date(e.at).toLocaleString('zh-TW', {hour12:false});
+      n.style.color = 'var(--taste)';
+    } else {
+      n.style.color = 'var(--ink-3)';
+    }
+    n.textContent = t;
   }
 
   $('syncNow').onclick = function(){

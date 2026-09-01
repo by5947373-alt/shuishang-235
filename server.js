@@ -127,6 +127,7 @@ function validate(c) {
 // ── AI 客服 ───────────────────────────────────────────────
 // 每一則訊息都是真的花錢，所以同時有「單一 IP 每小時」和「全站每日」兩道上限。
 let chatSystem = null;              // 內容變動時重建
+let chatLastError = null;           // 最近一次失敗，只給登入後的後台看
 const chatHits = new Map();         // ip -> [時間, …]
 let chatDay = { day: '', n: 0 };
 
@@ -312,6 +313,12 @@ const server = createServer(async (req, res) => {
       return json(res, 200, {
         configured: !!ADMIN_PASSWORD, authed: isAuthed(req),
         sync: isAuthed(req) ? syncStatus() : undefined,
+        chat: isAuthed(req)
+          ? { enabled: chat.configured(), model: chat.cfg.model, effort: chat.cfg.effort || null,
+              perHour: chat.cfg.perHour, dailyLimit: chat.cfg.dailyLimit,
+              usedToday: chatDay.day === new Date().toISOString().slice(0, 10) ? chatDay.n : 0,
+              lastError: chatLastError }
+          : undefined,
       });
     }
 
@@ -370,7 +377,9 @@ const server = createServer(async (req, res) => {
       } catch (e) {
         if (e instanceof Error && /太長|請先輸入/.test(e.message))
           return json(res, 400, { error: e.message });
-        console.error('客服失敗：', e.message);
+        chatLastError = { at: Date.now(), status: e.status ?? null, message: String(e.message).slice(0, 300) };
+        console.error('客服失敗：', e.status ?? '', e.message);
+        // 錯誤細節只留在伺服器與後台，不送給訪客
         return json(res, 502, { error: '客服暫時無法回應，請稍後再試，或到「聯絡我們」留言。' });
       }
     }
