@@ -7,13 +7,13 @@
 <title>內容編輯器｜23.5° 剛剛好的城市</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Sans+TC:wght@200;300;400;500&family=Noto+Serif+TC:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=38987c8c">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Nunito:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css?v=c5fbff71">
 <style>
   body{padding-bottom:4rem}
   .ad-head{background:var(--sunk); border-bottom:1px solid var(--gold); padding:1.4rem 0}
   .ad-head-in{width:var(--col); margin-inline:auto; display:flex; gap:1rem; align-items:center; flex-wrap:wrap}
-  .ad-title{font-family:var(--serif); font-size:1.25rem; font-weight:600; letter-spacing:.1em; margin-right:auto}
+  .ad-title{font-family:var(--head); font-size:1.25rem; font-weight:600; letter-spacing:.1em; margin-right:auto}
   .ad-title span{font-family:var(--disp); font-size:1.4rem; color:var(--gold-ink)}
   .ad-state{font-family:var(--num); font-size:var(--fs-xs); font-weight:700; color:var(--ink-2)}
   .ad-state.dirty{color:var(--taste-ink)}
@@ -21,7 +21,7 @@
         padding:1.2rem 1.4rem; margin:1.8rem 0; font-size:var(--fs-sm); color:var(--ink)}
   .warn b{display:block; margin-bottom:.3rem}
   .tabs2{display:flex; gap:.4rem; flex-wrap:wrap; margin:1.5rem 0 1rem}
-  .tab2{font-family:var(--serif); font-size:var(--fs-sm); letter-spacing:.1em; cursor:pointer;
+  .tab2{font-family:var(--head); font-size:var(--fs-sm); letter-spacing:.1em; cursor:pointer;
         padding:.45rem 1.1rem; border:1px solid var(--line); border-radius:999px;
         color:var(--ink-2); background:transparent; transition:background .25s,color .25s,border-color .25s}
   .tab2[aria-pressed="true"]{background:var(--gold-ink); border-color:var(--gold-ink); color:var(--paper)}
@@ -34,7 +34,7 @@
   @media (min-width:1080px){.cols{grid-template-columns:573px minmax(0,1fr)}}
   .list{display:grid; gap:.5rem; align-content:start}
   .row{display:flex; gap:.35rem; align-items:stretch; min-width:0}
-  .row-pick{flex:1 1 0; min-width:0; text-align:left; font-family:var(--serif); font-size:var(--fs-sm);
+  .row-pick{flex:1 1 0; min-width:0; text-align:left; font-family:var(--head); font-size:var(--fs-sm);
             cursor:pointer; color:var(--ink); background:var(--paper); border:1px solid var(--line);
             padding:.6rem .9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; transition:border-color .2s}
   .row-pick[aria-current="true"]{background:var(--sunk); border-color:var(--gold); color:var(--ink)}
@@ -45,7 +45,7 @@
   .mini.del:hover{background:var(--brand); border-color:var(--brand); color:var(--ground)}
   .form{display:grid; gap:.9rem; align-content:start; padding:1.4rem}
   .fld{display:grid; gap:.3rem}
-  .fld label{font-family:var(--serif); font-size:var(--fs-xs); letter-spacing:.12em; color:var(--ink-3)}
+  .fld label{font-family:var(--head); font-size:var(--fs-xs); letter-spacing:.12em; color:var(--ink-3)}
   .fld input,.fld textarea,.fld select{
     font:inherit; font-size:var(--fs-sm); color:var(--ink); background:transparent;
     border:1px solid var(--line); padding:.6rem .8rem; width:100%; transition:border-color .2s}

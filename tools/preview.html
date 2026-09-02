@@ -2,7 +2,7 @@
 <title>23.5° 剛剛好的城市</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Sans+TC:wght@200;300;400;500&family=Noto+Serif+TC:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Nunito:wght@400;600;700&display=swap">
 <style>
 /* ══ 23.5° 剛剛好的城市 ══════════════════════════════════
    色票：SAND / SKY BLUE / DEEP SEA / MOSS GREEN /
@@ -29,18 +29,20 @@
   --map-sky1:#CFE7E9; --map-sky2:#EAF1E9; --map-land:#F6EBD8;
   --map-edge:#C3A97F; --map-water:#7FC7CC; --map-rail:#C0AC8B; --map-cloud:#FFFFFF;
   --map-shadow:rgba(9,47,51,.16);
+  --hero1:#DCEEF0; --hero2:#EFF1E4;
 
   --fs-3xl:clamp(2.6rem,9vw,5.6rem);
   --fs-2xl:clamp(1.75rem,4.2vw,2.7rem);
   --fs-xl:clamp(1.25rem,2.6vw,1.7rem);
   --fs-lg:1.1rem; --fs-md:1rem; --fs-sm:.9rem; --fs-xs:.78rem;
   --col:min(1160px,100% - 2.5rem);
-  --round:4px;
+  --round:16px;
+  --soft:0 6px 20px rgba(9,47,51,.08); --soft-lift:0 12px 28px rgba(9,47,51,.13);
 
-  --disp:"Cormorant Garamond","Noto Serif TC",Georgia,serif;
-  --serif:"Noto Serif TC",Songti TC,serif;
+  --disp:"Fredoka","Noto Sans TC",system-ui,sans-serif;
+  --head:"Noto Sans TC","PingFang TC",system-ui,sans-serif;
   --sans:"Noto Sans TC","PingFang TC",system-ui,sans-serif;
-  --num:"Cormorant Garamond","Noto Sans TC",serif;
+  --num:"Nunito","Noto Sans TC",system-ui,sans-serif;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
@@ -55,6 +57,7 @@
     --map-sky1:#0C3A3F; --map-sky2:#0A2C30; --map-land:#12474C;
     --map-edge:#3E7C7F; --map-water:#7FC7CC; --map-rail:#2E6468; --map-cloud:#12474C;
     --map-shadow:rgba(0,0,0,.45);
+    --hero1:#0F4247; --hero2:#0B3438;
   }
 }
 :root[data-theme="dark"]{
@@ -69,6 +72,7 @@
   --map-sky1:#0C3A3F; --map-sky2:#0A2C30; --map-land:#12474C;
   --map-edge:#3E7C7F; --map-water:#7FC7CC; --map-rail:#2E6468; --map-cloud:#12474C;
   --map-shadow:rgba(0,0,0,.45);
+  --hero1:#0F4247; --hero2:#0B3438;
 }
 
 /* ── base ─────────────────────────────────────────────── */
@@ -76,22 +80,22 @@
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%; scroll-padding-top:88px}
 body{
   margin:0; background:var(--ground); color:var(--ink);
-  font-family:var(--sans); font-weight:300; font-size:var(--fs-md);
-  line-height:2; letter-spacing:.03em;
+  font-family:var(--sans); font-weight:400; font-size:var(--fs-md);
+  line-height:1.9; letter-spacing:.01em;
 }
-h1,h2,h3,h4{font-family:var(--serif); font-weight:600; line-height:1.5; text-wrap:balance; margin:0; letter-spacing:.06em}
+h1,h2,h3,h4{font-family:var(--head); font-weight:700; line-height:1.45; text-wrap:balance; margin:0; letter-spacing:.02em}
 p{margin:0}
 img,svg{max-width:100%}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--gold); outline-offset:3px}
 .wrap{width:var(--col); margin-inline:auto}
-.en{font-family:var(--disp); font-weight:500; letter-spacing:.28em; text-transform:uppercase}
+.en{font-family:var(--disp); font-weight:600; letter-spacing:.14em; text-transform:uppercase}
 .num{font-family:var(--num); font-variant-numeric:tabular-nums}
 .skip{position:absolute; left:-9999px}
 .skip:focus{left:1rem; top:1rem; z-index:200; background:var(--paper); padding:.6rem 1rem; border:1px solid var(--gold)}
 
 /* 卡片：細線、淺底、無硬陰影 */
-.sticker{background:var(--paper); border:1px solid var(--line); border-radius:var(--round)}
+.sticker{background:var(--paper); border:2px solid var(--hair); border-radius:var(--round); box-shadow:var(--soft)}
 
 /* ── 導覽列 ───────────────────────────────────────────── */
 .site-head{position:sticky; top:0; z-index:60; background:color-mix(in srgb,var(--ground) 92%,transparent);
@@ -101,7 +105,7 @@ a{color:inherit}
 .brand-mark{flex:none; width:44px; height:44px}
 .brand-txt{display:grid; line-height:1.3}
 .brand-txt b{font-family:var(--disp); font-size:1.4rem; font-weight:600; color:var(--ink); letter-spacing:.05em}
-.brand-txt span{font-family:var(--serif); font-size:var(--fs-xs); letter-spacing:.24em; color:var(--ink-2)}
+.brand-txt span{font-family:var(--head); font-size:var(--fs-xs); letter-spacing:.24em; color:var(--ink-2)}
 .nav{display:flex; gap:.2rem; flex-wrap:wrap; padding-bottom:.3rem}
 .nav a{text-decoration:none; font-size:var(--fs-sm); font-weight:400; letter-spacing:.12em;
   padding:.45rem .95rem; border-bottom:1px solid transparent; transition:color .2s,border-color .2s}
@@ -109,36 +113,36 @@ a{color:inherit}
 .nav a[aria-current="page"]{color:var(--brand); border-bottom-color:var(--brand)}
 
 /* ── hero ─────────────────────────────────────────────── */
-.hero{position:relative; overflow:hidden; background:var(--deepsea); color:#F4EAD9; border-bottom:1px solid var(--gold)}
+.hero{position:relative; overflow:hidden; border-bottom:2px solid var(--hair);
+  background:linear-gradient(175deg,var(--hero1) 0%,var(--hero2) 48%,var(--ground) 100%)}
 .hero-in{width:var(--col); margin-inline:auto; padding:clamp(3.5rem,9vw,7rem) 0 clamp(3.5rem,9vw,6.5rem);
   display:grid; gap:3rem; align-items:center; position:relative; z-index:2}
 @media (min-width:960px){.hero-in{grid-template-columns:1fr 1fr}}
-.hero h1{font-size:var(--fs-3xl); line-height:1.25; letter-spacing:.1em; font-weight:500; color:#F4EAD9}
-.hero h1 .deg{font-family:var(--disp); color:var(--sunshine); font-weight:600; letter-spacing:.02em; display:block; font-size:1.15em}
-.hero-kicker{display:inline-block; font-family:var(--disp); font-size:var(--fs-sm); font-weight:500;
-  letter-spacing:.34em; text-transform:uppercase; color:var(--sunshine);
-  padding-bottom:.5rem; border-bottom:1px solid rgba(234,185,19,.45); margin-bottom:1.8rem}
-.hero-lede{font-family:var(--serif); font-size:var(--fs-lg); color:#D8CDBA; margin-top:1.8rem; max-width:34ch; line-height:2.1}
+.hero h1{font-size:var(--fs-3xl); line-height:1.2; letter-spacing:.01em; font-weight:900; color:var(--ink)}
+.hero h1 .deg{font-family:var(--disp); color:var(--sun-ink); font-weight:700; letter-spacing:0; display:block; font-size:1.1em}
+.hero-kicker{display:inline-block; font-family:var(--disp); font-size:var(--fs-sm); font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--deepsea);
+  background:var(--sunshine); border-radius:999px; padding:.35rem 1.1rem; margin-bottom:1.6rem}
+.hero-lede{font-size:var(--fs-lg); color:var(--ink-2); margin-top:1.6rem; max-width:34ch; line-height:2}
 /* 參考站把標語一字一圈，借用這個手法 */
 .circled{display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1.8rem; list-style:none; padding:0}
-.circled li{width:2.9rem; height:2.9rem; display:grid; place-items:center; border-radius:50%;
-  border:1px solid rgba(234,185,19,.55); font-family:var(--serif); font-size:var(--fs-sm); color:var(--sunshine)}
+.circled li{width:3.2rem; height:3.2rem; display:grid; place-items:center; border-radius:50%;
+  background:var(--paper); border:2px solid var(--sunshine); box-shadow:var(--soft);
+  font-weight:700; font-size:var(--fs-sm); color:var(--ink)}
 .hero-acts{display:flex; gap:.9rem; flex-wrap:wrap; margin-top:2.4rem}
 .hero-art{justify-self:center; width:min(440px,100%)}
 
 .btn{display:inline-flex; align-items:center; gap:.6rem; text-decoration:none;
-  font-family:var(--serif); font-weight:500; font-size:var(--fs-sm); letter-spacing:.14em;
-  padding:.85rem 1.9rem; color:var(--ink); font-family:inherit;
-  border:1px solid var(--gold); border-radius:999px; background:transparent;
-  transition:background .25s,color .25s,border-color .25s}
-.btn:hover{background:var(--gold); color:var(--paper); border-color:var(--gold)}
+  font-family:inherit; font-weight:700; font-size:var(--fs-sm); letter-spacing:.06em;
+  padding:.8rem 1.8rem; color:var(--ink);
+  border:2px solid var(--gold); border-radius:999px; background:var(--paper);
+  box-shadow:var(--soft); transition:transform .2s,box-shadow .2s,background .25s,color .25s}
+.btn:hover{transform:translateY(-2px); box-shadow:var(--soft-lift); background:var(--gold); color:var(--paper)}
 .btn:disabled{opacity:.5; cursor:default}
 .btn-sun{background:var(--brand); border-color:var(--brand); color:var(--ground)}
 .btn-sun:hover{background:transparent; color:var(--brand); border-color:var(--brand)}
-.hero .btn{color:#F4EAD9; border-color:rgba(234,185,19,.6)}
-.hero .btn:hover{background:var(--sunshine); color:var(--deepsea); border-color:var(--sunshine)}
 .hero .btn-sun{background:var(--sunshine); border-color:var(--sunshine); color:var(--deepsea)}
-.hero .btn-sun:hover{background:transparent; color:var(--sunshine)}
+.hero .btn-sun:hover{background:var(--deepsea); color:var(--sunshine); border-color:var(--deepsea)}
 
 /* ── 區塊 ─────────────────────────────────────────────── */
 .sec{padding:clamp(4rem,9vw,7rem) 0}
@@ -149,20 +153,22 @@ a{color:inherit}
 .sec-head p{color:var(--ink-2); margin-top:.3rem}
 .lede{max-width:62ch; color:var(--ink-2)}
 .lede + .lede{margin-top:1.2rem}
-.lede b{display:block; font-family:var(--serif); color:var(--ink); font-size:var(--fs-lg); margin-bottom:.7rem; letter-spacing:.08em}
+.lede b{display:block; font-family:var(--head); color:var(--ink); font-size:var(--fs-lg); margin-bottom:.7rem; letter-spacing:.08em}
 
 /* ── 三大服務項目 ─────────────────────────────────────── */
-.cats{display:grid; gap:1px; background:var(--line); border:1px solid var(--line)}
+.cats{display:grid; gap:1.4rem}
 @media (min-width:820px){.cats{grid-template-columns:repeat(3,1fr)}}
-.cat{display:grid; gap:1rem; padding:2.6rem 2rem; text-decoration:none; align-content:start;
-  background:var(--paper); transition:background .3s}
-.cat:hover{background:var(--sunk)}
+.cat{display:grid; gap:1rem; padding:2.2rem 1.8rem; text-decoration:none; align-content:start;
+  background:var(--acc-soft); border:2px solid var(--hair); border-radius:var(--round);
+  box-shadow:var(--soft); transition:transform .2s, box-shadow .2s}
+.cat:hover{transform:translateY(-4px); box-shadow:var(--soft-lift)}
 .cat-art{width:64px; height:64px}
 .cat h3{font-size:var(--fs-xl); font-weight:600}
 .cat .en{font-size:var(--fs-xs); color:var(--acc-ink)}
 .cat p{font-size:var(--fs-sm); color:var(--ink-2)}
-.cat-go{justify-self:start; margin-top:.6rem; font-family:var(--serif); font-size:var(--fs-sm);
-  letter-spacing:.12em; color:var(--acc-ink); border-bottom:1px solid currentColor; padding-bottom:.2rem}
+.cat-go{justify-self:start; margin-top:.6rem; font-size:var(--fs-sm); font-weight:700;
+  letter-spacing:.04em; color:var(--paper); background:var(--acc-ink);
+  border-radius:999px; padding:.35rem 1rem}
 .c-taste{--acc:var(--taste); --acc-ink:var(--taste-ink); --acc-soft:var(--taste-soft)}
 .c-culture{--acc:var(--culture); --acc-ink:var(--culture-ink); --acc-soft:var(--culture-soft)}
 .c-grow{--acc:var(--grow); --acc-ink:var(--grow-ink); --acc-soft:var(--grow-soft)}
@@ -170,12 +176,12 @@ a{color:inherit}
 /* ── 據點卡 ───────────────────────────────────────────── */
 .venues{display:grid; gap:1.6rem}
 @media (min-width:860px){.venues{grid-template-columns:1fr 1fr}}
-.venue{padding:2.2rem 2rem; display:grid; gap:1rem; align-content:start; position:relative}
-.venue::before{content:""; position:absolute; inset:0 auto 0 0; width:2px; background:var(--acc)}
+.venue{padding:2.4rem 1.8rem 2rem; display:grid; gap:1rem; align-content:start; position:relative; overflow:hidden}
+.venue::before{content:""; position:absolute; inset:0 0 auto 0; height:5px; background:var(--acc); border-radius:var(--round) var(--round) 0 0}
 .venue-idx{font-family:var(--num); font-size:var(--fs-sm); letter-spacing:.2em; color:var(--acc-ink)}
 .venue h3{font-size:var(--fs-xl); font-weight:600}
-.venue .feat{justify-self:start; font-family:var(--serif); font-size:var(--fs-sm); line-height:1.9;
-  color:var(--acc-ink); border-top:1px solid var(--hair); border-bottom:1px solid var(--hair); padding:.5rem 0}
+.venue .feat{justify-self:start; font-size:var(--fs-sm); font-weight:700; line-height:1.8;
+  color:var(--acc-ink); background:var(--acc-soft); border-radius:999px; padding:.35rem 1rem}
 .venue p{font-size:var(--fs-sm); color:var(--ink-2)}
 .meta{display:grid; gap:.5rem; margin-top:.4rem; border-top:1px solid var(--hair); padding-top:1.1rem}
 .meta div{display:grid; grid-template-columns:3.6rem 1fr; gap:.9rem; font-size:var(--fs-xs); line-height:1.9}
@@ -197,14 +203,14 @@ a{color:inherit}
   color:var(--ink-3); border-top:1px solid var(--hair); padding-top:.5rem}
 .crop section{display:grid; gap:.6rem; margin-bottom:1.4rem}
 .crop section:last-child{margin-bottom:0}
-.crop h4{font-family:var(--serif); font-size:var(--fs-sm); letter-spacing:.16em; color:var(--grow-ink)}
+.crop h4{font-family:var(--head); font-size:var(--fs-sm); letter-spacing:.16em; color:var(--grow-ink)}
 .crop p{font-size:var(--fs-sm); color:var(--ink-2)}
 
 /* ── 悄悄話 ───────────────────────────────────────────── */
-.whisper{margin-top:3rem; padding:2.4rem 2.2rem; display:grid; gap:1rem;
-  background:var(--deepsea); color:#F4EAD9; border-left:2px solid var(--sunshine)}
-.whisper q{font-family:var(--serif); font-size:var(--fs-lg); quotes:"「" "」"; line-height:2.1; letter-spacing:.06em}
-.whisper cite{font-family:var(--num); font-size:var(--fs-xs); letter-spacing:.2em; font-style:normal; color:var(--sunshine)}
+.whisper{margin-top:3rem; padding:2.2rem 2rem; display:grid; gap:.9rem; border-radius:var(--round);
+  background:var(--sunshine); color:var(--deepsea); box-shadow:var(--soft)}
+.whisper q{font-weight:700; font-size:var(--fs-lg); quotes:"「" "」"; line-height:1.95}
+.whisper cite{font-family:var(--num); font-weight:700; font-size:var(--fs-xs); letter-spacing:.1em; font-style:normal; opacity:.75}
 
 /* ── 路線 ─────────────────────────────────────────────── */
 .routes{display:grid; gap:1.6rem}
@@ -213,15 +219,17 @@ a{color:inherit}
 .route-top{display:flex; justify-content:space-between; gap:1rem; align-items:baseline; flex-wrap:wrap}
 .route h3{font-size:var(--fs-lg); font-weight:600}
 .stops{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:.4rem .1rem; align-items:center}
-.stops li{font-family:var(--serif); font-size:var(--fs-sm)}
+.stops li{font-family:var(--head); font-size:var(--fs-sm)}
 .stops li::after{content:"—"; color:var(--gold); margin:0 .55rem}
 .stops li:last-child::after{content:""}
 .route p{font-size:var(--fs-sm); color:var(--ink-2)}
 
 /* ── 相關報導 ─────────────────────────────────────────── */
-.news{display:grid; gap:1px; background:var(--line); border-block:1px solid var(--line)}
-.item{display:grid; gap:.7rem; padding:2rem; text-decoration:none; background:var(--paper); transition:background .3s}
-.item:hover{background:var(--sunk)}
+.news{display:grid; gap:1.2rem}
+.item{display:grid; gap:.7rem; padding:1.8rem; text-decoration:none; background:var(--paper);
+  border:2px solid var(--hair); border-radius:var(--round); box-shadow:var(--soft);
+  transition:transform .2s, box-shadow .2s}
+.item:hover{transform:translateY(-3px); box-shadow:var(--soft-lift)}
 .item-top{display:flex; gap:.9rem; align-items:center; flex-wrap:wrap}
 .kind{font-family:var(--num); font-size:var(--fs-xs); letter-spacing:.18em; color:var(--k-c,var(--ink-2));
   border:1px solid var(--k-c,var(--line)); border-radius:999px; padding:.15rem .8rem}
@@ -230,14 +238,14 @@ a{color:inherit}
 .item-src{font-family:var(--num); font-size:var(--fs-xs); letter-spacing:.08em; color:var(--ink-3)}
 .item h3{font-size:var(--fs-lg); line-height:1.7; font-weight:600}
 .item p{font-size:var(--fs-sm); color:var(--ink-2)}
-.item-go{font-family:var(--serif); font-size:var(--fs-xs); letter-spacing:.14em; color:var(--gold-ink)}
+.item-go{font-family:var(--head); font-size:var(--fs-xs); letter-spacing:.14em; color:var(--gold-ink)}
 
 /* ── 聯絡 ─────────────────────────────────────────────── */
 .contact-grid{display:grid; gap:2rem}
 @media (min-width:900px){.contact-grid{grid-template-columns:.85fr 1.15fr}}
 .contact-card{padding:2.2rem 2rem; display:grid; gap:1.4rem; align-content:start}
 .contact-row{display:grid; gap:.3rem}
-.contact-row .k{font-family:var(--serif); font-size:var(--fs-xs); letter-spacing:.2em; color:var(--gold-ink)}
+.contact-row .k{font-family:var(--head); font-size:var(--fs-xs); letter-spacing:.2em; color:var(--gold-ink)}
 .contact-row .v{font-family:var(--num); font-size:.94rem; color:var(--ink-2); word-break:break-word; line-height:1.9}
 .gembed{border:1px solid var(--line); overflow:hidden; background:var(--sunk); min-height:360px}
 .gembed iframe{display:block; width:100%; height:100%; min-height:360px; border:0}
@@ -247,7 +255,7 @@ a{color:inherit}
 .site-foot{background:var(--deepsea); color:#D8CDBA; padding:clamp(3rem,7vw,4.5rem) 0 2.5rem}
 .foot-grid{display:grid; gap:2.5rem}
 @media (min-width:820px){.foot-grid{grid-template-columns:1.3fr 1fr 1fr}}
-.site-foot h4{font-family:var(--serif); font-size:var(--fs-sm); letter-spacing:.2em; color:var(--sunshine); margin-bottom:1rem; font-weight:500}
+.site-foot h4{font-family:var(--head); font-size:var(--fs-sm); letter-spacing:.2em; color:var(--sunshine); margin-bottom:1rem; font-weight:500}
 .site-foot ul{list-style:none; margin:0; padding:0; display:grid; gap:.5rem; font-size:var(--fs-sm)}
 .site-foot ul a{color:#D8CDBA; text-decoration:none; border-bottom:1px solid transparent}
 .site-foot ul a:hover{border-bottom-color:var(--sunshine); color:var(--sunshine)}
@@ -271,7 +279,7 @@ a{color:inherit}
 .map-head{display:flex; justify-content:space-between; align-items:flex-end; gap:1.5rem; flex-wrap:wrap; margin-bottom:1.5rem}
 .map-note{font-size:var(--fs-sm); color:var(--ink-2); margin-top:.5rem; max-width:44ch}
 .map-filters{display:flex; gap:.5rem; flex-wrap:wrap}
-.filter{font-family:var(--serif); font-size:var(--fs-xs); letter-spacing:.14em; cursor:pointer;
+.filter{font-family:var(--head); font-size:var(--fs-xs); letter-spacing:.14em; cursor:pointer;
   padding:.45rem 1.1rem; border:1px solid var(--line); border-radius:999px;
   background:transparent; color:var(--ink-2); transition:background .25s,color .25s,border-color .25s}
 .filter:hover{border-color:var(--fc,var(--gold-ink)); color:var(--fc,var(--gold-ink))}
@@ -287,7 +295,7 @@ a{color:inherit}
 .mp-tropic{stroke:var(--sunshine); stroke-width:1.5; stroke-dasharray:12 9}
 .map-svg .lbl{font-family:var(--num); font-size:13px; letter-spacing:.1em; fill:var(--ink-3)}
 .map-svg .lbl-sun{fill:var(--sun-ink)}
-.map-svg .lbl-out{font-family:var(--serif); font-size:15px; letter-spacing:.3em; fill:var(--ink-3); opacity:.7}
+.map-svg .lbl-out{font-family:var(--head); font-size:15px; letter-spacing:.3em; fill:var(--ink-3); opacity:.7}
 .map-noscript{position:absolute; inset:auto 1rem 1rem; font-size:var(--fs-sm); color:var(--ink-2)}
 
 .map-pins{position:absolute; inset:0}
@@ -298,7 +306,7 @@ a{color:inherit}
 .pin-lead{position:absolute; left:0; bottom:0; height:1px; background:var(--acc); opacity:.5;
   transform-origin:0 50%; pointer-events:none; transition:opacity .25s}
 .pin-label{position:absolute; left:var(--lx); bottom:var(--ly); white-space:nowrap;
-  font-family:var(--serif); font-size:11.5px; letter-spacing:.05em; line-height:1.6; color:var(--ink);
+  font-family:var(--head); font-size:11.5px; letter-spacing:.05em; line-height:1.6; color:var(--ink);
   background:color-mix(in srgb,var(--map-land) 92%,transparent);
   border:1px solid var(--line); border-radius:2px; padding:1px 8px; transition:background .25s,color .25s,border-color .25s}
 .pin[data-side="l"] .pin-label{transform:translateX(-100%)}
@@ -324,13 +332,13 @@ a{color:inherit}
 .map-card.show{opacity:1; pointer-events:auto}
 .mc-head{padding:1rem 1.2rem .7rem; border-bottom:1px solid var(--hair)}
 .mc-cat{font-family:var(--num); font-size:.72rem; letter-spacing:.2em; color:var(--acc-ink)}
-.mc-name{font-family:var(--serif); font-size:1.1rem; font-weight:600; line-height:1.6; letter-spacing:.06em; margin-top:.2rem}
+.mc-name{font-family:var(--head); font-size:1.1rem; font-weight:600; line-height:1.6; letter-spacing:.06em; margin-top:.2rem}
 .mc-body{padding:1rem 1.2rem 1.2rem; display:grid; gap:.6rem}
-.mc-feat{font-family:var(--serif); font-size:.86rem; color:var(--acc-ink); line-height:1.9}
+.mc-feat{font-family:var(--head); font-size:.86rem; color:var(--acc-ink); line-height:1.9}
 .mc-row{display:grid; grid-template-columns:2.9rem 1fr; gap:.7rem; font-size:.74rem; line-height:1.9}
 .mc-k{letter-spacing:.14em; color:var(--ink-3)}
 .mc-v{font-family:var(--num); font-size:.82rem; color:var(--ink-2); word-break:break-word}
-.mc-link{font-family:var(--serif); font-size:.76rem; letter-spacing:.1em; color:var(--gold-ink); text-decoration:none}
+.mc-link{font-family:var(--head); font-size:.76rem; letter-spacing:.1em; color:var(--gold-ink); text-decoration:none}
 .map-credit{font-family:var(--num); font-size:var(--fs-xs); letter-spacing:.06em; color:var(--ink-3); margin-top:1rem}
 .map-swipe{display:none}
 @media (max-width:700px){.map-swipe{display:inline}}
@@ -345,7 +353,7 @@ a{color:inherit}
 .fb-row{display:grid; gap:1.4rem}
 @media (min-width:640px){.fb-row{grid-template-columns:1fr 1fr}}
 .fb-fld{display:grid; gap:.5rem}
-.fb-fld label{font-family:var(--serif); font-size:var(--fs-sm); letter-spacing:.1em}
+.fb-fld label{font-family:var(--head); font-size:var(--fs-sm); letter-spacing:.1em}
 .fb-opt{font-size:var(--fs-xs); color:var(--ink-3); margin-left:.6rem; letter-spacing:.06em}
 .fb-fld input,.fb-fld textarea{font:inherit; font-size:var(--fs-sm); color:var(--ink); background:transparent;
   border:0; border-bottom:1px solid var(--line); padding:.6rem .2rem; width:100%; transition:border-color .25s}
@@ -355,14 +363,14 @@ a{color:inherit}
 .fb-count{font-family:var(--num); font-size:var(--fs-xs); color:var(--ink-3); text-align:right}
 .fb-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
 .fb-foot{display:flex; gap:1.2rem; align-items:center; flex-wrap:wrap}
-.fb-msg{font-family:var(--serif); font-size:var(--fs-sm); letter-spacing:.06em}
+.fb-msg{font-family:var(--head); font-size:var(--fs-sm); letter-spacing:.06em}
 .fb-msg.ok{color:var(--grow-ink)}
 .fb-msg.err{color:var(--brand)}
 .fb-note{font-size:var(--fs-xs); color:var(--ink-3); line-height:1.9}
 
 /* ══ AI 客服 ══════════════════════════════════════════════ */
 .chat{position:fixed; right:1.5rem; bottom:1.5rem; z-index:80; display:grid; gap:.9rem; justify-items:end}
-.chat-fab{display:flex; align-items:center; gap:.6rem; cursor:pointer; font-family:var(--serif);
+.chat-fab{display:flex; align-items:center; gap:.6rem; cursor:pointer; font-family:var(--head);
   font-size:var(--fs-sm); letter-spacing:.14em; color:var(--deepsea);
   background:var(--sunshine); border:1px solid var(--sunshine); border-radius:999px;
   padding:.8rem 1.5rem; box-shadow:0 6px 22px rgba(9,47,51,.2); transition:background .25s,color .25s}
@@ -373,7 +381,7 @@ a{color:inherit}
 .chat-head{display:flex; align-items:center; gap:.8rem; padding:1.1rem 1.3rem;
   background:var(--deepsea); color:#F4EAD9; border-bottom:1px solid var(--gold)}
 .chat-head div{display:grid; margin-right:auto; line-height:1.5}
-.chat-head b{font-family:var(--serif); font-size:var(--fs-md); font-weight:500; letter-spacing:.1em}
+.chat-head b{font-family:var(--head); font-size:var(--fs-md); font-weight:500; letter-spacing:.1em}
 .chat-head span{font-size:var(--fs-xs); color:#A9BEBC; letter-spacing:.06em}
 .chat-x{font:inherit; font-size:1rem; cursor:pointer; background:none; border:0; color:#F4EAD9; padding:.2rem .3rem}
 .chat-log{flex:1; overflow-y:auto; padding:1.3rem; display:grid; gap:.8rem; align-content:start}
@@ -384,14 +392,14 @@ a{color:inherit}
 .chat-wait{opacity:.6; font-style:italic}
 .chat-err{background:var(--taste-soft); border-color:var(--brand); color:var(--brand)}
 .chat-chips{display:grid; gap:.5rem; justify-items:start}
-.chat-chip{font-family:var(--serif); font-size:var(--fs-xs); letter-spacing:.08em; cursor:pointer; text-align:left;
+.chat-chip{font-family:var(--head); font-size:var(--fs-xs); letter-spacing:.08em; cursor:pointer; text-align:left;
   background:transparent; border:1px solid var(--line); border-radius:999px; padding:.35rem .9rem; color:var(--ink-2)}
 .chat-chip:hover{border-color:var(--gold); color:var(--gold-ink)}
 .chat-form{display:flex; gap:.6rem; padding:1rem; border-top:1px solid var(--hair)}
 .chat-input{flex:1; min-width:0; font:inherit; font-size:var(--fs-sm); color:var(--ink); background:transparent;
   border:0; border-bottom:1px solid var(--line); padding:.5rem .3rem}
 .chat-input:focus{border-color:var(--gold); outline:none}
-.chat-send{font-family:var(--serif); font-size:var(--fs-sm); letter-spacing:.12em; cursor:pointer;
+.chat-send{font-family:var(--head); font-size:var(--fs-sm); letter-spacing:.12em; cursor:pointer;
   color:var(--ground); background:var(--brand); border:1px solid var(--brand); border-radius:999px; padding:.5rem 1.2rem}
 .chat-send:disabled{opacity:.5; cursor:default}
 .chat-note{padding:0 1.1rem 1rem; font-size:var(--fs-xs); color:var(--ink-3); line-height:1.8}
@@ -429,30 +437,31 @@ a{color:inherit}
         </div>
       </div>
       <svg class="hero-art" viewBox="0 0 400 320" role="img" aria-label="北回歸線穿過水上鄉的田園插畫">
-  <circle cx="298" cy="86" r="44" fill="var(--sunshine)" opacity=".92"/>
-  <g stroke="var(--sunshine)" stroke-width="1.2" stroke-linecap="round" opacity=".55">
-    <path d="M298 22v-12M298 162v12M228 86h-12M380 86h12"/>
-    <path d="M248 36l-8-8M348 136l8 8M348 36l8-8M248 136l-8 8"/>
+  <circle cx="300" cy="80" r="40" fill="var(--sunshine)" stroke="var(--deepsea)" stroke-width="2.2"/>
+  <g stroke="var(--deepsea)" stroke-width="2.2" stroke-linecap="round">
+    <path d="M300 26v-10M300 134v10M244 80h-10M356 80h10"/>
+    <path d="M262 42l-7-7M338 118l7 7M338 42l7-7M262 118l-7 7"/>
   </g>
-  <path d="M28 74 A30 24 0 0 1 84 60 A20 17 0 0 1 112 74 Z"
-        fill="none" stroke="#8FA8A9" stroke-width="1.2" stroke-linejoin="round" opacity=".7"/>
-  <path d="M0 178h400" stroke="var(--sunshine)" stroke-width="1.2" stroke-dasharray="10 8" opacity=".8"/>
-  <text x="4" y="170" font-family="Cormorant Garamond, serif" font-size="15"
-        letter-spacing="2" fill="var(--sunshine)" opacity=".9">23.5°N</text>
-  <path d="M0 252c58-32 104-32 156 0 50 32 96 32 148 0 34-21 66-23 96-8v84H0z"
-        fill="#2C4A3A" stroke="#7FC7CC" stroke-width="1" stroke-linejoin="round" opacity=".95"/>
-  <path d="M0 290c70-25 128-25 196 0 62 23 130 21 204-6v40H0z"
-        fill="#1B3E43" stroke="#7FC7CC" stroke-width="1" stroke-linejoin="round" opacity=".9"/>
-  <g stroke="#9DB273" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".9">
-    <path d="M62 252v-32M62 226c-11-4-15-13-14-22 10 1 16 8 18 17M62 226c11-4 15-13 14-22-10 1-16 8-18 17"/>
-    <path d="M104 254v-26M104 234c-9-3-13-11-12-18 8 1 13 6 14 13"/>
+  <path d="M24 78 A30 25 0 0 1 82 63 A21 18 0 0 1 112 78 Z"
+        fill="#FFFFFF" stroke="var(--deepsea)" stroke-width="2.2" stroke-linejoin="round"/>
+  <path d="M0 176h400" stroke="var(--sun-ink)" stroke-width="2.2" stroke-dasharray="11 9" stroke-linecap="round"/>
+  <text x="4" y="167" font-family="Fredoka, sans-serif" font-size="15" font-weight="600" fill="var(--sun-ink)">23.5°N</text>
+  <path d="M0 250c58-34 104-34 156 0 50 34 96 34 148 0 34-22 66-24 96-8v82H0z"
+        fill="#7E9B57" stroke="var(--deepsea)" stroke-width="2.2" stroke-linejoin="round"/>
+  <path d="M0 288c70-26 128-26 196 0 62 24 130 22 204-6v38H0z"
+        fill="var(--sand)" stroke="var(--deepsea)" stroke-width="2.2" stroke-linejoin="round"/>
+  <g stroke="var(--deepsea)" stroke-width="2.2" stroke-linecap="round" fill="#4B5B34">
+    <path d="M60 250v-32" fill="none"/>
+    <path d="M60 226c-12-4-16-14-15-23 11 1 17 8 19 18zM60 226c12-4 16-14 15-23-11 1-17 8-19 18z"/>
+    <path d="M102 252v-26" fill="none"/>
+    <path d="M102 234c-10-3-13-12-12-19 9 1 14 7 15 14z"/>
   </g>
-  <g transform="translate(238 212)">
-    <rect x="0" y="0" width="66" height="30" rx="3" fill="none" stroke="var(--sunshine)" stroke-width="1.2" opacity=".85"/>
-    <circle cx="16" cy="36" r="6" fill="none" stroke="var(--sunshine)" stroke-width="1.2" opacity=".85"/>
-    <circle cx="50" cy="36" r="6" fill="none" stroke="var(--sunshine)" stroke-width="1.2" opacity=".85"/>
-    <rect x="9" y="7" width="17" height="12" rx="1.5" fill="var(--sunshine)" opacity=".35"/>
-    <rect x="40" y="7" width="17" height="12" rx="1.5" fill="var(--sunshine)" opacity=".35"/>
+  <g transform="translate(236 208)">
+    <rect x="0" y="0" width="70" height="32" rx="9" fill="var(--terracotta)" stroke="var(--deepsea)" stroke-width="2.2"/>
+    <circle cx="17" cy="38" r="7" fill="#FFFFFF" stroke="var(--deepsea)" stroke-width="2.2"/>
+    <circle cx="53" cy="38" r="7" fill="#FFFFFF" stroke="var(--deepsea)" stroke-width="2.2"/>
+    <rect x="10" y="8" width="18" height="13" rx="3" fill="#FFFFFF" stroke="var(--deepsea)" stroke-width="1.8"/>
+    <rect x="42" y="8" width="18" height="13" rx="3" fill="#FFFFFF" stroke="var(--deepsea)" stroke-width="1.8"/>
   </g>
 </svg>
     </div>
@@ -484,21 +493,21 @@ a{color:inherit}
       </div>
       <div class="cats">
       <a class="cat sticker rise c-taste" href="#" data-go="pv-taste">
-        <svg class="cat-art" viewBox="0 0 76 76" aria-hidden="true"><path d="M10 34h56c0 17-12 28-28 28S10 51 10 34z" fill="var(--taste-soft)" stroke="var(--acc-ink)" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 66h64" stroke="var(--acc-ink)" stroke-width="1.4" stroke-linecap="round"/><g stroke="var(--acc-ink)" stroke-width="1.4" stroke-linecap="round" fill="none"><path d="M27 24c-5-5-5-10 0-15M38 22c-5-6-5-12 0-18M49 24c-5-5-5-10 0-15"/></g></svg>
+        <svg class="cat-art" viewBox="0 0 76 76" aria-hidden="true"><path d="M10 34h56c0 17-12 28-28 28S10 51 10 34z" fill="var(--taste-soft)" stroke="var(--deepsea)" stroke-width="2.2" stroke-linejoin="round"/><path d="M6 66h64" stroke="var(--deepsea)" stroke-width="2.2" stroke-linecap="round"/><g stroke="var(--deepsea)" stroke-width="2.2" stroke-linecap="round" fill="none"><path d="M27 24c-5-5-5-10 0-15M38 22c-5-6-5-12 0-18M49 24c-5-5-5-10 0-15"/></g></svg>
         <p class="en">CUISINE & SAVOR</p>
         <h3>品味</h3>
         <p>仙草甜麵醬、仙菇干貝雞、仙草可頌——把在地名產「仙草」吃進日常，還有最道地的嘉義火雞肉飯。</p>
         <span class="cat-go">4 家在地美食 →</span>
       </a>
       <a class="cat sticker rise c-culture" href="#" data-go="pv-culture">
-        <svg class="cat-art" viewBox="0 0 76 76" aria-hidden="true"><path d="M14 62V40a24 24 0 0 1 48 0v22z" fill="var(--culture-soft)" stroke="var(--acc-ink)" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 62h60" stroke="var(--acc-ink)" stroke-width="1.4" stroke-linecap="round"/><circle cx="38" cy="42" r="8" fill="var(--paper)" stroke="var(--acc-ink)" stroke-width="3"/><path d="M38 16V8" stroke="var(--acc-ink)" stroke-width="1.4" stroke-linecap="round"/><circle cx="38" cy="6" r="4" fill="var(--sunshine)" stroke="var(--acc-ink)" stroke-width="2.6"/></svg>
+        <svg class="cat-art" viewBox="0 0 76 76" aria-hidden="true"><path d="M14 62V40a24 24 0 0 1 48 0v22z" fill="var(--culture-soft)" stroke="var(--deepsea)" stroke-width="2.2" stroke-linejoin="round"/><path d="M8 62h60" stroke="var(--deepsea)" stroke-width="2.2" stroke-linecap="round"/><circle cx="38" cy="42" r="8" fill="var(--paper)" stroke="var(--deepsea)" stroke-width="3"/><path d="M38 16V8" stroke="var(--deepsea)" stroke-width="2.2" stroke-linecap="round"/><circle cx="38" cy="6" r="4" fill="var(--sunshine)" stroke="var(--deepsea)" stroke-width="2.6"/></svg>
         <p class="en">SIGHTSEEING & CULTURE</p>
         <h3>回歸</h3>
         <p>跨越 23.5° 北回歸線，從太空教育館的宇宙探索，到南靖糖廠的百年鐵道與枝仔冰。</p>
         <span class="cat-go">4 個景點據點 →</span>
       </a>
       <a class="cat sticker rise c-grow" href="#" data-go="pv-grow">
-        <svg class="cat-art" viewBox="0 0 76 76" aria-hidden="true"><path d="M38 68V26" stroke="var(--acc-ink)" stroke-width="1.4" stroke-linecap="round"/><g fill="var(--grow-soft)" stroke="var(--acc-ink)" stroke-width="3" stroke-linejoin="round"><path d="M38 30c-14-3-20-13-19-25 13 1 20 9 22 20zM38 30c14-3 20-13 19-25-13 1-20 9-22 20z"/><path d="M38 50c-12-3-17-11-16-21 11 1 17 7 19 17zM38 50c12-3 17-11 16-21-11 1-17 7-19 17z"/></g><path d="M16 70h44" stroke="var(--acc-ink)" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <svg class="cat-art" viewBox="0 0 76 76" aria-hidden="true"><path d="M38 68V26" stroke="var(--deepsea)" stroke-width="2.2" stroke-linecap="round"/><g fill="var(--grow-soft)" stroke="var(--deepsea)" stroke-width="3" stroke-linejoin="round"><path d="M38 30c-14-3-20-13-19-25 13 1 20 9 22 20zM38 30c14-3 20-13 19-25-13 1-20 9-22 20z"/><path d="M38 50c-12-3-17-11-16-21 11 1 17 7 19 17zM38 50c12-3 17-11 16-21-11 1-17 7-19 17z"/></g><path d="M16 70h44" stroke="var(--deepsea)" stroke-width="2.2" stroke-linecap="round"/></svg>
         <p class="en">AGRICULTURE & CRAFT</p>
         <h3>生長</h3>
         <p>紅骨仙草、香水蓮花、網室木瓜——北回歸線滋養的風土，被創生團隊變成看得見也吃得到的日常。</p>
