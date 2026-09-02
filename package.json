@@ -11,7 +11,7 @@
     "gh:check": "node -e \"const g=await import('./lib/github.mjs'); console.log(await g.check())\""
   },
   "engines": {
-    "node": ">=20"
+    "node": "22.x"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.122.0"
