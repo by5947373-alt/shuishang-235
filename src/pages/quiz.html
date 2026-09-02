@@ -1,0 +1,37 @@
+title: 風土百草堂・問診｜23.5° 剛剛好的城市
+desc: 十帖問診，找出你這趟水上之行最需要的風土藥引，煎出一張專屬藥單。
+scripts: assets/quiz-data.js, assets/quiz.js
+---
+  <section class="sec sec-sand">
+    <div class="wrap">
+      <div class="sec-head rise">
+        <p class="en">HERBAL CONSULTATION</p>
+        <h2>風土百草堂・問診</h2>
+        <p>把水上的美食、景點與農產當成藥引，十帖問診之後，替你開一張只屬於你的行程藥單。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap" id="quiz">
+      <div id="q-cover" class="sticker quiz-cover rise">
+        <p class="en">尋找你的靈魂藥引</p>
+        <h3>這趟水上之行，該從哪一味開始？</h3>
+        <p class="quiz-lede">十個問題，沒有標準答案，選最接近現在的自己就好。<br>
+          問診結束後，你會拿到一張可以列印帶著走的藥單。</p>
+        <button class="btn btn-sun" type="button" id="q-start">開始問診</button>
+        <noscript><p class="quiz-lede">這個單元需要 JavaScript。所有店家與景點資訊也完整列在各分類頁面。</p></noscript>
+      </div>
+
+      <div id="q-ask" hidden>
+        <div class="q-bar">
+          <span class="q-num" id="q-num"></span>
+          <div class="q-dots" id="q-dots"></div>
+        </div>
+        <div class="sticker q-card" id="q-card"></div>
+        <button class="q-back" type="button" id="q-back">← 上一帖</button>
+      </div>
+
+      <div id="q-result" hidden></div>
+    </div>
+  </section>

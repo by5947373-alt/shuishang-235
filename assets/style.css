@@ -43,6 +43,9 @@
 }
 /* ── base ─────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box}
+/* 任何設了 display 的 class 都會壓過瀏覽器對 [hidden] 的預設值，
+   導致「已隱藏」的區塊還佔著版面。這行把它釘死。 */
+[hidden]{display:none !important}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%; scroll-padding-top:88px}
 body{
   margin:0; background:var(--ground); color:var(--ink);
@@ -371,3 +374,89 @@ a{color:inherit}
 .chat-note{padding:0 1.1rem 1rem; font-size:var(--fs-xs); color:var(--ink-3); line-height:1.8}
 @media (prefers-reduced-motion:reduce){.chat-fab{transition:none}}
 @media print{.chat{display:none}}
+
+/* ══ 風土百草堂・問診 ═══════════════════════════════════════ */
+.quiz-cover{padding:3rem 2.4rem; display:grid; gap:1.2rem; justify-items:start; text-align:left}
+.quiz-cover .en{color:var(--brand); font-size:var(--fs-sm)}
+.quiz-cover h3{font-size:var(--fs-2xl)}
+.quiz-lede{color:var(--ink-2); font-size:var(--fs-sm); max-width:46ch}
+.quiz-cover .btn{margin-top:.6rem}
+
+.q-bar{display:flex; align-items:center; gap:1.2rem; flex-wrap:wrap; margin-bottom:1.2rem}
+.q-num{font-family:var(--num); font-weight:700; font-size:var(--fs-sm); color:var(--ink-2)}
+.q-dots{display:flex; gap:.4rem}
+.q-dot{width:9px; height:9px; border-radius:50%; border:2px solid var(--line); background:transparent}
+.q-dot.done{background:var(--grow); border-color:var(--grow)}
+.q-dot.now{background:var(--sunshine); border-color:var(--sun-ink); transform:scale(1.25)}
+
+.q-card{padding:2.4rem 2rem; display:grid; gap:1.6rem}
+.q-text{font-size:var(--fs-xl); line-height:1.8}
+.q-opts{display:grid; gap:.8rem}
+.q-opt{font:inherit; font-size:var(--fs-sm); line-height:1.85; text-align:left; cursor:pointer;
+  color:var(--ink); background:var(--sunk); border:2px solid var(--hair); border-radius:var(--round);
+  padding:.9rem 1.2rem; transition:transform .18s, box-shadow .18s, border-color .18s, background .18s}
+.q-opt:hover{transform:translateX(4px); border-color:var(--sunshine); background:var(--paper); box-shadow:var(--soft)}
+.q-opt.picked{border-color:var(--brand); background:var(--paper)}
+.q-back{font:inherit; font-size:var(--fs-sm); cursor:pointer; background:none; border:0;
+  color:var(--ink-2); margin-top:1.2rem; padding:.4rem 0; border-bottom:2px solid var(--line)}
+.q-back:hover:not(:disabled){color:var(--brand); border-color:var(--brand)}
+.q-back:disabled{opacity:.4; cursor:default}
+.fade{animation:qfade .5s ease both}
+@keyframes qfade{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
+
+/* 診斷書 */
+.dx-head{display:grid; gap:.7rem; padding:2.4rem 2rem; background:var(--deepsea); color:#F4EAD9;
+  border-radius:var(--round); position:relative; overflow:hidden}
+.dx-head .en{color:var(--sunshine); font-size:var(--fs-xs)}
+.dx-name{font-size:var(--fs-2xl); color:#F4EAD9}
+.dx-judge{font-size:var(--fs-sm); color:#D8CDBA; max-width:46ch; line-height:1.95}
+.dx-sec{margin-top:2rem; display:grid; gap:.8rem}
+.dx-sec h3{font-size:var(--fs-lg); color:var(--brand)}
+.dx-sec p{font-size:var(--fs-sm); color:var(--ink-2); max-width:62ch}
+.dx-pick-h{margin-top:2.8rem; font-size:var(--fs-lg)}
+
+.wei{margin-top:1.4rem; padding:1.6rem 1.4rem; background:var(--paper);
+  border:2px solid var(--hair); border-radius:var(--round); box-shadow:var(--soft)}
+.wei-top{display:flex; gap:.8rem; align-items:baseline; flex-wrap:wrap; margin-bottom:1rem}
+.wei-t{font-weight:700; font-size:var(--fs-md); color:var(--brand)}
+.wei-s{font-size:var(--fs-xs); color:var(--ink-3)}
+.wei-list{display:grid; gap:.8rem}
+@media (min-width:760px){.wei-list{grid-template-columns:1fr 1fr}}
+.pick{font:inherit; text-align:left; cursor:pointer; display:grid; gap:.35rem;
+  background:var(--sunk); border:2px solid var(--hair); border-radius:var(--round);
+  padding:1rem 1.1rem; color:var(--ink); transition:border-color .2s, background .2s, box-shadow .2s}
+.pick:hover{border-color:var(--sunshine); background:var(--paper)}
+.pick.picked{border-color:var(--brand); background:var(--paper); box-shadow:var(--soft)}
+.pick-n{font-weight:700; font-size:var(--fs-sm); line-height:1.7}
+.pick-src{font-family:var(--num); font-size:var(--fs-xs); color:var(--brand)}
+.pick-fit{font-size:var(--fs-xs); color:var(--ink-3); line-height:1.75}
+.dx-acts{display:flex; gap:.9rem; flex-wrap:wrap; margin-top:2.4rem}
+.q-notice{margin-top:.9rem; font-size:var(--fs-sm); font-weight:700; color:var(--brand)}
+
+/* 藥單 */
+.slip{margin-top:2rem; padding:2.4rem 2rem; background:var(--paper);
+  border:2px solid var(--brand); border-radius:var(--round); box-shadow:var(--soft-lift);
+  display:grid; gap:1.2rem; max-width:640px}
+.slip-top{display:flex; justify-content:space-between; gap:1rem; align-items:baseline; flex-wrap:wrap;
+  border-bottom:2px solid var(--line); padding-bottom:.9rem}
+.slip-title{font-weight:900; font-size:var(--fs-xl); letter-spacing:.1em}
+.slip-meta{font-family:var(--num); font-size:var(--fs-xs); color:var(--ink-3)}
+.slip-dx{font-weight:700; color:var(--brand); font-size:var(--fs-lg)}
+.slip-list{list-style:none; margin:0; padding:0; display:grid; gap:1rem}
+.slip-list li{display:grid; gap:.2rem; padding-left:1rem; border-left:3px solid var(--sunshine)}
+.slip-k{font-size:var(--fs-xs); color:var(--ink-3); letter-spacing:.1em}
+.slip-n{font-weight:700; font-size:var(--fs-sm); line-height:1.7}
+.slip-place{font-family:var(--num); font-size:var(--fs-xs); color:var(--ink-2)}
+.slip-note{font-size:var(--fs-xs); color:var(--ink-3); line-height:1.8}
+.slip-foot{display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;
+  border-top:2px solid var(--line); padding-top:1rem; font-family:var(--num); font-size:var(--fs-xs); color:var(--ink-3)}
+.slip-seal{display:grid; place-items:center; width:56px; height:56px; flex:none;
+  border:2px solid var(--brand); border-radius:6px; color:var(--brand);
+  font-weight:700; font-size:.72rem; line-height:1.25; transform:rotate(-6deg)}
+#q-slip .btn{margin-top:1.2rem}
+
+@media print{
+  .site-head,.site-foot,.chat,.sec-sand,.dx-head,.dx-sec,.dx-pick-h,.wei,.dx-acts,.q-notice,.noprint{display:none !important}
+  body{background:#fff}
+  .slip{border-color:#000; box-shadow:none; max-width:none; margin:0}
+}

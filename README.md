@@ -43,6 +43,7 @@ node build.js
 | `src/partials/footer.html` | 頁尾 |
 | `src/pages/*.html` | 各頁的 `<main>` 內容，開頭幾行是 front-matter |
 | `src/content.json` | 店家、景點、農產、報導、地圖圖釘的資料（由後台編輯器維護） |
+| `src/quiz.json` | 問診題庫：10 題、5 種診斷、每種 4 味共 8 個藥引 |
 
 頁面裡用 `{{venues:taste}}`、`{{venues:culture}}`、`{{venues:grow}}`、`{{crops}}`、
 `{{news}}`、`{{news:3}}` 這些佔位符，建置時會換成 `content.json` 的內容。
@@ -67,6 +68,7 @@ scripts: assets/map.js
 | `taste.html` | 品味・水上在地美食（4 家） |
 | `culture.html` | 回歸・水上景點與文化（4 處） |
 | `grow.html` | 生長・水上農產（3 大作物）與創生店家（4 家） |
+| `quiz.html` | 風土百草堂・問診：十題測驗產出專屬行程「藥單」 |
 | `news.html` | 相關報導與資源（全部為外部連結） |
 | `contact.html` | 聯絡資訊、Google 地圖嵌入、交通指引 |
 | `assets/style.css` | 全站樣式與設計 token（含深淺色主題） |
@@ -189,6 +191,9 @@ SITE_URL=https://你的網域 ADMIN_PASSWORD=你的密碼 npm run sync
   `x` / `y` 是圖釘位置（百分比），`lx` / `ly` 是名稱標籤偏移（px，用引線拉開擠在一起的市區店家），
   `side` 決定標籤往左或往右，`label` 是地圖上的短名。`assets/map-data.js` 是產生出來的，不要手改。
 - **頁面框架文字**（單元標題、引言、散策路線、悄悄話、聯絡資訊）：在 `src/pages/` 裡。
+- **問診題目與藥引**：改 `src/quiz.json` 再跑 `build.js`（會產生 `assets/quiz-data.js`）。
+  藥引的 `src` 欄位是店家名稱，請跟 `content.json` 裡的店家保持一致。
+  這一份目前不在後台編輯器裡，要改得動 JSON。
 - **配色**：改 `assets/style.css` 開頭的 `:root` token；深色主題的同名 token 在下方兩個區塊，三處要一起改。
 
 ### 色票
@@ -239,6 +244,10 @@ SAND 頁底 → `--sunk`（較淺的沙）交替區塊 → `--paper`（近白）
 
 頁尾是 DEEP SEA 深色底，裡面的文字要用淺色（寫死，不要用 `--ink`）。
 英雄區是 `--hero1` → `--hero2` → `--ground` 的漸層，收在 SAND 上。
+
+`[hidden]` 也要注意：任何設了 `display` 的 class 都會壓過瀏覽器對 `[hidden]`
+的預設值，讓「已隱藏」的區塊還佔著版面。樣式表最上面有一行
+`[hidden]{display:none !important}` 把它釘死，不要拿掉。
 
 `<button>` 也要注意：它有自己的瀏覽器預設文字色，**不會繼承**父層。
 任何按鈕樣式都必須自己宣告 `color`，否則深色主題下會變成看不見的黑字。

@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>找不到這一頁｜23.5° 剛剛好的城市</title>
-<meta name="description" content="你要找的頁面不存在，回首頁重新出發。">
+<title>風土百草堂・問診｜23.5° 剛剛好的城市</title>
+<meta name="description" content="十帖問診，找出你這趟水上之行最需要的風土藥引，煎出一張專屬藥單。">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/icon-180.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="23.5° 剛剛好的城市">
 <meta property="og:locale" content="zh_TW">
-<meta property="og:title" content="找不到這一頁｜23.5° 剛剛好的城市">
-<meta property="og:description" content="你要找的頁面不存在，回首頁重新出發。">
+<meta property="og:title" content="風土百草堂・問診｜23.5° 剛剛好的城市">
+<meta property="og:description" content="十帖問診，找出你這趟水上之行最需要的風土藥引，煎出一張專屬藥單。">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,44 +26,41 @@
       <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="17" r="9" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.4"/><g stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round"><path d="M20 2v3.4M20 28.6V32M5.5 17h3.4M31.1 17h3.4"/><path d="M9.7 6.7l2.4 2.4M27.9 24.9l2.4 2.4M30.3 6.7l-2.4 2.4M12.1 24.9l-2.4 2.4"/></g><path d="M3 36h34" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5 4"/></svg>
       <span class="brand-txt"><b>23.5°</b><span>剛剛好的城市</span></span>
     </a>
-    <nav class="nav" aria-label="主選單"><a href="index.html">首頁</a><a href="taste.html">品味</a><a href="culture.html">回歸</a><a href="grow.html">生長</a><a href="quiz.html">問診</a><a href="news.html">相關報導</a><a href="contact.html">聯絡我們</a></nav>
+    <nav class="nav" aria-label="主選單"><a href="index.html">首頁</a><a href="taste.html">品味</a><a href="culture.html">回歸</a><a href="grow.html">生長</a><a href="quiz.html" aria-current="page">問診</a><a href="news.html">相關報導</a><a href="contact.html">聯絡我們</a></nav>
   </div>
 </header>
 <main id="main">
   <section class="sec sec-sand">
     <div class="wrap">
-      <div class="sec-head">
-        <p class="en">404</p>
-        <h2>這條路走到底了</h2>
-        <p>你要找的頁面不存在，可能是網址打錯，或是這一頁已經搬家了。</p>
-      </div>
-      <div class="hero-acts" style="margin-top:0">
-        <a class="btn btn-sun" href="index.html">回首頁</a>
-        <a class="btn" href="index.html#map">打開生活座標地圖</a>
+      <div class="sec-head rise">
+        <p class="en">HERBAL CONSULTATION</p>
+        <h2>風土百草堂・問診</h2>
+        <p>把水上的美食、景點與農產當成藥引，十帖問診之後，替你開一張只屬於你的行程藥單。</p>
       </div>
     </div>
   </section>
 
   <section class="sec">
-    <div class="wrap">
-      <div class="sec-head"><p class="en">OR TRY</p><h2>不然，看看這些</h2></div>
-      <div class="cats">
-        <a class="cat sticker c-taste" href="taste.html">
-          <p class="en">CUISINE &amp; SAVOR</p><h3>品味</h3>
-          <p>仙草甜麵醬、仙草可頌，還有最道地的嘉義火雞肉飯。</p>
-          <span class="cat-go">4 家在地美食 →</span>
-        </a>
-        <a class="cat sticker c-culture" href="culture.html">
-          <p class="en">SIGHTSEEING &amp; CULTURE</p><h3>回歸</h3>
-          <p>從太空教育館的宇宙探索，到南靖糖廠的百年鐵道。</p>
-          <span class="cat-go">4 個景點據點 →</span>
-        </a>
-        <a class="cat sticker c-grow" href="grow.html">
-          <p class="en">AGRICULTURE &amp; CRAFT</p><h3>生長</h3>
-          <p>紅骨仙草、香水蓮花、網室木瓜與在地創生店家。</p>
-          <span class="cat-go">3 大農產 · 4 家店家 →</span>
-        </a>
+    <div class="wrap" id="quiz">
+      <div id="q-cover" class="sticker quiz-cover rise">
+        <p class="en">尋找你的靈魂藥引</p>
+        <h3>這趟水上之行，該從哪一味開始？</h3>
+        <p class="quiz-lede">十個問題，沒有標準答案，選最接近現在的自己就好。<br>
+          問診結束後，你會拿到一張可以列印帶著走的藥單。</p>
+        <button class="btn btn-sun" type="button" id="q-start">開始問診</button>
+        <noscript><p class="quiz-lede">這個單元需要 JavaScript。所有店家與景點資訊也完整列在各分類頁面。</p></noscript>
       </div>
+
+      <div id="q-ask" hidden>
+        <div class="q-bar">
+          <span class="q-num" id="q-num"></span>
+          <div class="q-dots" id="q-dots"></div>
+        </div>
+        <div class="sticker q-card" id="q-card"></div>
+        <button class="q-back" type="button" id="q-back">← 上一帖</button>
+      </div>
+
+      <div id="q-result" hidden></div>
     </div>
   </section>
 </main>
@@ -101,5 +98,7 @@
 </footer>
 <script src="assets/site.js?v=826c93a1"></script>
 <script src="assets/chat.js?v=b45c2c96"></script>
+<script src="assets/quiz-data.js?v=f93d3615"></script>
+<script src="assets/quiz.js?v=bff009ea"></script>
 </body>
 </html>
