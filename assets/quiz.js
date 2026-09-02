@@ -77,6 +77,7 @@
     head.appendChild(el('p', 'en', 'DIAGNOSIS ' + R.no.replace(/\D/g, '')));
     head.appendChild(el('h2', 'dx-name', R.name));
     head.appendChild(el('p', 'dx-judge', R.judge));
+    if(R.plain) head.appendChild(el('p', 'dx-plain', R.plain));
     box.appendChild(head);
 
     [['症狀剖析', R.symptom], ['漢方處方解說', R.rx]].forEach(function(pair){

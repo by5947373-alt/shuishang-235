@@ -460,3 +460,6 @@ a{color:inherit}
   body{background:#fff}
   .slip{border-color:#000; box-shadow:none; max-width:none; margin:0}
 }
+.dx-plain{margin-top:.4rem; padding:.8rem 1.1rem; border-radius:12px;
+  background:rgba(234,185,19,.16); border-left:3px solid var(--sunshine);
+  color:#F4EAD9; font-size:var(--fs-sm); line-height:1.95; max-width:46ch}

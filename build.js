@@ -5,14 +5,17 @@ import { writeSite, versionAssetsIn } from './lib/render.mjs';
 import { buildPreview } from './lib/preview.mjs';
 import { writeQuizData } from './lib/render.mjs';
 
+// 題庫要先寫好：writeSite() 會依檔案內容算資產版本號，
+// 順序反了的話 quiz.html 會帶著上一版的雜湊，瀏覽器就吃不到新題庫。
+const quizBytes = writeQuizData();
+
 const files = writeSite();
 for (const [f, body] of Object.entries(files)) {
   console.log('  %s %s bytes', f.padEnd(20), String(Buffer.byteLength(body)).padStart(6));
 }
 // admin.html 是手寫的、不走版型，但它的 css/js 也要帶版本號，
 // 否則更新後開後台會吃到快取裡的舊樣式。
-// 問診題庫：src/quiz.json → assets/quiz-data.js
-writeQuizData();
+console.log('  %s %s bytes', 'assets/quiz-data.js'.padEnd(20), String(quizBytes).padStart(6));
 
 const adminBytes = versionAssetsIn('admin.html');
 console.log('  %s %s bytes', 'admin.html'.padEnd(20), String(adminBytes).padStart(6));
