@@ -25,9 +25,8 @@
   if(!stage || !host || !card) return;
 
   var SVG = '<svg class="pin-mark" viewBox="0 0 24 30" aria-hidden="true">'+
-    '<path fill="currentColor" stroke="#3E2B18" stroke-width="1.6" ' +
-    'd="M12 1C6.5 1 2 5.3 2 10.6 2 17.9 12 29 12 29S22 17.9 22 10.6C22 5.3 17.5 1 12 1z"/>'+
-    '<circle cx="12" cy="10.4" r="3.6" fill="#FFFCF4" stroke="#3E2B18" stroke-width="1.2"/></svg>';
+    '<path fill="currentColor" d="M12 1.5C6.8 1.5 2.6 5.6 2.6 10.6 2.6 17.5 12 28.5 12 28.5S21.4 17.5 21.4 10.6C21.4 5.6 17.2 1.5 12 1.5z"/>'+
+    '<circle cx="12" cy="10.4" r="3.2" fill="var(--map-land)"/></svg>';
 
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var open = null, hideTimer = null;
