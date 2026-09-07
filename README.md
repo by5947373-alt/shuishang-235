@@ -234,6 +234,16 @@ SITE_URL=https://你的網域 ADMIN_PASSWORD=你的密碼 npm run sync
 實心橘色按鈕配白字用 `--orange-btn` `#BE5730`（4.57），
 不要用亮橘 `--orange`（白字只有 2.91）。
 
+### 改樣式前先載入 skill
+
+`.claude/skills/frontend-design/` 是這個站的設計系統 skill —— 動到
+`assets/style.css`、`src/pages/`、`src/partials/` 或任何顏色時會自動載入。
+裡面收的是**踩過才知道的規則**（兩層底色的對比陷阱、撕紙浪為什麼掛在
+下面那一區、`<button>` 不繼承 color），還附一支 `audit.js`，貼進瀏覽器
+console 就能掃全頁對比與橫向溢出。
+
+下面幾節是同樣規則的說明版，skill 是給動手時用的。
+
 ### 風格定位
 
 對象是**親子出遊做食農教育**，視覺參考日本幼兒園網站
