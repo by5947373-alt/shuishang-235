@@ -8,7 +8,7 @@
     "build": "node build.js",
     "start": "node server.js",
     "sync": "node sync.js",
-    "gh:check": "node -e \"const g=await import('./lib/github.mjs'); console.log(await g.check())\""
+    "gh:check": "node tools/gh-check.mjs"
   },
   "engines": {
     "node": "22.x"

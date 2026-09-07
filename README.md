@@ -135,7 +135,14 @@ python3 -m http.server 8000
 後台會顯示同步狀態（預計推送時間／已推送的 commit／失敗原因）。
 **同步失敗不影響網站** —— 內容已經寫進磁碟也已經生效，只是還沒進 git。
 
-設定完可以先驗證 token 和 repo 設定對不對（唯讀，不會寫入）：
+**fine-grained token 最容易漏掉的兩步**（漏了 GitHub 只回一句 404，看不出原因）：
+
+1. Repository access 要選 **Only select repositories** 並勾到 `shuishang-235`。
+   停在預設的 "Public repositories" 是不夠的。
+2. Permissions → Repository permissions → **Contents** 改成 **Read and write**。
+   這一項預設是 No access，而且藏在很長的清單裡。
+
+設定完可以驗證（唯讀，不會寫入。錯的話會直接告訴你是哪一步沒做）：
 
 ```bash
 GITHUB_TOKEN=… GITHUB_REPO=by5947373-alt/shuishang-235 npm run gh:check
