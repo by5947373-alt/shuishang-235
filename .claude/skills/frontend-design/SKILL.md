@@ -100,6 +100,16 @@ assets/ 」的步驟都必須跑在 `writeSite()` **之前**，否則頁面會�
 產生時把距離小於 6.5% 的點推開，完全重合的點先給一個固定初始偏移，
 否則推力方向是 0 向量、永遠分不開。
 
+## 一家店一頁
+
+12 個單店頁是 `renderVenuePages()` 從 content.json 產生的，版型在
+`src/partials/venue.html`。**不要手寫這些檔案**，改版型改 partial。
+
+單店頁的剪影用 `renderSilhouetteOne()`：一個水滴圖釘掛著店名。
+分類頁用 `renderSilhouette()`：多個編號圖釘、會先推開。兩者共用 `siloShell()`。
+
+新增一家店只要動 content.json，頁面和 sitemap 都會自己長出來。
+
 ## 照片欄位
 
 `.ph` 沒放圖時顯示斜紋蜜桃底，不是破圖 —— 因為 `background-image`

@@ -605,3 +605,49 @@ a{color:inherit}
 .vh-cta:hover{background:var(--ink-deep); color:var(--mustard)}
 .vh-cta:hover .arrow{background:var(--mustard); color:var(--ink-deep)}
 .silo-tropic{stroke:var(--orange-ink); stroke-width:3; stroke-dasharray:14 10; opacity:.75}
+
+/* ══ 單店頁 ═══════════════════════════════════════════════ */
+.vh-back{margin-bottom:1.2rem}
+.vh-back a{font-family:var(--head); font-weight:700; font-size:var(--fs-xs); letter-spacing:.1em;
+  color:var(--ink-2); text-decoration:none}
+.vh-back a:hover{color:var(--orange-ink)}
+.vhero-one .vh-kicker{color:var(--ink-2)}
+.vhero-one .vh-kicker::before,.vhero-one .vh-kicker::after{
+  background:repeating-linear-gradient(72deg,var(--ink-2) 0 1.5px,transparent 1.5px 5px)}
+
+/* 單店的圖釘：水滴形＋白色名牌，跟參考站一樣 */
+.silo-solo{transform:translate(-50%,-100%); display:grid; justify-items:center; gap:4px}
+.silo-solo i{width:22px; height:22px; border-radius:50% 50% 50% 0; transform:rotate(-45deg);
+  background:var(--ink); box-shadow:0 3px 8px rgba(95,70,58,.4)}
+.silo-solo b{font-family:var(--head); font-weight:700; font-size:var(--fs-sm); letter-spacing:.04em;
+  color:var(--ink); background:var(--paper); border-radius:var(--pill); white-space:nowrap;
+  padding:.35rem 1rem; box-shadow:var(--soft-lift)}
+@media (max-width:620px){.silo-solo b{font-size:var(--fs-xs); padding:.25rem .7rem}}
+
+/* 單店卡片裡的資訊列 */
+.vh-card .meta{margin-top:1.4rem; border-top:1px solid var(--hair); padding-top:1.2rem}
+.vh-card .meta div{grid-template-columns:3.4rem 1fr}
+
+/* ── 順路還可以去 ── */
+.siblings{display:grid; gap:1.1rem}
+@media (min-width:760px){.siblings{grid-template-columns:repeat(3,1fr)}}
+.sib{display:grid; gap:.4rem; align-content:start; min-width:0;
+  padding:1.6rem 1.5rem; text-decoration:none; background:var(--paper);
+  border-radius:var(--round); box-shadow:var(--soft);
+  transition:transform .2s, box-shadow .2s}
+.sib:hover{transform:translateY(-4px); box-shadow:var(--soft-lift)}
+.sib-idx{font-family:var(--num); font-weight:700; font-size:var(--fs-xs);
+  letter-spacing:.16em; color:var(--orange-ink)}
+.sib-name{font-family:var(--head); font-weight:700; font-size:var(--fs-lg); color:var(--ink); line-height:1.6}
+.sib-feat{font-size:var(--fs-xs); color:var(--ink-2); line-height:1.8}
+
+/* ── 分類頁的卡片變成入口 ── */
+.venue-link{text-decoration:none; color:inherit}
+.venue-link:hover{color:var(--acc-ink)}
+.venue-more{justify-self:start; display:inline-flex; align-items:center; gap:.6rem;
+  margin-top:.4rem; text-decoration:none;
+  font-family:var(--head); font-weight:700; font-size:var(--fs-sm); letter-spacing:.08em;
+  color:var(--acc-ink)}
+.venue-more .arrow{width:28px; height:28px; font-size:.9rem; background:var(--acc-ink); color:#fff;
+  transition:transform .2s}
+.venue:hover .venue-more .arrow{transform:translateX(4px)}

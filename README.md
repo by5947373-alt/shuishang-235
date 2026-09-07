@@ -91,6 +91,18 @@ scripts: assets/map.js
 根目錄的 `.html` 是建置產物，**不要直接編輯** —— 下次執行 `build.py` 會被覆蓋。
 要改版面請改 `src/`。
 
+### 一家店一頁（自動產生）
+
+`taste-01.html` … `grow-04.html` 共 12 頁，**從 content.json 產生，不要手寫**。
+版型在 `src/partials/venue.html`，產生邏輯在 `renderVenuePages()`。
+
+後台新增一家店 → 存檔 → 自動多一頁，sitemap 也會跟著加。
+不需要改 `site.json`（那份 nav 只管主選單，12 家店塞進選單會爆掉）。
+
+檔名用 `分類-序號` 而不是店名轉拼音 —— 拼音是猜的，序號不會錯。
+代價是網址不帶店名；之後要好看的網址，可以在 content.json 的 venue
+加一個 slug 欄位，`venueFile()` 有 slug 就用它。
+
 ## 本機預覽
 
 ```bash

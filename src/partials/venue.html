@@ -1,0 +1,34 @@
+  <section class="vhero vhero-one" style="--src:url(assets/photos/{{slug}}.jpg)">
+    <div class="vhero-bg" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="vh-back"><a href="{{cat}}.html">← 回到{{catLabel}}</a></p>
+      <div class="vh-head rise">
+        <p class="vh-kicker">{{catLabel}}　NO. {{idx}}</p>
+        <h1 class="vh-title">{{name}}</h1>
+      </div>
+      <div class="vhero-grid">
+{{silhouette}}
+        <div class="vh-card rise">
+          <p class="en">{{catEn}}</p>
+          <h2>{{feature}}</h2>
+          <p class="vh-body">{{text}}</p>
+          <div class="meta">{{meta}}</div>
+{{gmap}}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec-sand wave wave-b">
+    <div class="wrap">
+      <div class="sec-head rise">
+        <p class="en">MORE TO SEE</p>
+        <h2>順路還可以去</h2>
+        <p>同樣是{{catLabel}}這一類，都在水上鄉裡。</p>
+      </div>
+      <div class="siblings">
+{{siblings}}
+      </div>
+      <p style="margin-top:2rem"><a class="btn" href="{{cat}}.html">看完整的{{catLabel}}清單 →</a></p>
+    </div>
+  </section>
