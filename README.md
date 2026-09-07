@@ -43,10 +43,6 @@ node build.js
 | `src/partials/footer.html` | 頁尾 |
 | `src/pages/*.html` | 各頁的 `<main>` 內容，開頭幾行是 front-matter |
 | `src/content.json` | 店家、景點、農產、報導、地圖圖釘的資料（由後台編輯器維護） |
-| `src/quiz.json` | 問診題庫：10 題、5 種診斷、每種 4 味共 8 個藥引 |
-
-每種診斷有兩段判詞：`judge` 是文言版，`plain` 是白話版（親子客群看得懂），
-兩段都會顯示。
 
 頁面裡用 `{{venues:taste}}`、`{{venues:culture}}`、`{{venues:grow}}`、`{{crops}}`、
 `{{news}}`、`{{news:3}}` 這些佔位符，建置時會換成 `content.json` 的內容。
@@ -71,7 +67,6 @@ scripts: assets/map.js
 | `taste.html` | 品味・水上在地美食（4 家） |
 | `culture.html` | 回歸・水上景點與文化（4 處） |
 | `grow.html` | 生長・水上農產（3 大作物）與創生店家（4 家） |
-| `quiz.html` | 風土百草堂・問診：十題測驗產出專屬行程「藥單」 |
 | `news.html` | 相關報導與資源（全部為外部連結） |
 | `contact.html` | 聯絡資訊、Google 地圖嵌入、交通指引 |
 | `assets/style.css` | 全站樣式與設計 token（含深淺色主題） |
@@ -273,12 +268,6 @@ SVG 遮罩，往上挪 99%，蓋在上一區的下緣。
 
 `.deco` 在 1180px 以下會整個收起來，免得撐出橫向捲軸。
 
-### build.js 的順序有意義
-
-`writeQuizData()` 必須跑在 `writeSite()` **之前** —— `writeSite()` 會依檔案
-內容算資產版本號，順序反了的話 `quiz.html` 會帶著上一版的雜湊，
-瀏覽器就永遠吃不到新題庫。加新的產生步驟時要注意這一點。
-
 ### 只有一套視覺，不跟系統深色模式
 
 網站**固定奶油底色**，不隨訪客的系統深色模式翻轉 —— `:root` 宣告了
@@ -288,7 +277,7 @@ SVG 遮罩，往上挪 99%，蓋在上一區的下緣。
 ### 深色底的區塊
 
 頁尾是 `--foot` 暖棕底，裡面的文字要用 `--foot-ink`（不要用 `--ink`）。
-問診的診斷書 `.dx-head` 和客服面板 `.chat-head` 也是同一個暖棕底。
+客服面板 `.chat-head` 也是同一個暖棕底。
 
 英雄區是 `--hero1` → `--hero2` → `--peach-2` 的漸層，
 **收在蜜桃色上**（不是奶油色）—— 下一區的奶油色浪才看得出來。
