@@ -535,3 +535,73 @@ a{color:inherit}
   .nav a{padding:.3rem .58rem; font-size:.84rem; letter-spacing:.05em}
   .nav a em{display:none}
 }
+
+/* ══ 分類頁 hero：黃色鄉界剪影＋白卡片 ═════════════════════
+   參考「馬路村」：整面照片打淡、剪影地圖、手寫註記、白卡片收在右邊。 */
+.vhero{position:relative; overflow:hidden; padding:clamp(2.5rem,6vw,4.5rem) 0 clamp(3.5rem,8vw,6rem);
+  --sec-bg:var(--ground)}
+/* 照片打淡當底。還沒放圖時是柔和的奶油漸層，不是破圖也不是斑馬紋 */
+.vhero-bg{position:absolute; inset:0; z-index:0;
+  background-image:var(--src,none), linear-gradient(160deg,#FDF7F2,#F6E7DA 60%,#F2DCC4);
+  background-size:cover; background-position:center; background-repeat:no-repeat}
+.vhero-bg::after{content:""; position:absolute; inset:0; background:rgba(253,247,242,.82)}
+.vhero > .wrap{position:relative; z-index:1}
+
+.vh-head{text-align:center; margin-bottom:clamp(1.6rem,4vw,2.6rem)}
+/* 小標兩側的手繪放射線 */
+.vh-kicker{display:inline-block; position:relative; font-family:var(--head); font-weight:700;
+  font-size:var(--fs-sm); letter-spacing:.14em; color:var(--orange-ink)}
+.vh-kicker::before,.vh-kicker::after{content:""; position:absolute; top:.1em; width:14px; height:1.1em;
+  background:repeating-linear-gradient(72deg,var(--orange-ink) 0 1.5px,transparent 1.5px 5px)}
+.vh-kicker::before{left:-1.4rem; transform:scaleX(-1)}
+.vh-kicker::after{right:-1.4rem}
+.vh-title{font-size:clamp(1.7rem,4.6vw,3rem); font-weight:700; color:var(--ink); margin-top:.5rem}
+/* 手寫感的底線：不是直線，是一筆畫過去 */
+.vh-title .ul{position:relative; white-space:nowrap}
+.vh-title .ul::after{content:""; position:absolute; left:-.05em; right:-.05em; bottom:-.18em; height:.42em;
+  background:no-repeat center/100% 100%
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 8C22 3 44 9 62 5 80 1 100 7 118 4' fill='none' stroke='%23EFBE4E' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E")}
+
+.vhero-grid{display:grid; gap:clamp(1.6rem,4vw,2.6rem); align-items:center}
+@media (min-width:940px){.vhero-grid{grid-template-columns:1.05fr .95fr}}
+
+/* ── 剪影地圖 ── */
+.silo{position:relative}
+.silo-map{display:block; width:100%; height:auto}
+.silo-map path{fill:var(--mustard)}
+.silo-pin{position:absolute; transform:translate(-50%,-50%); pointer-events:none}
+.silo-pin i{display:grid; place-items:center; width:26px; height:26px; border-radius:50%;
+  background:var(--ink); color:var(--mustard); font-family:var(--num); font-style:normal;
+  font-weight:700; font-size:.82rem; box-shadow:0 3px 8px rgba(95,70,58,.35)}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap}
+/* 手寫註記 */
+.silo-note{position:absolute; font-family:var(--head); font-weight:700; font-size:var(--fs-xs);
+  letter-spacing:.04em; color:var(--ink-2)}
+.silo-n1{left:2%; bottom:6%; transform:rotate(-4deg)}
+.silo-n2{right:1%; top:4%; transform:rotate(3deg); max-width:9em; line-height:1.6; text-align:right}
+.silo-arrow{position:absolute; left:14%; bottom:16%; width:clamp(48px,7vw,84px); height:auto;
+  stroke:var(--orange-ink); stroke-width:3; opacity:.8}
+.silo-foot{margin-top:.6rem; text-align:center; font-size:var(--fs-xs); color:var(--ink-3)}
+.silo-foot a{font-family:var(--head); font-weight:700; color:var(--ink);
+  text-decoration:none; border-bottom:2px solid var(--mustard); padding-bottom:.15rem}
+.silo-foot a:hover{color:var(--orange-ink); border-color:var(--orange-ink)}
+@media (max-width:620px){
+  .silo-note,.silo-arrow{display:none}
+  .silo-pin i{width:22px; height:22px; font-size:.72rem}
+}
+
+/* ── 白卡片：CTA 貼齊卡片下緣，像參考圖那樣 ── */
+.vh-card{background:var(--paper); border-radius:var(--round-lg); box-shadow:var(--soft-lift);
+  padding:clamp(1.8rem,3.4vw,2.6rem) clamp(1.6rem,3vw,2.4rem) 0; overflow:hidden}
+.vh-card .en{font-size:var(--fs-xs); color:var(--orange-ink); letter-spacing:.16em}
+.vh-card h2{font-size:clamp(1.3rem,2.6vw,1.85rem); font-weight:700; color:var(--ink); margin-top:.7rem}
+.vh-body{font-size:var(--fs-sm); color:var(--ink-2); line-height:2.1; margin-top:1.1rem}
+.vh-cta{display:flex; align-items:center; justify-content:center; gap:.9rem; text-decoration:none;
+  margin:clamp(1.6rem,3vw,2.2rem) calc(clamp(1.6rem,3vw,2.4rem) * -1) 0;
+  padding:1.1rem 1.4rem; background:var(--mustard); color:var(--ink-deep);
+  font-family:var(--head); font-weight:700; font-size:var(--fs-md); letter-spacing:.1em;
+  transition:background .25s, color .25s}
+.vh-cta .arrow{width:30px; height:30px; font-size:.95rem; background:var(--ink-deep); color:var(--mustard)}
+.vh-cta:hover{background:var(--ink-deep); color:var(--mustard)}
+.vh-cta:hover .arrow{background:var(--mustard); color:var(--ink-deep)}
+.silo-tropic{stroke:var(--orange-ink); stroke-width:3; stroke-dasharray:14 10; opacity:.75}

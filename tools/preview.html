@@ -542,6 +542,76 @@ a{color:inherit}
   .nav a em{display:none}
 }
 
+/* ══ 分類頁 hero：黃色鄉界剪影＋白卡片 ═════════════════════
+   參考「馬路村」：整面照片打淡、剪影地圖、手寫註記、白卡片收在右邊。 */
+.vhero{position:relative; overflow:hidden; padding:clamp(2.5rem,6vw,4.5rem) 0 clamp(3.5rem,8vw,6rem);
+  --sec-bg:var(--ground)}
+/* 照片打淡當底。還沒放圖時是柔和的奶油漸層，不是破圖也不是斑馬紋 */
+.vhero-bg{position:absolute; inset:0; z-index:0;
+  background-image:var(--src,none), linear-gradient(160deg,#FDF7F2,#F6E7DA 60%,#F2DCC4);
+  background-size:cover; background-position:center; background-repeat:no-repeat}
+.vhero-bg::after{content:""; position:absolute; inset:0; background:rgba(253,247,242,.82)}
+.vhero > .wrap{position:relative; z-index:1}
+
+.vh-head{text-align:center; margin-bottom:clamp(1.6rem,4vw,2.6rem)}
+/* 小標兩側的手繪放射線 */
+.vh-kicker{display:inline-block; position:relative; font-family:var(--head); font-weight:700;
+  font-size:var(--fs-sm); letter-spacing:.14em; color:var(--orange-ink)}
+.vh-kicker::before,.vh-kicker::after{content:""; position:absolute; top:.1em; width:14px; height:1.1em;
+  background:repeating-linear-gradient(72deg,var(--orange-ink) 0 1.5px,transparent 1.5px 5px)}
+.vh-kicker::before{left:-1.4rem; transform:scaleX(-1)}
+.vh-kicker::after{right:-1.4rem}
+.vh-title{font-size:clamp(1.7rem,4.6vw,3rem); font-weight:700; color:var(--ink); margin-top:.5rem}
+/* 手寫感的底線：不是直線，是一筆畫過去 */
+.vh-title .ul{position:relative; white-space:nowrap}
+.vh-title .ul::after{content:""; position:absolute; left:-.05em; right:-.05em; bottom:-.18em; height:.42em;
+  background:no-repeat center/100% 100%
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 8C22 3 44 9 62 5 80 1 100 7 118 4' fill='none' stroke='%23EFBE4E' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E")}
+
+.vhero-grid{display:grid; gap:clamp(1.6rem,4vw,2.6rem); align-items:center}
+@media (min-width:940px){.vhero-grid{grid-template-columns:1.05fr .95fr}}
+
+/* ── 剪影地圖 ── */
+.silo{position:relative}
+.silo-map{display:block; width:100%; height:auto}
+.silo-map path{fill:var(--mustard)}
+.silo-pin{position:absolute; transform:translate(-50%,-50%); pointer-events:none}
+.silo-pin i{display:grid; place-items:center; width:26px; height:26px; border-radius:50%;
+  background:var(--ink); color:var(--mustard); font-family:var(--num); font-style:normal;
+  font-weight:700; font-size:.82rem; box-shadow:0 3px 8px rgba(95,70,58,.35)}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap}
+/* 手寫註記 */
+.silo-note{position:absolute; font-family:var(--head); font-weight:700; font-size:var(--fs-xs);
+  letter-spacing:.04em; color:var(--ink-2)}
+.silo-n1{left:2%; bottom:6%; transform:rotate(-4deg)}
+.silo-n2{right:1%; top:4%; transform:rotate(3deg); max-width:9em; line-height:1.6; text-align:right}
+.silo-arrow{position:absolute; left:14%; bottom:16%; width:clamp(48px,7vw,84px); height:auto;
+  stroke:var(--orange-ink); stroke-width:3; opacity:.8}
+.silo-foot{margin-top:.6rem; text-align:center; font-size:var(--fs-xs); color:var(--ink-3)}
+.silo-foot a{font-family:var(--head); font-weight:700; color:var(--ink);
+  text-decoration:none; border-bottom:2px solid var(--mustard); padding-bottom:.15rem}
+.silo-foot a:hover{color:var(--orange-ink); border-color:var(--orange-ink)}
+@media (max-width:620px){
+  .silo-note,.silo-arrow{display:none}
+  .silo-pin i{width:22px; height:22px; font-size:.72rem}
+}
+
+/* ── 白卡片：CTA 貼齊卡片下緣，像參考圖那樣 ── */
+.vh-card{background:var(--paper); border-radius:var(--round-lg); box-shadow:var(--soft-lift);
+  padding:clamp(1.8rem,3.4vw,2.6rem) clamp(1.6rem,3vw,2.4rem) 0; overflow:hidden}
+.vh-card .en{font-size:var(--fs-xs); color:var(--orange-ink); letter-spacing:.16em}
+.vh-card h2{font-size:clamp(1.3rem,2.6vw,1.85rem); font-weight:700; color:var(--ink); margin-top:.7rem}
+.vh-body{font-size:var(--fs-sm); color:var(--ink-2); line-height:2.1; margin-top:1.1rem}
+.vh-cta{display:flex; align-items:center; justify-content:center; gap:.9rem; text-decoration:none;
+  margin:clamp(1.6rem,3vw,2.2rem) calc(clamp(1.6rem,3vw,2.4rem) * -1) 0;
+  padding:1.1rem 1.4rem; background:var(--mustard); color:var(--ink-deep);
+  font-family:var(--head); font-weight:700; font-size:var(--fs-md); letter-spacing:.1em;
+  transition:background .25s, color .25s}
+.vh-cta .arrow{width:30px; height:30px; font-size:.95rem; background:var(--ink-deep); color:var(--mustard)}
+.vh-cta:hover{background:var(--ink-deep); color:var(--mustard)}
+.vh-cta:hover .arrow{background:var(--mustard); color:var(--ink-deep)}
+.silo-tropic{stroke:var(--orange-ink); stroke-width:3; stroke-dasharray:14 10; opacity:.75}
+
 .pv-nav,.pv-link{font:inherit; cursor:pointer; background:none; border:0; color:inherit; padding:0}
 .nav .pv-nav{font-size:var(--fs-sm); font-weight:700; padding:.42rem .85rem; border-radius:999px; border:2px solid transparent}
 .nav .pv-nav:hover{background:var(--sand)}
@@ -813,20 +883,43 @@ a{color:inherit}
   </section>
 </section>
 <section class="pv-page" id="pv-taste" hidden>
-  <section class="sec sec-sand wave">
+  <section class="vhero" style="--src:url(assets/photos/hero-taste.jpg)">
+    <div class="vhero-bg" aria-hidden="true"></div>
     <div class="wrap">
-      <div class="sec-head rise">
-        <p class="en">CUISINE &amp; SAVOR　·　P.06–07</p>
-        <h2>品味・水上在地美食</h2>
+      <div class="vh-head rise">
+        <p class="vh-kicker">你敢知影？</p>
+        <h1 class="vh-title">水上的<span class="ul">好味</span>，攏佇遮</h1>
       </div>
-      <div class="rise">
-        <p class="lede"><b>舌尖上的 23.5° 滋味</b>
-          走進水上，空氣裡總飄著誘人的食物香氣。這裡不只有傳承多年的經典在地味，更有將在地名產「仙草」與特色農產巧妙入菜的驚喜體驗。從美味簡餐到手作甜品，跟著在地人的美食清單，一口口品嚐最純粹的水上日常。</p>
+      <div class="vhero-grid">
+      <div class="silo">
+        <svg class="silo-map" viewBox="104 85 792 455" role="img" aria-label="嘉義縣水上鄉範圍，標示北回歸線與這一頁介紹的據點位置">
+          <path d="M 118.0 397.9 L 123.1 397.4 L 128.0 392.0 L 134.1 390.9 L 141.3 395.4 L 145.5 403.4 L 151.0 403.7 L 156.8 410.9 L 149.0 448.1 L 168.5 442.7 L 278.2 438.5 L 299.6 433.5 L 316.4 428.1 L 320.7 423.7 L 337.4 422.5 L 398.8 400.7 L 408.4 394.5 L 416.4 383.1 L 423.7 389.7 L 427.8 400.8 L 434.7 400.5 L 448.8 395.3 L 458.6 400.2 L 466.4 409.9 L 472.4 431.7 L 477.4 438.4 L 482.5 424.7 L 487.3 418.4 L 494.1 422.0 L 508.9 419.5 L 516.2 422.3 L 518.8 421.5 L 521.9 417.0 L 528.6 422.0 L 536.7 414.2 L 539.3 398.2 L 544.6 395.1 L 548.3 396.9 L 551.3 395.9 L 550.4 391.2 L 551.7 389.9 L 557.4 390.2 L 560.6 386.5 L 564.1 389.5 L 567.6 384.5 L 571.1 383.5 L 576.2 385.9 L 579.6 381.6 L 580.9 385.0 L 587.1 384.6 L 595.0 389.1 L 602.5 396.6 L 621.1 404.9 L 631.0 406.6 L 639.8 411.7 L 644.8 420.3 L 647.7 421.7 L 652.9 422.4 L 649.9 418.6 L 650.9 417.4 L 677.3 431.7 L 686.5 431.4 L 686.1 436.6 L 689.5 439.4 L 691.6 444.4 L 707.1 453.3 L 716.2 454.6 L 721.1 451.2 L 723.8 454.3 L 726.9 454.6 L 730.3 460.8 L 737.9 463.1 L 744.1 468.2 L 750.1 467.9 L 753.6 472.4 L 755.3 480.1 L 764.1 490.9 L 759.8 504.4 L 760.7 507.8 L 771.4 509.3 L 776.3 515.4 L 780.9 526.2 L 789.0 516.5 L 794.1 517.0 L 799.2 514.8 L 804.4 504.5 L 809.4 506.3 L 813.1 504.9 L 810.7 499.2 L 812.4 496.0 L 816.2 495.7 L 819.4 499.8 L 824.4 496.3 L 831.0 499.4 L 828.2 493.1 L 834.0 488.6 L 835.7 482.2 L 840.3 482.1 L 851.7 486.2 L 854.8 485.6 L 856.7 489.4 L 860.4 488.8 L 859.0 490.9 L 860.2 494.9 L 864.1 492.6 L 865.5 489.2 L 873.5 489.0 L 878.0 462.5 L 874.0 458.6 L 872.7 450.4 L 882.0 438.2 L 880.3 434.7 L 873.0 434.2 L 864.7 438.1 L 858.7 438.6 L 854.3 435.0 L 849.9 426.9 L 843.4 424.0 L 836.6 424.0 L 833.3 419.6 L 829.1 418.4 L 821.8 408.5 L 808.1 410.6 L 798.9 420.7 L 797.4 417.9 L 798.1 412.6 L 791.5 396.8 L 793.6 386.1 L 791.1 381.6 L 785.6 377.6 L 783.9 367.4 L 778.2 366.9 L 774.2 362.8 L 775.2 353.1 L 780.9 347.1 L 778.1 340.6 L 779.3 338.5 L 791.6 338.9 L 800.0 336.9 L 802.1 334.6 L 801.9 324.7 L 806.0 321.9 L 815.4 321.5 L 819.6 313.7 L 822.9 317.6 L 832.1 311.6 L 850.3 310.6 L 852.8 307.2 L 855.3 288.8 L 852.8 278.9 L 843.3 271.8 L 835.7 262.4 L 825.9 257.1 L 824.4 249.1 L 820.5 244.9 L 785.7 233.8 L 769.7 225.4 L 749.1 224.0 L 729.8 238.7 L 727.6 247.0 L 721.4 254.9 L 705.4 265.5 L 698.7 285.4 L 688.9 297.9 L 666.6 307.3 L 650.8 306.2 L 636.2 296.7 L 614.9 293.5 L 611.2 286.9 L 613.1 278.1 L 609.6 272.0 L 603.5 267.4 L 598.6 268.0 L 589.4 281.5 L 577.7 277.9 L 575.5 266.6 L 571.1 257.4 L 578.0 240.2 L 574.9 233.8 L 573.3 233.5 L 573.0 229.4 L 565.2 223.3 L 562.6 217.0 L 558.5 215.8 L 558.9 212.9 L 570.6 208.9 L 572.0 204.1 L 568.5 199.1 L 563.8 200.1 L 559.2 191.1 L 554.1 185.5 L 551.1 176.7 L 542.9 180.1 L 529.3 168.3 L 524.7 119.4 L 508.6 121.3 L 501.6 120.2 L 498.3 117.8 L 452.5 123.8 L 442.1 113.6 L 441.3 104.5 L 436.6 99.7 L 432.8 98.8 L 421.6 101.7 L 416.0 101.1 L 412.1 104.2 L 404.4 106.0 L 384.7 106.3 L 360.8 111.0 L 322.4 111.2 L 322.1 113.3 L 315.1 114.0 L 315.0 116.2 L 295.2 118.3 L 294.4 133.9 L 273.2 132.8 L 273.5 112.0 L 267.9 99.5 L 243.3 114.3 L 241.0 112.4 L 242.9 107.6 L 233.8 108.3 L 230.7 111.9 L 224.1 110.4 L 219.5 105.9 L 212.4 113.2 L 203.0 114.9 L 183.7 109.1 L 178.2 104.3 L 174.3 104.6 L 180.8 119.4 L 147.3 131.9 L 148.2 138.2 L 151.5 144.5 L 161.7 152.4 L 161.2 153.7 L 124.8 167.2 L 118.4 176.3 L 139.3 184.1 L 128.1 213.9 L 144.0 224.6 L 141.9 231.8 L 142.4 242.2 L 137.7 262.2 L 164.0 271.0 L 154.3 281.3 L 150.2 297.8 L 149.7 329.1 L 154.4 333.7 L 160.5 345.2 L 160.4 350.8 L 142.2 356.9 L 132.4 377.8 L 125.2 378.8 L 121.4 382.9 L 118.5 390.5 Z"/>
+          <line class="silo-tropic" x1="104" y1="161.8" x2="896" y2="161.8"/>
+        </svg>
+        <span class="silo-pin" style="left:38.20%; top:53.64%"><i>1</i><span class="sr">廣東烤鴨莊</span></span>
+        <span class="silo-pin" style="left:32.35%; top:33.61%"><i>2</i><span class="sr">雨豆樹咖啡輕飲</span></span>
+        <span class="silo-pin" style="left:28.38%; top:47.59%"><i>3</i><span class="sr">烘焙旅程</span></span>
+        <span class="silo-pin" style="left:34.59%; top:44.23%"><i>4</i><span class="sr">林叨抵嘉火雞肉飯</span></span>
+        <span class="silo-note silo-n1">從嘉義市區<br>開車 20 分鐘</span>
+        <span class="silo-note silo-n2">北回歸線<br>從這裡穿過去</span>
+        <svg class="silo-arrow" viewBox="0 0 90 54" aria-hidden="true">
+          <path d="M4 48C18 26 44 8 78 12" fill="none" stroke-linecap="round"/>
+          <path d="M64 4l16 8-13 11" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="silo-foot">數字對應下面的店家編號　<a href="#" data-go="pv-index" data-anchor="map">看完整互動地圖</a></p>
+      </div>
+        <div class="vh-card rise">
+          <p class="en">CUISINE &amp; SAVOR　·　P.06–07</p>
+          <h2>舌尖上的 23.5°<br>是這樣的滋味</h2>
+          <p class="vh-body">走進水上，空氣裡總飄著誘人的食物香氣。這裡不只有傳承多年的經典在地味，更有將在地名產「仙草」與特色農產巧妙入菜的驚喜體驗。從美味簡餐到手作甜品，跟著在地人的美食清單，一口口品嚐最純粹的水上日常。</p>
+          <a class="vh-cta" href="#list">看這四家店<span class="arrow" aria-hidden="true">→</span></a>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="sec wave wave-b">
+
+  <section class="sec wave wave-b" id="list">
     <div class="wrap">
       <div class="venues">
       <article class="venue sticker rise" style="--acc:var(--taste); --acc-soft:var(--taste-soft); --acc-ink:var(--taste-ink)">
@@ -868,20 +961,43 @@ a{color:inherit}
   </section>
 </section>
 <section class="pv-page" id="pv-culture" hidden>
-  <section class="sec sec-sand wave">
+  <section class="vhero" style="--src:url(assets/photos/hero-culture.jpg)">
+    <div class="vhero-bg" aria-hidden="true"></div>
     <div class="wrap">
-      <div class="sec-head rise">
-        <p class="en">SIGHTSEEING &amp; CULTURE　·　P.08–09</p>
-        <h2>回歸・水上景點與文化</h2>
+      <div class="vh-head rise">
+        <p class="vh-kicker">你敢知影？</p>
+        <h1 class="vh-title">跨過<span class="ul">北回歸線</span>那條線</h1>
       </div>
-      <div class="rise">
-        <p class="lede"><b>穿越緯度與時光的漫遊</b>
-          跨越 23.5° 北回歸線，水上不只擁有獨一無二的地理天文魅力，更沉澱了深厚的糖業歷史與產業故事。走進太空館探索宇宙、漫步糖廠感受歲月痕跡，或是造訪在地觀光工廠體驗生活產業，跟著這份地圖，一起看見水上豐富多元的人文風貌。</p>
+      <div class="vhero-grid">
+      <div class="silo">
+        <svg class="silo-map" viewBox="104 85 792 455" role="img" aria-label="嘉義縣水上鄉範圍，標示北回歸線與這一頁介紹的據點位置">
+          <path d="M 118.0 397.9 L 123.1 397.4 L 128.0 392.0 L 134.1 390.9 L 141.3 395.4 L 145.5 403.4 L 151.0 403.7 L 156.8 410.9 L 149.0 448.1 L 168.5 442.7 L 278.2 438.5 L 299.6 433.5 L 316.4 428.1 L 320.7 423.7 L 337.4 422.5 L 398.8 400.7 L 408.4 394.5 L 416.4 383.1 L 423.7 389.7 L 427.8 400.8 L 434.7 400.5 L 448.8 395.3 L 458.6 400.2 L 466.4 409.9 L 472.4 431.7 L 477.4 438.4 L 482.5 424.7 L 487.3 418.4 L 494.1 422.0 L 508.9 419.5 L 516.2 422.3 L 518.8 421.5 L 521.9 417.0 L 528.6 422.0 L 536.7 414.2 L 539.3 398.2 L 544.6 395.1 L 548.3 396.9 L 551.3 395.9 L 550.4 391.2 L 551.7 389.9 L 557.4 390.2 L 560.6 386.5 L 564.1 389.5 L 567.6 384.5 L 571.1 383.5 L 576.2 385.9 L 579.6 381.6 L 580.9 385.0 L 587.1 384.6 L 595.0 389.1 L 602.5 396.6 L 621.1 404.9 L 631.0 406.6 L 639.8 411.7 L 644.8 420.3 L 647.7 421.7 L 652.9 422.4 L 649.9 418.6 L 650.9 417.4 L 677.3 431.7 L 686.5 431.4 L 686.1 436.6 L 689.5 439.4 L 691.6 444.4 L 707.1 453.3 L 716.2 454.6 L 721.1 451.2 L 723.8 454.3 L 726.9 454.6 L 730.3 460.8 L 737.9 463.1 L 744.1 468.2 L 750.1 467.9 L 753.6 472.4 L 755.3 480.1 L 764.1 490.9 L 759.8 504.4 L 760.7 507.8 L 771.4 509.3 L 776.3 515.4 L 780.9 526.2 L 789.0 516.5 L 794.1 517.0 L 799.2 514.8 L 804.4 504.5 L 809.4 506.3 L 813.1 504.9 L 810.7 499.2 L 812.4 496.0 L 816.2 495.7 L 819.4 499.8 L 824.4 496.3 L 831.0 499.4 L 828.2 493.1 L 834.0 488.6 L 835.7 482.2 L 840.3 482.1 L 851.7 486.2 L 854.8 485.6 L 856.7 489.4 L 860.4 488.8 L 859.0 490.9 L 860.2 494.9 L 864.1 492.6 L 865.5 489.2 L 873.5 489.0 L 878.0 462.5 L 874.0 458.6 L 872.7 450.4 L 882.0 438.2 L 880.3 434.7 L 873.0 434.2 L 864.7 438.1 L 858.7 438.6 L 854.3 435.0 L 849.9 426.9 L 843.4 424.0 L 836.6 424.0 L 833.3 419.6 L 829.1 418.4 L 821.8 408.5 L 808.1 410.6 L 798.9 420.7 L 797.4 417.9 L 798.1 412.6 L 791.5 396.8 L 793.6 386.1 L 791.1 381.6 L 785.6 377.6 L 783.9 367.4 L 778.2 366.9 L 774.2 362.8 L 775.2 353.1 L 780.9 347.1 L 778.1 340.6 L 779.3 338.5 L 791.6 338.9 L 800.0 336.9 L 802.1 334.6 L 801.9 324.7 L 806.0 321.9 L 815.4 321.5 L 819.6 313.7 L 822.9 317.6 L 832.1 311.6 L 850.3 310.6 L 852.8 307.2 L 855.3 288.8 L 852.8 278.9 L 843.3 271.8 L 835.7 262.4 L 825.9 257.1 L 824.4 249.1 L 820.5 244.9 L 785.7 233.8 L 769.7 225.4 L 749.1 224.0 L 729.8 238.7 L 727.6 247.0 L 721.4 254.9 L 705.4 265.5 L 698.7 285.4 L 688.9 297.9 L 666.6 307.3 L 650.8 306.2 L 636.2 296.7 L 614.9 293.5 L 611.2 286.9 L 613.1 278.1 L 609.6 272.0 L 603.5 267.4 L 598.6 268.0 L 589.4 281.5 L 577.7 277.9 L 575.5 266.6 L 571.1 257.4 L 578.0 240.2 L 574.9 233.8 L 573.3 233.5 L 573.0 229.4 L 565.2 223.3 L 562.6 217.0 L 558.5 215.8 L 558.9 212.9 L 570.6 208.9 L 572.0 204.1 L 568.5 199.1 L 563.8 200.1 L 559.2 191.1 L 554.1 185.5 L 551.1 176.7 L 542.9 180.1 L 529.3 168.3 L 524.7 119.4 L 508.6 121.3 L 501.6 120.2 L 498.3 117.8 L 452.5 123.8 L 442.1 113.6 L 441.3 104.5 L 436.6 99.7 L 432.8 98.8 L 421.6 101.7 L 416.0 101.1 L 412.1 104.2 L 404.4 106.0 L 384.7 106.3 L 360.8 111.0 L 322.4 111.2 L 322.1 113.3 L 315.1 114.0 L 315.0 116.2 L 295.2 118.3 L 294.4 133.9 L 273.2 132.8 L 273.5 112.0 L 267.9 99.5 L 243.3 114.3 L 241.0 112.4 L 242.9 107.6 L 233.8 108.3 L 230.7 111.9 L 224.1 110.4 L 219.5 105.9 L 212.4 113.2 L 203.0 114.9 L 183.7 109.1 L 178.2 104.3 L 174.3 104.6 L 180.8 119.4 L 147.3 131.9 L 148.2 138.2 L 151.5 144.5 L 161.7 152.4 L 161.2 153.7 L 124.8 167.2 L 118.4 176.3 L 139.3 184.1 L 128.1 213.9 L 144.0 224.6 L 141.9 231.8 L 142.4 242.2 L 137.7 262.2 L 164.0 271.0 L 154.3 281.3 L 150.2 297.8 L 149.7 329.1 L 154.4 333.7 L 160.5 345.2 L 160.4 350.8 L 142.2 356.9 L 132.4 377.8 L 125.2 378.8 L 121.4 382.9 L 118.5 390.5 Z"/>
+          <line class="silo-tropic" x1="104" y1="161.8" x2="896" y2="161.8"/>
+        </svg>
+        <span class="silo-pin" style="left:44.83%; top:16.89%"><i>1</i><span class="sr">北回歸線太空教育館</span></span>
+        <span class="silo-pin" style="left:24.67%; top:65.27%"><i>2</i><span class="sr">南靖糖廠</span></span>
+        <span class="silo-pin" style="left:28.51%; top:51.99%"><i>3</i><span class="sr">白人牙膏觀光工廠</span></span>
+        <span class="silo-pin" style="left:7.74%; top:27.70%"><i>4</i><span class="sr">品皇咖啡觀光工廠</span></span>
+        <span class="silo-note silo-n1">從嘉義市區<br>開車 20 分鐘</span>
+        <span class="silo-note silo-n2">北回歸線<br>從這裡穿過去</span>
+        <svg class="silo-arrow" viewBox="0 0 90 54" aria-hidden="true">
+          <path d="M4 48C18 26 44 8 78 12" fill="none" stroke-linecap="round"/>
+          <path d="M64 4l16 8-13 11" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="silo-foot">數字對應下面的店家編號　<a href="#" data-go="pv-index" data-anchor="map">看完整互動地圖</a></p>
+      </div>
+        <div class="vh-card rise">
+          <p class="en">SIGHTSEEING &amp; CULTURE　·　P.08–09</p>
+          <h2>一條看不見的線<br>把水上分成兩半</h2>
+          <p class="vh-body">北緯 23.5 度從水上鄉穿過去，一邊是熱帶、一邊是亞熱帶。從太陽館的宇宙探索，到南靖糖廠的百年鐵道與枝仔冰，這裡的景點都跟這條線有關——有的講科學，有的講時間。</p>
+          <a class="vh-cta" href="#list">看這四個據點<span class="arrow" aria-hidden="true">→</span></a>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="sec wave wave-b">
+
+  <section class="sec wave wave-b" id="list">
     <div class="wrap">
       <div class="venues">
       <article class="venue sticker rise" style="--acc:var(--culture); --acc-soft:var(--culture-soft); --acc-ink:var(--culture-ink)">
@@ -923,20 +1039,43 @@ a{color:inherit}
   </section>
 </section>
 <section class="pv-page" id="pv-grow" hidden>
-  <section class="sec sec-sand wave">
+  <section class="vhero" style="--src:url(assets/photos/hero-grow.jpg)">
+    <div class="vhero-bg" aria-hidden="true"></div>
     <div class="wrap">
-      <div class="sec-head rise">
-        <p class="en">AGRICULTURE &amp; LOCAL CRAFT　·　P.10–11</p>
-        <h2>生長・水上農產與相關店家</h2>
+      <div class="vh-head rise">
+        <p class="vh-kicker">你敢知影？</p>
+        <h1 class="vh-title">從<span class="ul">土裡</span>長出來的日常</h1>
       </div>
-      <div class="rise">
-        <p class="lede"><b>北回歸線滋養的風土奇蹟</b>
-          豐沛的水源與恰到好處的日照，賦予水上極佳的農業天賦。在這裡，農民以友善土地的耕作堅持，孕育出香氣濃郁的紅骨仙草、清雅高潔的睡蓮與甜美多汁的網室木瓜。在地創生團隊與農會更將這份土地的餽贈，轉化為豐富的生活選物與飲食體驗。</p>
+      <div class="vhero-grid">
+      <div class="silo">
+        <svg class="silo-map" viewBox="104 85 792 455" role="img" aria-label="嘉義縣水上鄉範圍，標示北回歸線與這一頁介紹的據點位置">
+          <path d="M 118.0 397.9 L 123.1 397.4 L 128.0 392.0 L 134.1 390.9 L 141.3 395.4 L 145.5 403.4 L 151.0 403.7 L 156.8 410.9 L 149.0 448.1 L 168.5 442.7 L 278.2 438.5 L 299.6 433.5 L 316.4 428.1 L 320.7 423.7 L 337.4 422.5 L 398.8 400.7 L 408.4 394.5 L 416.4 383.1 L 423.7 389.7 L 427.8 400.8 L 434.7 400.5 L 448.8 395.3 L 458.6 400.2 L 466.4 409.9 L 472.4 431.7 L 477.4 438.4 L 482.5 424.7 L 487.3 418.4 L 494.1 422.0 L 508.9 419.5 L 516.2 422.3 L 518.8 421.5 L 521.9 417.0 L 528.6 422.0 L 536.7 414.2 L 539.3 398.2 L 544.6 395.1 L 548.3 396.9 L 551.3 395.9 L 550.4 391.2 L 551.7 389.9 L 557.4 390.2 L 560.6 386.5 L 564.1 389.5 L 567.6 384.5 L 571.1 383.5 L 576.2 385.9 L 579.6 381.6 L 580.9 385.0 L 587.1 384.6 L 595.0 389.1 L 602.5 396.6 L 621.1 404.9 L 631.0 406.6 L 639.8 411.7 L 644.8 420.3 L 647.7 421.7 L 652.9 422.4 L 649.9 418.6 L 650.9 417.4 L 677.3 431.7 L 686.5 431.4 L 686.1 436.6 L 689.5 439.4 L 691.6 444.4 L 707.1 453.3 L 716.2 454.6 L 721.1 451.2 L 723.8 454.3 L 726.9 454.6 L 730.3 460.8 L 737.9 463.1 L 744.1 468.2 L 750.1 467.9 L 753.6 472.4 L 755.3 480.1 L 764.1 490.9 L 759.8 504.4 L 760.7 507.8 L 771.4 509.3 L 776.3 515.4 L 780.9 526.2 L 789.0 516.5 L 794.1 517.0 L 799.2 514.8 L 804.4 504.5 L 809.4 506.3 L 813.1 504.9 L 810.7 499.2 L 812.4 496.0 L 816.2 495.7 L 819.4 499.8 L 824.4 496.3 L 831.0 499.4 L 828.2 493.1 L 834.0 488.6 L 835.7 482.2 L 840.3 482.1 L 851.7 486.2 L 854.8 485.6 L 856.7 489.4 L 860.4 488.8 L 859.0 490.9 L 860.2 494.9 L 864.1 492.6 L 865.5 489.2 L 873.5 489.0 L 878.0 462.5 L 874.0 458.6 L 872.7 450.4 L 882.0 438.2 L 880.3 434.7 L 873.0 434.2 L 864.7 438.1 L 858.7 438.6 L 854.3 435.0 L 849.9 426.9 L 843.4 424.0 L 836.6 424.0 L 833.3 419.6 L 829.1 418.4 L 821.8 408.5 L 808.1 410.6 L 798.9 420.7 L 797.4 417.9 L 798.1 412.6 L 791.5 396.8 L 793.6 386.1 L 791.1 381.6 L 785.6 377.6 L 783.9 367.4 L 778.2 366.9 L 774.2 362.8 L 775.2 353.1 L 780.9 347.1 L 778.1 340.6 L 779.3 338.5 L 791.6 338.9 L 800.0 336.9 L 802.1 334.6 L 801.9 324.7 L 806.0 321.9 L 815.4 321.5 L 819.6 313.7 L 822.9 317.6 L 832.1 311.6 L 850.3 310.6 L 852.8 307.2 L 855.3 288.8 L 852.8 278.9 L 843.3 271.8 L 835.7 262.4 L 825.9 257.1 L 824.4 249.1 L 820.5 244.9 L 785.7 233.8 L 769.7 225.4 L 749.1 224.0 L 729.8 238.7 L 727.6 247.0 L 721.4 254.9 L 705.4 265.5 L 698.7 285.4 L 688.9 297.9 L 666.6 307.3 L 650.8 306.2 L 636.2 296.7 L 614.9 293.5 L 611.2 286.9 L 613.1 278.1 L 609.6 272.0 L 603.5 267.4 L 598.6 268.0 L 589.4 281.5 L 577.7 277.9 L 575.5 266.6 L 571.1 257.4 L 578.0 240.2 L 574.9 233.8 L 573.3 233.5 L 573.0 229.4 L 565.2 223.3 L 562.6 217.0 L 558.5 215.8 L 558.9 212.9 L 570.6 208.9 L 572.0 204.1 L 568.5 199.1 L 563.8 200.1 L 559.2 191.1 L 554.1 185.5 L 551.1 176.7 L 542.9 180.1 L 529.3 168.3 L 524.7 119.4 L 508.6 121.3 L 501.6 120.2 L 498.3 117.8 L 452.5 123.8 L 442.1 113.6 L 441.3 104.5 L 436.6 99.7 L 432.8 98.8 L 421.6 101.7 L 416.0 101.1 L 412.1 104.2 L 404.4 106.0 L 384.7 106.3 L 360.8 111.0 L 322.4 111.2 L 322.1 113.3 L 315.1 114.0 L 315.0 116.2 L 295.2 118.3 L 294.4 133.9 L 273.2 132.8 L 273.5 112.0 L 267.9 99.5 L 243.3 114.3 L 241.0 112.4 L 242.9 107.6 L 233.8 108.3 L 230.7 111.9 L 224.1 110.4 L 219.5 105.9 L 212.4 113.2 L 203.0 114.9 L 183.7 109.1 L 178.2 104.3 L 174.3 104.6 L 180.8 119.4 L 147.3 131.9 L 148.2 138.2 L 151.5 144.5 L 161.7 152.4 L 161.2 153.7 L 124.8 167.2 L 118.4 176.3 L 139.3 184.1 L 128.1 213.9 L 144.0 224.6 L 141.9 231.8 L 142.4 242.2 L 137.7 262.2 L 164.0 271.0 L 154.3 281.3 L 150.2 297.8 L 149.7 329.1 L 154.4 333.7 L 160.5 345.2 L 160.4 350.8 L 142.2 356.9 L 132.4 377.8 L 125.2 378.8 L 121.4 382.9 L 118.5 390.5 Z"/>
+          <line class="silo-tropic" x1="104" y1="161.8" x2="896" y2="161.8"/>
+        </svg>
+        <span class="silo-pin" style="left:57.96%; top:55.92%"><i>1</i><span class="sr">仙圃企業</span></span>
+        <span class="silo-pin" style="left:35.74%; top:47.73%"><i>2</i><span class="sr">水上美生活文化工作室</span></span>
+        <span class="silo-pin" style="left:43.82%; top:42.07%"><i>3</i><span class="sr">青木堂</span></span>
+        <span class="silo-pin" style="left:31.84%; top:38.69%"><i>4</i><span class="sr">水上鄉農會</span></span>
+        <span class="silo-note silo-n1">從嘉義市區<br>開車 20 分鐘</span>
+        <span class="silo-note silo-n2">北回歸線<br>從這裡穿過去</span>
+        <svg class="silo-arrow" viewBox="0 0 90 54" aria-hidden="true">
+          <path d="M4 48C18 26 44 8 78 12" fill="none" stroke-linecap="round"/>
+          <path d="M64 4l16 8-13 11" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="silo-foot">數字對應下面的店家編號　<a href="#" data-go="pv-index" data-anchor="map">看完整互動地圖</a></p>
+      </div>
+        <div class="vh-card rise">
+          <p class="en">AGRICULTURE &amp; LOCAL CRAFT　·　P.10–11</p>
+          <h2>北回歸線曬出來的<br>三種水上味道</h2>
+          <p class="vh-body">紅骨仙草、香水蓮花、網室木瓜——同樣的陽光和土，長出三種完全不一樣的東西。創生團隊把它們變成看得見也吃得到的日常，從產地到店面，這一頁就是那條路。</p>
+          <a class="vh-cta" href="#list">看農產與店家<span class="arrow" aria-hidden="true">→</span></a>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="sec wave wave-b">
+
+  <section class="sec wave wave-b" id="list">
     <div class="wrap">
       <div class="sec-head rise"><p class="en">THREE SIGNATURE CROPS</p><h2>三大特色農產</h2></div>
       <div class="crops">
