@@ -5,47 +5,69 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Nunito:wght@400;600;700&display=swap">
 <style>
 /* ══ 23.5° 剛剛好的城市 ══════════════════════════════════
-   色票：SAND / SKY BLUE / DEEP SEA / MOSS GREEN /
-        TERRACOTTA / CHERRY BLOSSOM / RED WINE / SUNSHINE
-   風格：精緻品牌感 —— 細線、留白、書法感中文標題、不用粗框與硬陰影。 */
+   風格：親子・食農教育。奶油底色、撕紙浪、積木色塊、圓角。
+   對比規則：亮色（橘、芥末、粉）只做填色與裝飾；
+             文字一律用 -ink 系列，全部通過 WCAG AA。 */
 
-/* ── tokens：淺色（主）─────────────────────────────────── */
 :root{
-  /* 指定色票原值 */
-  --sand:#E4CBA9; --sky:#7FC7CC; --deepsea:#092F33; --moss:#4B5B34;
-  --terracotta:#AF5031; --blossom:#FDABA5; --wine:#980204; --sunshine:#EAB913;
+  /* ── 底色三層：奶油 → 蜜桃 → 沙 ── */
+  --cream:#FDF7F2; --band:#F9E3D3; --sand:#F2DCC4;
+  --ground:#FDF7F2; --paper:#FFFFFF; --sunk:#F9E3D3;
 
-  --ground:#E4CBA9; --paper:#FFFCF5; --sunk:#F0E3CE;
-  --ink:#092F33; --ink-2:#334F53; --ink-3:#44585A;
-  --line:#C9AE86; --hair:#E3D2B6; --gold:#B08A3E; --gold-ink:#6B4F1C;
-  --brand:#980204;
+  /* ── 積木色（只填色，不當文字）── */
+  --peach:#F7C0A0; --peach-2:#FBD8C4; --orange:#E8845A;
+  --mustard:#EFBE4E; --moss:#7C9A5B; --blossom:#F7C0A0;
 
-  --taste:#AF5031; --culture:#EAB913; --grow:#4B5B34;
-  --taste-soft:#F7E4DC; --culture-soft:#FAEFCF; --grow-soft:#E6EADB;
-  /* 文字專用：亮色當文字在淺底上對比不足，填色與邊框才用上面那組 */
-  --taste-ink:#8A3A20; --culture-ink:#6B5305; --grow-ink:#3A4726;
-  --sun:#EAB913; --sun-ink:#6B5305;
+  /* ── 文字專用深色版 ── */
+  --orange-mid:#D0602F;   /* 大標題／邊框 */
+  --orange-btn:#BE5730;   /* 實心按鈕配白字 4.57 */
+  --orange-ink:#A64818;   /* 小字配奶油底 4.99 */
+  --mustard-ink:#7F5A09;  /* 4.92 */
+  --moss-ink:#4B6136;     /* 6.46 */
 
-  --map-sky1:#CFE7E9; --map-sky2:#EAF1E9; --map-land:#F6EBD8;
-  --map-edge:#C3A97F; --map-water:#7FC7CC; --map-rail:#C0AC8B; --map-cloud:#FFFFFF;
-  --map-shadow:rgba(9,47,51,.16);
-  --hero1:#CFE7EA; --hero2:#E8E3D2;
+  --ink:#5F463A;          /* 主文字 8.16 */
+  --ink-2:#7A6053;        /* 次要 5.45 */
+  --ink-3:#75604F;        /* 註解：奶油底 5.58、蜜桃底 4.79 */
+  --ink-deep:#4F392E;     /* 亮底（芥末、蜜桃）上的文字 */
+  --foot:#6B4A3A;         /* 頁尾底 */
+  --foot-ink:#FDF3E9;
 
-  /* 固定單一視覺：不隨系統深色模式翻轉，底色永遠是 SAND */
+  --line:#E3C9AE; --hair:#F2E3D2;
+  --gold:#EFBE4E; --gold-ink:#7F5A09;
+  --brand:#A64818;
+
+  /* 舊 token 對應（沿用既有選擇器，換血不換骨）*/
+  --sunshine:#EFBE4E; --sun:#EFBE4E; --sun-ink:#7F5A09;
+  --deepsea:#6B4A3A; --terracotta:#D96A3D; --wine:#B04E24; --sky:#8FCBD0;
+
+  --taste:#E8845A; --culture:#EFBE4E; --grow:#7C9A5B;
+  --taste-soft:#FDE6D8; --culture-soft:#FCF0D2; --grow-soft:#E8EEDD;
+  --taste-ink:#A64818; --culture-ink:#7F5A09; --grow-ink:#4B6136;
+
+  --map-sky1:#E8F1F2; --map-sky2:#F6EFE6; --map-land:#FBEEDC;
+  --map-edge:#DDBF9B; --map-water:#8FCBD0; --map-rail:#D2B896; --map-cloud:#FFFFFF;
+  --map-shadow:rgba(107,74,58,.18);
+  --hero1:#FFFCF8; --hero2:#FBE9DC;
+
   color-scheme:light;
 
-  --fs-3xl:clamp(2.6rem,9vw,5.6rem);
+  --fs-3xl:clamp(2.2rem,5.6vw,3.9rem);
   --fs-2xl:clamp(1.75rem,4.2vw,2.7rem);
   --fs-xl:clamp(1.25rem,2.6vw,1.7rem);
   --fs-lg:1.1rem; --fs-md:1rem; --fs-sm:.9rem; --fs-xs:.78rem;
   --col:min(1160px,100% - 2.5rem);
-  --round:16px;
-  --soft:0 6px 20px rgba(9,47,51,.08); --soft-lift:0 12px 28px rgba(9,47,51,.13);
+  --round:24px; --round-lg:34px; --pill:999px;
+  --soft:0 8px 24px rgba(150,100,70,.10); --soft-lift:0 16px 36px rgba(150,100,70,.17);
 
   --disp:"Fredoka","Noto Sans TC",system-ui,sans-serif;
   --head:"Noto Sans TC","PingFang TC",system-ui,sans-serif;
   --sans:"Noto Sans TC","PingFang TC",system-ui,sans-serif;
   --num:"Nunito","Noto Sans TC",system-ui,sans-serif;
+
+  /* ── 撕紙浪：三種節奏，避免每一刀都長一樣 ── */
+  --wave-a:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'%3E%3Cpath d='M0,80 V38 C80,20 160,44 240,40 C320,36 380,10 470,16 C560,22 610,52 700,54 C790,56 840,26 930,24 C1020,22 1080,50 1170,52 C1260,54 1330,28 1440,32 V80 Z'/%3E%3C/svg%3E");
+  --wave-b:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'%3E%3Cpath d='M0,80 V28 C110,50 180,20 280,24 C380,28 430,58 530,56 C630,54 690,18 800,20 C910,22 960,54 1070,52 C1180,50 1250,20 1360,26 C1390,27 1415,30 1440,34 V80 Z'/%3E%3C/svg%3E");
+  --wave-c:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'%3E%3Cpath d='M0,80 V44 C90,34 130,12 230,14 C330,16 386,44 480,42 C574,40 620,14 720,18 C820,22 878,50 972,50 C1066,50 1120,22 1220,20 C1320,18 1372,38 1440,30 V80 Z'/%3E%3C/svg%3E");
 }
 /* ── base ─────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box}
@@ -70,34 +92,38 @@ a{color:inherit}
 .skip:focus{left:1rem; top:1rem; z-index:200; background:var(--paper); padding:.6rem 1rem; border:1px solid var(--gold)}
 
 /* 卡片：細線、淺底、無硬陰影 */
-.sticker{background:var(--paper); border:2px solid var(--hair); border-radius:var(--round); box-shadow:var(--soft)}
+.sticker{background:var(--paper); border:0; border-radius:var(--round); box-shadow:var(--soft)}
 
 /* ── 導覽列 ───────────────────────────────────────────── */
-.site-head{position:sticky; top:0; z-index:60; background:color-mix(in srgb,var(--ground) 92%,transparent);
-  backdrop-filter:blur(12px); border-bottom:1px solid var(--hair)}
+.site-head{position:sticky; top:0; z-index:60; background:color-mix(in srgb,var(--cream) 88%,transparent);
+  backdrop-filter:blur(14px)}
 .head-in{width:var(--col); margin-inline:auto; display:flex; align-items:center; gap:1.4rem; min-height:88px; flex-wrap:wrap}
 .brand{display:flex; align-items:center; gap:.7rem; text-decoration:none; margin-right:auto; padding:.5rem 0}
-.brand-mark{flex:none; width:44px; height:44px}
+.brand-mark{flex:none; width:46px; height:46px}
 .brand-txt{display:grid; line-height:1.3}
-.brand-txt b{font-family:var(--disp); font-size:1.4rem; font-weight:600; color:var(--ink); letter-spacing:.05em}
+.brand-txt b{font-family:var(--disp); font-size:1.4rem; font-weight:600; color:var(--orange-ink); letter-spacing:.05em}
 .brand-txt span{font-family:var(--head); font-size:var(--fs-xs); letter-spacing:.24em; color:var(--ink-2)}
-.nav{display:flex; gap:.2rem; flex-wrap:wrap; padding-bottom:.3rem}
-.nav a{text-decoration:none; font-size:var(--fs-sm); font-weight:400; letter-spacing:.12em;
-  padding:.45rem .95rem; border-bottom:1px solid transparent; transition:color .2s,border-color .2s}
-.nav a:hover{color:var(--brand); border-bottom-color:var(--gold)}
-.nav a[aria-current="page"]{color:var(--brand); border-bottom-color:var(--brand)}
+.nav{display:flex; gap:.1rem; flex-wrap:wrap; padding-bottom:.3rem}
+.nav a{display:grid; justify-items:center; gap:.15rem; text-decoration:none; line-height:1.35;
+  font-size:var(--fs-sm); font-weight:500; letter-spacing:.1em; color:var(--ink);
+  padding:.4rem .8rem; border-radius:var(--pill); transition:color .2s,background .2s}
+.nav a em{font-family:var(--disp); font-style:normal; font-size:.66rem; font-weight:600;
+  letter-spacing:.14em; text-transform:lowercase; color:var(--orange-ink)}
+.nav a:hover{background:var(--peach-2); color:var(--orange-ink)}
+.nav a[aria-current="page"]{background:var(--orange-btn); color:#fff}
+.nav a[aria-current="page"] em{color:#fff}
 
 /* ── hero ─────────────────────────────────────────────── */
-.hero{position:relative; overflow:hidden; border-bottom:2px solid var(--hair);
-  background:linear-gradient(175deg,var(--hero1) 0%,var(--hero2) 48%,var(--ground) 100%)}
+.hero{position:relative; overflow:hidden;
+  background:linear-gradient(168deg,var(--hero1) 0%,var(--hero2) 58%,var(--peach-2) 100%)}
 .hero-in{width:var(--col); margin-inline:auto; padding:clamp(3.5rem,9vw,7rem) 0 clamp(3.5rem,9vw,6.5rem);
   display:grid; gap:3rem; align-items:center; position:relative; z-index:2}
 @media (min-width:960px){.hero-in{grid-template-columns:1fr 1fr}}
 .hero h1{font-size:var(--fs-3xl); line-height:1.2; letter-spacing:.01em; font-weight:900; color:var(--ink)}
-.hero h1 .deg{font-family:var(--disp); color:var(--sun-ink); font-weight:700; letter-spacing:0; display:block; font-size:1.1em}
+.hero h1 .deg{font-family:var(--disp); color:var(--orange-mid); font-weight:700; letter-spacing:0; display:block; font-size:1.1em}
 .hero-kicker{display:inline-block; font-family:var(--disp); font-size:var(--fs-sm); font-weight:600;
-  letter-spacing:.16em; text-transform:uppercase; color:var(--deepsea);
-  background:var(--sunshine); border-radius:999px; padding:.35rem 1.1rem; margin-bottom:1.6rem}
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-deep);
+  background:var(--mustard); border-radius:var(--pill); padding:.4rem 1.2rem; margin-bottom:1.6rem}
 .hero-lede{font-size:var(--fs-lg); color:var(--ink-2); margin-top:1.6rem; max-width:34ch; line-height:2}
 /* 參考站把標語一字一圈，借用這個手法 */
 .circled{display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1.8rem; list-style:none; padding:0}
@@ -109,22 +135,37 @@ a{color:inherit}
 
 .btn{display:inline-flex; align-items:center; gap:.6rem; text-decoration:none;
   font-family:inherit; font-weight:700; font-size:var(--fs-sm); letter-spacing:.06em;
-  padding:.8rem 1.8rem; color:var(--ink);
-  border:2px solid var(--gold); border-radius:999px; background:var(--paper);
+  padding:.85rem 1.9rem; color:var(--ink);
+  border:0; border-radius:var(--pill); background:var(--paper);
   box-shadow:var(--soft); transition:transform .2s,box-shadow .2s,background .25s,color .25s}
-.btn:hover{transform:translateY(-2px); box-shadow:var(--soft-lift); background:var(--gold); color:var(--paper)}
+.btn:hover{transform:translateY(-2px); box-shadow:var(--soft-lift); background:var(--peach-2); color:var(--orange-ink)}
 .btn:disabled{opacity:.5; cursor:default}
-.btn-sun{background:var(--brand); border-color:var(--brand); color:var(--ground)}
-.btn-sun:hover{background:transparent; color:var(--brand); border-color:var(--brand)}
-.hero .btn-sun{background:var(--sunshine); border-color:var(--sunshine); color:var(--deepsea)}
-.hero .btn-sun:hover{background:var(--deepsea); color:var(--sunshine); border-color:var(--deepsea)}
+.btn-sun{background:var(--orange-btn); color:#fff}
+.btn-sun:hover{background:var(--ink); color:#fff}
+.hero .btn-sun{background:var(--orange-btn); color:#fff}
+.hero .btn-sun:hover{background:var(--ink); color:#fff}
 
 /* ── 區塊 ─────────────────────────────────────────────── */
-.sec{padding:clamp(4rem,9vw,7rem) 0}
-.sec-sand{background:var(--sunk); border-block:1px solid var(--hair)}
+.sec{position:relative; padding:clamp(4rem,9vw,7rem) 0; --sec-bg:var(--ground)}
+.sec-sand{background:var(--sunk); --sec-bg:var(--sunk)}
+/* 撕紙浪：貼在區塊上緣往上長，用區塊自己的底色塗滿遮罩。
+   因為浪屬於「下面那一區」，在 DOM 裡比較晚，所以會自然蓋住上一區。 */
+@supports ((mask-image:linear-gradient(#000,#000)) or (-webkit-mask-image:linear-gradient(#000,#000))){
+  .wave{position:relative; --wv:var(--wave-a)}
+  .wave-b{--wv:var(--wave-b)}
+  .wave-c{--wv:var(--wave-c)}
+  .wave::before,.wave-gold::after{content:""; position:absolute; left:0; right:0; top:0;
+    height:clamp(34px,4.6vw,68px); pointer-events:none;
+    -webkit-mask:var(--wv) center/100% 100% no-repeat;
+            mask:var(--wv) center/100% 100% no-repeat}
+  .wave::before{z-index:1; transform:translateY(-99%); background:var(--sec-bg)}
+  /* 金色刷痕：同一條浪往上挪一點，從底下透出來，像上色時多刷了一筆 */
+  .wave-gold::after{z-index:0; transform:translateY(-116%); background:var(--mustard); opacity:.6}
+  .wave > .wrap{position:relative; z-index:2}
+}
 .sec-head{display:grid; gap:.9rem; margin-bottom:3rem; max-width:60ch}
-.sec-head .en{font-size:var(--fs-xs); color:var(--gold-ink)}
-.sec-head h2{font-size:var(--fs-2xl); font-weight:600}
+.sec-head .en{font-size:var(--fs-xs); color:var(--orange-ink); letter-spacing:.2em}
+.sec-head h2{font-size:var(--fs-2xl); font-weight:700; color:var(--orange-mid)}
 .sec-head p{color:var(--ink-2); margin-top:.3rem}
 .lede{max-width:62ch; color:var(--ink-2)}
 .lede + .lede{margin-top:1.2rem}
@@ -133,17 +174,17 @@ a{color:inherit}
 /* ── 三大服務項目 ─────────────────────────────────────── */
 .cats{display:grid; gap:1.4rem}
 @media (min-width:820px){.cats{grid-template-columns:repeat(3,1fr)}}
-.cat{display:grid; gap:1rem; padding:2.2rem 1.8rem; text-decoration:none; align-content:start;
-  background:var(--acc-soft); border:2px solid var(--hair); border-radius:var(--round);
+.cat{display:grid; gap:1rem; padding:2.4rem 2rem; text-decoration:none; align-content:start;
+  background:var(--paper); border:0; border-radius:var(--round-lg);
   box-shadow:var(--soft); transition:transform .2s, box-shadow .2s}
-.cat:hover{transform:translateY(-4px); box-shadow:var(--soft-lift)}
-.cat-art{width:64px; height:64px}
+.cat:hover{transform:translateY(-6px); box-shadow:var(--soft-lift)}
+.cat-art{width:78px; height:78px; padding:.6rem; border-radius:50%; background:var(--acc-soft)}
 .cat h3{font-size:var(--fs-xl); font-weight:600}
 .cat .en{font-size:var(--fs-xs); color:var(--acc-ink)}
 .cat p{font-size:var(--fs-sm); color:var(--ink-2)}
 .cat-go{justify-self:start; margin-top:.6rem; font-size:var(--fs-sm); font-weight:700;
-  letter-spacing:.04em; color:var(--paper); background:var(--acc-ink);
-  border-radius:999px; padding:.35rem 1rem}
+  letter-spacing:.04em; color:#fff; background:var(--acc-ink);
+  border-radius:var(--pill); padding:.4rem 1.1rem}
 .c-taste{--acc:var(--taste); --acc-ink:var(--taste-ink); --acc-soft:var(--taste-soft)}
 .c-culture{--acc:var(--culture); --acc-ink:var(--culture-ink); --acc-soft:var(--culture-soft)}
 .c-grow{--acc:var(--grow); --acc-ink:var(--grow-ink); --acc-soft:var(--grow-soft)}
@@ -182,8 +223,8 @@ a{color:inherit}
 .crop p{font-size:var(--fs-sm); color:var(--ink-2)}
 
 /* ── 悄悄話 ───────────────────────────────────────────── */
-.whisper{margin-top:3rem; padding:2.2rem 2rem; display:grid; gap:.9rem; border-radius:var(--round);
-  background:var(--sunshine); color:var(--deepsea); box-shadow:var(--soft)}
+.whisper{margin-top:3rem; padding:2.4rem 2.2rem; display:grid; gap:.9rem; border-radius:var(--round-lg);
+  background:var(--mustard); color:var(--ink-deep); box-shadow:var(--soft)}
 .whisper q{font-weight:700; font-size:var(--fs-lg); quotes:"「" "」"; line-height:1.95}
 .whisper cite{font-family:var(--num); font-weight:700; font-size:var(--fs-xs); letter-spacing:.1em; font-style:normal; opacity:.75}
 
@@ -201,8 +242,8 @@ a{color:inherit}
 
 /* ── 相關報導 ─────────────────────────────────────────── */
 .news{display:grid; gap:1.2rem}
-.item{display:grid; gap:.7rem; padding:1.8rem; text-decoration:none; background:var(--paper);
-  border:2px solid var(--hair); border-radius:var(--round); box-shadow:var(--soft);
+.item{display:grid; gap:.7rem; padding:1.9rem; text-decoration:none; background:var(--paper);
+  border:0; border-radius:var(--round); box-shadow:var(--soft);
   transition:transform .2s, box-shadow .2s}
 .item:hover{transform:translateY(-3px); box-shadow:var(--soft-lift)}
 .item-top{display:flex; gap:.9rem; align-items:center; flex-wrap:wrap}
@@ -227,19 +268,20 @@ a{color:inherit}
 .gembed-note{padding:1.6rem; font-size:var(--fs-sm); color:var(--ink-2)}
 
 /* ── 頁尾 ─────────────────────────────────────────────── */
-.site-foot{background:var(--deepsea); color:#D8CDBA; padding:clamp(3rem,7vw,4.5rem) 0 2.5rem}
+.site-foot{position:relative; background:var(--foot); color:var(--foot-ink);
+  padding:clamp(3.5rem,7vw,5rem) 0 2.5rem; --sec-bg:var(--foot)}
 .foot-grid{display:grid; gap:2.5rem}
 @media (min-width:820px){.foot-grid{grid-template-columns:1.3fr 1fr 1fr}}
-.site-foot h4{font-family:var(--head); font-size:var(--fs-sm); letter-spacing:.2em; color:var(--sunshine); margin-bottom:1rem; font-weight:500}
+.site-foot h4{font-family:var(--head); font-size:var(--fs-sm); letter-spacing:.2em; color:var(--mustard); margin-bottom:1rem; font-weight:700}
 .site-foot ul{list-style:none; margin:0; padding:0; display:grid; gap:.5rem; font-size:var(--fs-sm)}
-.site-foot ul a{color:#D8CDBA; text-decoration:none; border-bottom:1px solid transparent}
-.site-foot ul a:hover{border-bottom-color:var(--sunshine); color:var(--sunshine)}
+.site-foot ul a{color:var(--foot-ink); text-decoration:none; border-bottom:1px solid transparent}
+.site-foot ul a:hover{border-bottom-color:var(--mustard); color:var(--mustard)}
 .pending{display:flex; gap:.5rem; flex-wrap:wrap}
-.pending li{font-family:var(--num); font-size:var(--fs-xs); letter-spacing:.1em; color:#B9AC97;
-  border:1px solid rgba(216,205,186,.35); border-radius:999px; padding:.1rem .7rem}
-.colophon{margin-top:3rem; padding-top:1.4rem; border-top:1px solid rgba(216,205,186,.25);
+.pending li{font-family:var(--num); font-size:var(--fs-xs); letter-spacing:.1em; color:#E6D3C4;
+  border:1px solid rgba(253,243,233,.35); border-radius:var(--pill); padding:.15rem .8rem}
+.colophon{margin-top:3rem; padding-top:1.4rem; border-top:1px solid rgba(253,243,233,.25);
   display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;
-  font-family:var(--num); font-size:var(--fs-xs); letter-spacing:.08em; color:#B9AC97}
+  font-family:var(--num); font-size:var(--fs-xs); letter-spacing:.08em; color:#E6D3C4}
 
 /* ── 進場 ─────────────────────────────────────────────── */
 .rise.on{animation:rise .8s cubic-bezier(.2,.8,.3,1) backwards}
@@ -357,7 +399,7 @@ a{color:inherit}
   background:var(--deepsea); color:#F4EAD9; border-bottom:1px solid var(--gold)}
 .chat-head div{display:grid; margin-right:auto; line-height:1.5}
 .chat-head b{font-family:var(--head); font-size:var(--fs-md); font-weight:500; letter-spacing:.1em}
-.chat-head span{font-size:var(--fs-xs); color:#A9BEBC; letter-spacing:.06em}
+.chat-head span{font-size:var(--fs-xs); color:#E6D3C4; letter-spacing:.06em}
 .chat-x{font:inherit; font-size:1rem; cursor:pointer; background:none; border:0; color:#F4EAD9; padding:.2rem .3rem}
 .chat-log{flex:1; overflow-y:auto; padding:1.3rem; display:grid; gap:.8rem; align-content:start}
 .chat-msg{font-size:var(--fs-sm); line-height:2; padding:.7rem 1rem; max-width:88%;
@@ -470,6 +512,125 @@ a{color:inherit}
   background:rgba(234,185,19,.16); border-left:3px solid var(--sunshine);
   color:#F4EAD9; font-size:var(--fs-sm); line-height:1.95; max-width:46ch}
 
+/* ══ 親子插畫風元件 ═══════════════════════════════════════
+   參考「牛津こどもの森」：撕紙浪、積木色塊、直式標語、歪一點的卡片。 */
+
+/* ── 積木堆：像木頭疊疊樂，純裝飾 ── */
+.totem{display:grid; justify-items:center; width:max-content; pointer-events:none}
+.totem i{display:block; background:var(--peach)}
+.totem i:nth-child(odd){background:var(--orange)}
+.totem i:nth-child(1){width:56px; height:50px; border-radius:28px 28px 12px 12px}
+.totem i:nth-child(2){width:84px; height:46px; border-radius:var(--pill); margin-top:-4px}
+.totem i:nth-child(3){width:106px; height:50px; border-radius:var(--pill); margin-top:-4px}
+.totem i:nth-child(4){width:128px; height:52px; border-radius:var(--pill); margin-top:-4px}
+.totem-m i{background:var(--mustard)}
+.totem-m i:nth-child(odd){background:var(--peach)}
+.totem-s{transform:scale(.72); transform-origin:bottom center}
+
+/* ── 直式標語條 ── */
+.vbs{display:flex; gap:.7rem; align-items:flex-start; pointer-events:none}
+.vb{writing-mode:vertical-rl; font-family:var(--head); font-weight:700;
+  font-size:clamp(.95rem,1.7vw,1.2rem); letter-spacing:.18em; line-height:1.6;
+  padding:1.4rem .6rem; border-radius:var(--pill); box-shadow:var(--soft); color:var(--ink-deep)}
+.vb-1{background:var(--mustard)}
+.vb-2{background:var(--peach); margin-top:1.5rem}
+.vb-3{background:var(--orange-btn); color:#fff; margin-top:3rem}
+
+/* ── 圓形箭頭 ── */
+.arrow{flex:none; display:grid; place-items:center; width:38px; height:38px; border-radius:50%;
+  background:var(--orange-btn); color:#fff; font-family:var(--num); font-size:1.05rem;
+  line-height:1; transition:transform .22s}
+
+/* ── 大顆膠囊 CTA ── */
+.cta{display:inline-flex; align-items:center; gap:1.6rem; text-decoration:none;
+  padding:.7rem .7rem .7rem 2.4rem; border-radius:var(--pill);
+  background:var(--orange-btn); color:#fff; font-family:var(--head); font-weight:700;
+  font-size:var(--fs-lg); letter-spacing:.1em; box-shadow:var(--soft);
+  transition:transform .2s, box-shadow .2s, background .25s}
+.cta:hover{transform:translateY(-3px); box-shadow:var(--soft-lift); background:var(--ink)}
+.cta:hover .arrow{transform:translateX(4px)}
+.cta .arrow{background:#fff; color:var(--orange-btn); width:46px; height:46px; font-size:1.2rem}
+
+/* ── 小圓角膠囊連結（交通、聯絡）── */
+.quicks{display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1.8rem}
+.quick{display:inline-flex; align-items:center; gap:.45rem; text-decoration:none;
+  font-family:var(--head); font-size:var(--fs-xs); font-weight:700; letter-spacing:.12em;
+  color:#fff; background:var(--orange-btn); border-radius:var(--pill);
+  padding:.5rem 1.1rem; box-shadow:var(--soft); transition:background .25s, transform .2s}
+.quick:hover{background:var(--ink); transform:translateY(-2px)}
+.quick.q-m{background:var(--mustard); color:var(--ink-deep)}
+.quick.q-m:hover{background:var(--ink); color:#fff}
+
+/* ── 照片欄位：還沒放圖時是一片有紋理的蜜桃色，不是破圖 ── */
+.ph{position:relative; overflow:hidden; border-radius:var(--round-lg);
+  background-image:var(--src,none),
+    repeating-linear-gradient(-45deg,#FBD8C4 0 15px,#F5C6AC 15px 30px);
+  background-size:cover,auto; background-position:center,center;
+  background-repeat:no-repeat,repeat; box-shadow:var(--soft)}
+.ph-blob{border-radius:58% 42% 46% 54% / 48% 44% 56% 52%}
+.ph-tall{aspect-ratio:3/4}
+.ph-wide{aspect-ratio:16/10}
+
+/* ── 特別企劃卡：歪一點、疊一點 ── */
+.specials{display:grid; gap:1.6rem; margin-top:clamp(2.4rem,5vw,3.6rem)}
+@media (min-width:720px){.specials{grid-template-columns:1fr 1fr; gap:2rem}}
+.sp{display:block; text-decoration:none; background:var(--paper); border-radius:var(--round);
+  padding:1rem 1rem 1.3rem; box-shadow:var(--soft-lift);
+  transition:transform .25s cubic-bezier(.2,.8,.3,1), box-shadow .25s}
+.sp-1{transform:rotate(-2.2deg)}
+.sp-2{transform:rotate(1.8deg)}
+.sp:hover{transform:rotate(0) translateY(-6px); box-shadow:0 24px 48px rgba(150,100,70,.24)}
+.sp .ph{aspect-ratio:16/9; border-radius:16px; display:grid; place-items:center}
+.sp-tag{font-family:var(--head); font-weight:700; font-size:clamp(1.1rem,2.4vw,1.6rem);
+  letter-spacing:.14em; color:var(--ink-deep); text-align:center; padding:.6rem 1rem}
+.sp-body{display:flex; align-items:center; gap:.9rem; padding:1.1rem .6rem 0}
+.sp-body div{margin-right:auto; min-width:0}
+.sp .en{font-size:.66rem; letter-spacing:.16em; color:var(--orange-ink)}
+.sp h3{font-size:var(--fs-lg); font-weight:700; color:var(--ink); margin-top:.25rem}
+
+/* ── 置中敘事區（參考站的「生きるの根っこをつくる。」）── */
+.mid{display:grid; justify-items:center; text-align:center}
+.mid .sec-head{justify-items:center; text-align:center; max-width:none; margin-bottom:2.2rem}
+.mid .say{max-width:34ch; color:var(--ink-2); line-height:2.4; font-size:var(--fs-md)}
+.mid .say + .say{margin-top:1.8rem}
+.mid .cta{margin-top:2.8rem}
+
+/* ── 兩側裝飾：窄螢幕直接收起來，免得撐出橫向捲軸 ── */
+.deco{position:absolute; z-index:0; pointer-events:none}
+.deco-l{left:clamp(1rem,4vw,4.5rem); bottom:12%}
+.deco-r{right:clamp(1rem,4vw,4.5rem); top:16%}
+@media (max-width:1180px){.deco{display:none}}
+
+/* ── hero 版面 ── */
+.hero-in{padding-bottom:clamp(5rem,11vw,8rem)}
+.hero-stage{position:relative; display:flex; align-items:center; justify-content:center;
+  gap:clamp(.6rem,1.8vw,1.4rem)}
+.hero-in .specials{grid-column:1/-1}
+.hero-stage .hero-art{flex:1 1 auto; min-width:0; width:auto; max-width:330px}
+.hero-stage .vbs{flex:none}
+@media (max-width:720px){
+  .hero-stage{flex-direction:column}
+  .hero-stage .hero-art{max-width:360px}
+  .hero-stage .vbs{margin-top:.6rem}
+  .vb-2,.vb-3{margin-top:0}
+}
+.circled li{border:0; background:var(--peach-2); color:var(--ink-deep); box-shadow:var(--soft)}
+
+/* 浪蓋在 hero 內容上會切到卡片，留一點餘裕 */
+.hero + .wave::before{z-index:1}
+
+/* ── 手機：導覽列會斷成兩排，英文小標先收起來，別讓固定表頭吃掉半個畫面 ── */
+@media (max-width:680px){
+  html{scroll-padding-top:132px}
+  .head-in{min-height:0; padding:.55rem 0; gap:.5rem}
+  .brand-mark{width:38px; height:38px}
+  .brand-txt b{font-size:1.15rem}
+  .brand-txt span{letter-spacing:.16em}
+  .nav{gap:.15rem}
+  .nav a{padding:.3rem .58rem; font-size:.84rem; letter-spacing:.05em}
+  .nav a em{display:none}
+}
+
 .pv-nav,.pv-link{font:inherit; cursor:pointer; background:none; border:0; color:inherit; padding:0}
 .nav .pv-nav{font-size:var(--fs-sm); font-weight:700; padding:.42rem .85rem; border-radius:999px; border:2px solid transparent}
 .nav .pv-nav:hover{background:var(--sand)}
@@ -494,12 +655,16 @@ a{color:inherit}
         <span class="hero-kicker">SHUISHANG · CHIAYI</span>
         <h1><span class="deg">23.5°</span><br>剛剛好的城市</h1>
         <p class="hero-lede">水上人的一天，一條沿著北回歸線展開的生活座標。</p>
-        <ul class="circled"><li>生活</li><li>土地</li><li>文化</li><li>未來</li></ul>
+        <div class="quicks">
+          <a class="quick" href="#" data-go="pv-contact">交通方式</a>
+          <a class="quick q-m" href="#" data-go="pv-contact">聯絡我們</a>
+        </div>
         <div class="hero-acts">
           <a class="btn btn-sun" href="#map">打開生活座標地圖</a>
           <a class="btn" href="#services">看看有什麼好玩的</a>
         </div>
       </div>
+      <div class="hero-stage rise">
       <svg class="hero-art" viewBox="0 0 400 320" role="img" aria-label="北回歸線穿過水上鄉的田園插畫">
   <circle cx="300" cy="80" r="40" fill="var(--sunshine)" stroke="var(--deepsea)" stroke-width="2.2"/>
   <g stroke="var(--deepsea)" stroke-width="2.2" stroke-linecap="round">
@@ -528,27 +693,53 @@ a{color:inherit}
     <rect x="42" y="8" width="18" height="13" rx="3" fill="#FFFFFF" stroke="var(--deepsea)" stroke-width="1.8"/>
   </g>
 </svg>
+      <div class="vbs" aria-hidden="true">
+        <span class="vb vb-1">土地、</span>
+        <span class="vb vb-2">生活、</span>
+        <span class="vb vb-3">剛剛好。</span>
+      </div>
+      </div>
+
+      <div class="specials rise">
+        <a class="sp sp-1" href="#" data-go="pv-quiz">
+          <div class="ph" style="--src:url(assets/photos/sp-quiz.jpg)"><span class="sp-tag">風土百草堂</span></div>
+          <div class="sp-body">
+            <div><p class="en">Special Contents #01</p><h3>問診・找一味屬於你的水上</h3></div>
+            <span class="arrow" aria-hidden="true">→</span>
+          </div>
+        </a>
+        <a class="sp sp-2" href="#map">
+          <div class="ph" style="--src:url(assets/photos/sp-map.jpg)"><span class="sp-tag">生活座標地圖</span></div>
+          <div class="sp-body">
+            <div><p class="en">Special Contents #02</p><h3>地圖・十二個據點一次看</h3></div>
+            <span class="arrow" aria-hidden="true">→</span>
+          </div>
+        </a>
+      </div>
     </div>
   </section>
 
-  <section class="sec">
-    <div class="wrap">
+  <section class="sec wave">
+    <span class="deco deco-l totem" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="deco deco-r totem totem-m totem-s" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <div class="wrap mid">
       <div class="sec-head rise">
-        <p class="en">INTRODUCTION</p>
+        <p class="en">Think of Living.</p>
         <h2>遇見剛剛好的水上</h2>
       </div>
-      <div class="rise">
-        <p class="lede">這裡沒有大都市的疾行緊迫，也沒有偏鄉的遙遠距離。北回歸線穿越的這片土地，擁有 23.5° 的適意與溫柔。</p>
-        <p class="lede">水上的好，在於剛剛好的便利、剛剛好的人情味，以及剛剛好能讓人放慢腳步的日常。沿著緯度與地緣走入巷弄，願你能在這座剛剛好的城市裡，找到屬於你的生活節奏。</p>
+      <div class="rise mid">
+        <p class="say">這裡沒有大都市的疾行緊迫，也沒有偏鄉的遙遠距離。北回歸線穿越的這片土地，擁有 23.5° 的適意與溫柔。</p>
+        <p class="say">水上的好，在於剛剛好的便利、剛剛好的人情味，以及剛剛好能讓人放慢腳步的日常。沿著緯度與地緣走入巷弄，願你能在這座剛剛好的城市裡，找到屬於你的生活節奏。</p>
       </div>
-      <div class="whisper rise" style="max-width:52ch">
+      <a class="cta rise" href="#services">看看水上有什麼<span class="arrow" aria-hidden="true">→</span></a>
+      <div class="whisper rise" style="max-width:52ch; text-align:left">
         <q>在水上，步調不用太快，23.5 的陽光和溫度剛剛好。</q>
         <cite>水上人小語 01</cite>
       </div>
     </div>
   </section>
 
-  <section class="sec sec-sand" id="services">
+  <section class="sec sec-sand wave wave-b wave-gold" id="services">
     <div class="wrap">
       <div class="sec-head rise">
         <p class="en">WHAT TO EXPLORE</p>
@@ -581,7 +772,7 @@ a{color:inherit}
     </div>
   </section>
 
-  <section class="sec" id="map">
+  <section class="sec wave wave-c" id="map">
     <div class="wrap">
       <div class="map-head rise">
         <div class="sec-head" style="margin-bottom:0">
@@ -656,7 +847,7 @@ a{color:inherit}
     </div>
   </section>
 
-  <section class="sec sec-sand">
+  <section class="sec sec-sand wave">
     <div class="wrap">
       <div class="sec-head rise">
         <p class="en">WALKING ROUTES</p>
@@ -679,7 +870,7 @@ a{color:inherit}
     </div>
   </section>
 
-  <section class="sec">
+  <section class="sec wave wave-b">
     <div class="wrap">
       <div class="sec-head rise">
         <p class="en">IN THE NEWS</p>
@@ -711,7 +902,7 @@ a{color:inherit}
   </section>
 </section>
 <section class="pv-page" id="pv-taste" hidden>
-  <section class="sec sec-sand">
+  <section class="sec sec-sand wave">
     <div class="wrap">
       <div class="sec-head rise">
         <p class="en">CUISINE &amp; SAVOR　·　P.06–07</p>
@@ -724,7 +915,7 @@ a{color:inherit}
     </div>
   </section>
 
-  <section class="sec">
+  <section class="sec wave wave-b">
     <div class="wrap">
       <div class="venues">
       <article class="venue sticker rise" style="--acc:var(--taste); --acc-soft:var(--taste-soft); --acc-ink:var(--taste-ink)">
@@ -766,7 +957,7 @@ a{color:inherit}
   </section>
 </section>
 <section class="pv-page" id="pv-culture" hidden>
-  <section class="sec sec-sand">
+  <section class="sec sec-sand wave">
     <div class="wrap">
       <div class="sec-head rise">
         <p class="en">SIGHTSEEING &amp; CULTURE　·　P.08–09</p>
@@ -779,7 +970,7 @@ a{color:inherit}
     </div>
   </section>
 
-  <section class="sec">
+  <section class="sec wave wave-b">
     <div class="wrap">
       <div class="venues">
       <article class="venue sticker rise" style="--acc:var(--culture); --acc-soft:var(--culture-soft); --acc-ink:var(--culture-ink)">
@@ -821,7 +1012,7 @@ a{color:inherit}
   </section>
 </section>
 <section class="pv-page" id="pv-grow" hidden>
-  <section class="sec sec-sand">
+  <section class="sec sec-sand wave">
     <div class="wrap">
       <div class="sec-head rise">
         <p class="en">AGRICULTURE &amp; LOCAL CRAFT　·　P.10–11</p>
@@ -834,7 +1025,7 @@ a{color:inherit}
     </div>
   </section>
 
-  <section class="sec">
+  <section class="sec wave wave-b">
     <div class="wrap">
       <div class="sec-head rise"><p class="en">THREE SIGNATURE CROPS</p><h2>三大特色農產</h2></div>
       <div class="crops">
@@ -914,7 +1105,7 @@ a{color:inherit}
   </section>
 </section>
 <section class="pv-page" id="pv-quiz" hidden>
-  <section class="sec sec-sand">
+  <section class="sec sec-sand wave">
     <div class="wrap">
       <div class="sec-head rise">
         <p class="en">HERBAL CONSULTATION</p>
@@ -924,7 +1115,7 @@ a{color:inherit}
     </div>
   </section>
 
-  <section class="sec">
+  <section class="sec wave wave-b">
     <div class="wrap" id="quiz">
       <div id="q-cover" class="sticker quiz-cover rise">
         <p class="en">尋找你的靈魂藥引</p>
@@ -949,7 +1140,7 @@ a{color:inherit}
   </section>
 </section>
 <section class="pv-page" id="pv-news" hidden>
-  <section class="sec sec-sand">
+  <section class="sec sec-sand wave">
     <div class="wrap">
       <div class="sec-head rise">
         <p class="en">IN THE NEWS</p>
@@ -960,7 +1151,7 @@ a{color:inherit}
     </div>
   </section>
 
-  <section class="sec">
+  <section class="sec wave wave-b">
     <div class="wrap">
       <div class="news">
       <a class="item sticker rise" href="https://udn.com/news/story/7326/9172188" target="_blank" rel="noopener noreferrer">
@@ -1011,7 +1202,7 @@ a{color:inherit}
   </section>
 </section>
 <section class="pv-page" id="pv-contact" hidden>
-  <section class="sec sec-sand">
+  <section class="sec sec-sand wave">
     <div class="wrap">
       <div class="sec-head rise">
         <p class="en">CONTACT &amp; MAP</p>
@@ -1021,7 +1212,7 @@ a{color:inherit}
     </div>
   </section>
 
-  <section class="sec">
+  <section class="sec wave wave-b">
     <div class="wrap">
       <div class="contact-grid">
         <div class="contact-card sticker rise">
@@ -1109,7 +1300,7 @@ a{color:inherit}
   </section>
 </section>
 </main>
-<footer class="site-foot">
+<footer class="site-foot wave wave-c wave-gold">
   <div class="wrap">
     <div class="foot-grid">
       <div>

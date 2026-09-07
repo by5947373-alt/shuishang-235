@@ -3,31 +3,38 @@
   "nav": [
     [
       "index.html",
-      "首頁"
+      "首頁",
+      "home"
     ],
     [
       "taste.html",
-      "品味"
+      "品味",
+      "taste"
     ],
     [
       "culture.html",
-      "回歸"
+      "回歸",
+      "culture"
     ],
     [
       "grow.html",
-      "生長"
+      "生長",
+      "grow"
     ],
     [
       "quiz.html",
-      "問診"
+      "問診",
+      "quiz"
     ],
     [
       "news.html",
-      "相關報導"
+      "相關報導",
+      "news"
     ],
     [
       "contact.html",
-      "聯絡我們"
+      "聯絡我們",
+      "contact"
     ]
   ],
   "extraPages": [
