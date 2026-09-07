@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /api/
+
+Sitemap: https://shuishang-235.zeabur.app/sitemap.xml
