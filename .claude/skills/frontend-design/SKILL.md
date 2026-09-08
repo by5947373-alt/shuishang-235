@@ -133,9 +133,16 @@ assets/ 」的步驟都必須跑在 `writeSite()` **之前**，否則頁面會�
 
 插畫**不畫表情**（使用者要求）。鴨子留了一顆眼點，因為完全沒有眼睛看起來像沒畫完。
 
-後台可以逐店挑圖示，寫進 `content.json` 的 `art`。這條路安全 ——
-後台寫的是 `data/content.json`，本來就是伺服器讀的那份；
-會出事的是往 `src/content.json` 種子檔加欄位。
+後台可以逐店挑圖示，也可以上傳自己的樣式（存 `DATA_DIR/icons/`，key 是 `u-N`）。
+選擇寫進 `content.json` 的 `art`。這條路安全 —— 後台寫的是 `data/content.json`，
+本來就是伺服器讀的那份；會出事的是往 `src/content.json` 種子檔加欄位。
+
+內建圖示是行內 SVG（跟著 CSS 變數換色），自訂的是 `<img>`（顏色固定）。
+`iconHtml()` 決定用哪一種。
+
+尺寸：分類頁卡片 `clamp(88px,17vw,120px)`、單店頁 `clamp(76px,11.5vw,104px)`。
+放大後要重驗「圖示壓到文字」—— 卡片的 `.meta div` 有 `padding-right` 幫地址讓位，
+改尺寸時那個值要跟著調。
 
 ## 卡片角落的 Q 版插畫
 

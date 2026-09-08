@@ -5,7 +5,7 @@
 // 開機時也會重新產生一次，所以即使容器的檔案系統是暫時的也能自我修復。
 import { createServer } from 'node:http';
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, statSync, readdirSync } from 'node:fs';
 import { join, normalize, extname } from 'node:path';
 import { createHmac, timingSafeEqual, randomUUID } from 'node:crypto';
 import { writeSite, renderSite, photoSlots, findPhoto, PHOTO_EXT, ROOT } from './lib/render.mjs';
@@ -20,7 +20,9 @@ const CONTENT_FILE = join(DATA_DIR, 'content.json');
 const FEEDBACK_FILE = join(DATA_DIR, 'feedback.json');
 // 後台上傳的圖放 volume，重新部署才不會消失（repo 裡的 assets/photos/ 是唯讀的預設值）
 const PHOTO_DIR = join(DATA_DIR, 'photos');
+const ICON_DIR = join(DATA_DIR, 'icons');   // 後台上傳的自訂卡片圖示
 const PHOTO_MAX = Number(process.env.PHOTO_MAX_BYTES || 4_000_000);
+const ICON_MAX = Number(process.env.ICON_MAX_BYTES || 500_000);   // 圖示只有 100px 上下，不需要大檔
 const FEEDBACK_KEEP = 500;          // 最多保留幾筆
 const FEEDBACK_PER_HOUR = 5;        // 同一個 IP 一小時最多幾筆
 const SEED_FILE = join(ROOT, 'src', 'content.json');
@@ -49,7 +51,7 @@ async function pushNow() {
   pushing = true;
   clearTimeout(pushTimer);
   try {
-    const files = { 'src/content.json': JSON.stringify(content, null, 2) + '\n', ...renderSite(content, SITE_URL, PHOTO_DIR) };
+    const files = { 'src/content.json': JSON.stringify(content, null, 2) + '\n', ...renderSite(content, SITE_URL, PHOTO_DIR, ICON_DIR) };
     const n = ['taste', 'culture', 'grow'].reduce((a, c) => a + (content.venues?.[c]?.length || 0), 0);
     const msg = `後台更新內容（${n} 個據點・${content.crops?.length || 0} 項農產・${content.news?.length || 0} 則報導）`;
     const r = await gh.commitFiles(files, msg);
@@ -72,6 +74,7 @@ let content = null;
 async function loadContent() {
   await mkdir(DATA_DIR, { recursive: true });
   await mkdir(PHOTO_DIR, { recursive: true });
+  await mkdir(ICON_DIR, { recursive: true });
   if (!existsSync(CONTENT_FILE)) {
     await writeFile(CONTENT_FILE, readFileSync(SEED_FILE, 'utf8'), 'utf8');
     console.log('首次啟動：已從 src/content.json 建立', CONTENT_FILE);
@@ -330,6 +333,9 @@ async function serveStatic(req, res, pathname) {
     const up = join(PHOTO_DIR, rel.slice('assets/photos/'.length));
     if (existsSync(up)) file = up;
   }
+  if (rel.startsWith('assets/icons/')) {
+    file = join(ICON_DIR, rel.slice('assets/icons/'.length));
+  }
   try {
     const body = await readFile(file);
     send(res, 200, body, TYPES[ext], { 'cache-control': ext === '.html' ? 'no-cache' : 'public, max-age=3600' });
@@ -507,11 +513,53 @@ const server = createServer(async (req, res) => {
     // 卡片圖示：後台的挑選介面要拿到所有圖示與預設對應
     if (url.pathname === '/api/icons') {
       if (!isAuthed(req)) return json(res, 401, { error: '請先登入。' });
+      const custom = readdirSync(ICON_DIR)
+        .filter((f) => PHOTO_EXT.includes(extname(f).toLowerCase()))
+        .map((f) => ({ key: f.replace(/\.[a-z]+$/i, ''), file: f }))
+        .filter((x) => /^u-[a-z0-9]+$/.test(x.key))
+        .sort((a, b) => a.key.localeCompare(b.key, undefined, { numeric: true }));
       return json(res, 200, {
         icons: Object.entries(ART).map(([key, svg]) => ({ key, svg })),
+        custom,                // 使用者自己上傳的，用 <img> 顯示
         byName: BY_NAME,       // 沒指定 art 時，用店名對應
         fallback: FALLBACK,    // 店名也對不到時，用分類通用款
       });
+    }
+
+    if (url.pathname === '/api/icon') {
+      if (!isAuthed(req)) return json(res, 401, { error: '請先登入。' });
+
+      if (req.method === 'POST') {                    // 新增一個樣式，編號自動給
+        let buf;
+        try { buf = await readBodyRaw(req, ICON_MAX); }
+        catch { return json(res, 413, { error: `圖示太大，上限 ${Math.round(ICON_MAX / 1000)}KB。` }); }
+        const ext = sniffImage(buf);
+        if (!ext) return json(res, 400, { error: '只接受 JPG、PNG、WebP。' });
+        const used = readdirSync(ICON_DIR).map((f) => +(f.match(/^u-(\d+)\./)?.[1] || 0));
+        const key = 'u-' + (Math.max(0, ...used) + 1);
+        await writeFile(join(ICON_DIR, key + ext), buf);
+        console.log(`[${new Date().toISOString()}] 新增圖示樣式 ${key}${ext}（${buf.length} bytes）`);
+        return json(res, 200, { ok: true, key, file: key + ext });
+      }
+
+      if (req.method === 'DELETE') {
+        const key = url.searchParams.get('key') || '';
+        if (!/^u-[a-z0-9]+$/.test(key)) return json(res, 400, { error: '不認得這個圖示。' });
+        // 還有店家在用就別刪，否則它們會默默掉回預設圖
+        const inUse = [];
+        for (const cat of Object.keys(content.venues || {}))
+          for (const v of content.venues[cat] || []) if (v.art === key) inUse.push(v.name);
+        if (inUse.length) return json(res, 409, { error: '還有店家在用：' + inUse.join('、') });
+        let gone = false;
+        for (const e of PHOTO_EXT) {
+          const f = join(ICON_DIR, key + e);
+          if (existsSync(f)) { await rm(f, { force: true }); gone = true; }
+        }
+        if (!gone) return json(res, 404, { error: '找不到這個圖示。' });
+        console.log(`[${new Date().toISOString()}] 刪除圖示樣式 ${key}`);
+        return json(res, 200, { ok: true });
+      }
+      return json(res, 405, { error: '不支援的方法' });
     }
 
     // ── 圖片管理 ──────────────────────────────────────────
@@ -550,7 +598,7 @@ const server = createServer(async (req, res) => {
           if (e !== ext && existsSync(old)) await rm(old, { force: true });
         }
         await writeFile(join(PHOTO_DIR, slot + ext), buf);
-        const files = writeSite(content, SITE_URL, PHOTO_DIR);   // 頁面要重新產生才會接上圖
+        const files = writeSite(content, SITE_URL, PHOTO_DIR, ICON_DIR);   // 頁面要重新產生才會接上圖
         console.log(`[${new Date().toISOString()}] 圖片上傳 ${slot}${ext}（${buf.length} bytes）`);
         return json(res, 200, { ok: true, file: slot + ext, size: buf.length, files: Object.keys(files).length });
       }
@@ -562,7 +610,7 @@ const server = createServer(async (req, res) => {
           if (existsSync(f)) { await rm(f, { force: true }); gone = true; }
         }
         if (!gone) return json(res, 404, { error: '這個欄位沒有上傳過的圖片。' });
-        writeSite(content, SITE_URL, PHOTO_DIR);
+        writeSite(content, SITE_URL, PHOTO_DIR, ICON_DIR);
         console.log(`[${new Date().toISOString()}] 圖片刪除 ${slot}`);
         return json(res, 200, { ok: true, file: findPhoto(slot, PHOTO_DIR) });
       }
@@ -585,7 +633,7 @@ const server = createServer(async (req, res) => {
         const body = JSON.stringify(next, null, 2) + '\n';
         await writeFile(CONTENT_FILE, body, 'utf8');
         content = next;
-        const files = writeSite(content, SITE_URL, PHOTO_DIR);  // 立刻重新產生所有頁面
+        const files = writeSite(content, SITE_URL, PHOTO_DIR, ICON_DIR);  // 立刻重新產生所有頁面
         rebuildChatSystem();                         // 客服的參考資料也跟著更新
         console.log(`[${new Date().toISOString()}] 內容已更新，重新產生 ${Object.keys(files).length} 個檔案`);
         schedulePush();                              // 停手一段時間後同步回 GitHub
@@ -605,7 +653,7 @@ const server = createServer(async (req, res) => {
 await loadContent();
 await loadFeedback();
 rebuildChatSystem();
-writeSite(content, SITE_URL, PHOTO_DIR);             // 開機就把頁面重新產生一次
+writeSite(content, SITE_URL, PHOTO_DIR, ICON_DIR);   // 開機就把頁面重新產生一次
 console.log(`內容：${CONTENT_FILE}`);
 console.log(`使用者建議：${FEEDBACK_FILE}（目前 ${feedback.length} 筆）`);
 console.log(SITE_URL ? `對外網址：${SITE_URL}（og:image / canonical / sitemap.xml 已啟用）`

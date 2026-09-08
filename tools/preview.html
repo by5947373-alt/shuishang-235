@@ -659,23 +659,23 @@ a{color:inherit}
 .venue:hover .venue-more .arrow{transform:translateX(4px)}
 
 /* ── 卡片右下角的 Q 版插畫 ── */
-.venue{padding-bottom:2.2rem}
-.q-art{position:absolute; right:1.1rem; bottom:.9rem; width:clamp(64px,13vw,86px); height:auto;
-  pointer-events:none}
+.venue{padding-bottom:2.6rem}
+.q-art{position:absolute; right:1.1rem; bottom:.9rem; width:clamp(88px,17vw,120px); height:auto;
+  pointer-events:none; object-fit:contain}
 /* 地址很長時會換行逼近右緣，留出插畫的位置 */
-.venue .meta div{padding-right:5.5rem}
+.venue .meta div{padding-right:7.5rem}
 .venue .venue-more{position:relative; z-index:1}
 @media (max-width:520px){
-  .q-art{width:58px; right:.7rem; bottom:.7rem}
-  .venue .meta div{padding-right:4rem}
+  .q-art{width:74px; right:.7rem; bottom:.7rem}
+  .venue .meta div{padding-right:5.2rem}
 }
 /* 單店頁：右下被整條 CTA 佔住，插畫改放右上。
    用 float 不用絕對定位 —— 絕對定位要靠 padding-right 幫文字讓位，
    標題會被擠出「23.5° 天／文科學與太空探索」這種斷行。float 讓文字自然繞。 */
 .vh-card{position:relative}
-.vh-card .q-art{position:static; float:right; width:clamp(56px,8.5vw,72px);
-  margin:0 0 .4rem 1rem; shape-outside:circle(50%)}
-@media (max-width:520px){.vh-card .q-art{width:50px; margin-left:.7rem}}
+.vh-card .q-art{position:static; float:right; width:clamp(76px,11.5vw,104px);
+  margin:0 0 .5rem 1.1rem; shape-outside:circle(50%)}
+@media (max-width:520px){.vh-card .q-art{width:66px; margin-left:.8rem}}
 
 .pv-nav,.pv-link{font:inherit; cursor:pointer; background:none; border:0; color:inherit; padding:0}
 .nav .pv-nav{font-size:var(--fs-sm); font-weight:700; padding:.42rem .85rem; border-radius:999px; border:2px solid transparent}

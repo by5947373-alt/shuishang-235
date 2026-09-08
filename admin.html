@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Nunito:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=052a1fc5">
+<link rel="stylesheet" href="assets/style.css?v=adc0eef8">
 <style>
   body{padding-bottom:4rem}
   .ad-head{background:var(--sunk); border-bottom:1px solid var(--gold); padding:1.4rem 0}
@@ -92,6 +92,13 @@
   .icon-pick svg{position:static; float:none; width:38px; height:38px}
   .icon-pick span{font-size:.62rem; letter-spacing:.04em; font-family:var(--num)}
   .prev-wrap .venue{position:relative}
+  .icon-pick{position:relative}
+  .icon-pick img{width:38px; height:38px; object-fit:contain}
+  .icon-pick b{font-size:1.4rem; line-height:38px; color:var(--ink-3)}
+  .icon-add{border-style:dashed}
+  .icon-del{position:absolute; top:-6px; right:-6px; width:18px; height:18px; border-radius:50%;
+    background:var(--brand); color:var(--ground); font-size:.6rem; line-height:18px; text-align:center}
+  .icon-del:hover{transform:scale(1.15)}
 </style>
 </head>
 <body>
@@ -708,15 +715,21 @@
   /** 這一筆實際會用哪張圖示 —— 跟後端的 artFor() 同一套順序。 */
   function iconKey(v, cat){
     if(!icons) return null;
-    var has = function(k){ return icons.icons.some(function(x){ return x.key === k; }); };
+    var has = function(k){
+      return icons.icons.some(function(x){ return x.key === k; })
+          || (icons.custom || []).some(function(x){ return x.key === k; });
+    };
     if(v.art && has(v.art)) return v.art;
     var byName = icons.byName[v.name];
     if(byName && has(byName)) return byName;
     return icons.fallback[cat] || null;
   }
   function iconSvg(key){
-    var f = icons && icons.icons.filter(function(x){ return x.key === key; })[0];
-    return f ? f.svg : '';
+    if(!icons) return '';
+    var f = icons.icons.filter(function(x){ return x.key === key; })[0];
+    if(f) return f.svg;
+    var c = (icons.custom || []).filter(function(x){ return x.key === key; })[0];
+    return c ? '<img class="q-art" src="assets/icons/' + c.file + '" alt="">' : '';
   }
 
   function iconPicker(v, cat){
@@ -731,6 +744,21 @@
     var grid = document.createElement('div'); grid.className = 'icons';
     w.appendChild(grid);
     var note = el('p', 'hint', ''); w.appendChild(note);
+
+    var pick = document.createElement('input');
+    pick.type = 'file'; pick.accept = 'image/jpeg,image/png,image/webp'; pick.hidden = true;
+    pick.onchange = function(){
+      var file = pick.files[0]; pick.value = '';
+      if(!file) return;
+      fetch('api/icon', {method:'POST', headers:{'content-type': file.type}, body:file})
+        .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || r.status); return j; }); })
+        .then(function(j){
+          icons = null;
+          loadIcons(function(){ v.art = j.key; mark(true); renderForm(); renderPreview(); });
+        })
+        .catch(function(e){ alert('加不進去：' + e.message); });
+    };
+    w.appendChild(pick);
 
     function paint(){
       grid.innerHTML = '';
@@ -754,6 +782,39 @@
         b.onclick = function(){ v.art = x.key; mark(true); paint(); renderPreview(); };
         grid.appendChild(b);
       });
+
+      // 使用者自己上傳的樣式
+      (icons.custom || []).forEach(function(x){
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'icon-pick' + (v.art === x.key ? ' on' : '');
+        var im = document.createElement('img');
+        im.src = 'assets/icons/' + x.file; im.alt = '';
+        b.appendChild(im);
+        b.appendChild(el('span', '', x.key));
+        b.onclick = function(){ v.art = x.key; mark(true); paint(); renderPreview(); };
+        var del = document.createElement('span');
+        del.className = 'icon-del'; del.textContent = '✕'; del.title = '刪掉這個樣式';
+        del.onclick = function(ev){
+          ev.stopPropagation();
+          if(!confirm('刪掉這個圖示樣式？')) return;
+          fetch('api/icon?key=' + encodeURIComponent(x.key), {method:'DELETE'})
+            .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || r.status); return j; }); })
+            .then(function(){ icons = null; loadIcons(function(){ renderForm(); renderPreview(); }); })
+            .catch(function(e){ alert('刪不掉：' + e.message); });
+        };
+        b.appendChild(del);
+        grid.appendChild(b);
+      });
+
+      // 新增樣式
+      var add = document.createElement('button');
+      add.type = 'button'; add.className = 'icon-pick icon-add';
+      add.appendChild(el('b', '', '＋'));
+      add.appendChild(el('span', '', '新樣式'));
+      add.title = '上傳自己的圖示';
+      add.onclick = function(){ pick.click(); };
+      grid.appendChild(add);
+
       note.textContent = v.art
         ? '已指定「' + v.art + '」。'
         : '自動模式：目前用「' + (cur || '—') + '」，改店名可能會換成別張。';
