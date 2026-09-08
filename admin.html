@@ -61,6 +61,27 @@
   .prev-wrap{margin-top:1.4rem}
   .prev-wrap h3.lbl{font-size:var(--fs-xs); font-weight:800; color:var(--ink-3); margin-bottom:.5rem}
   code{font-family:var(--num); background:var(--sunk); padding:.05em .4em}
+  /* ── 圖片管理 ── */
+  .photos{display:grid; gap:.7rem; margin:.6rem 0 1.6rem}
+  .photo-row{display:grid; grid-template-columns:112px minmax(0,1fr) auto; gap:1rem;
+    align-items:center; padding:.8rem; background:var(--paper);
+    border:1px solid var(--hair); border-radius:12px}
+  .photo-row.busy{opacity:.5; pointer-events:none}
+  .photo-thumb{width:112px; aspect-ratio:16/9; border-radius:8px; overflow:hidden;
+    background:var(--sunk) center/cover no-repeat; display:grid; place-items:center}
+  .photo-none{font-size:.7rem; color:var(--ink-3); letter-spacing:.1em}
+  .photo-meta{display:grid; gap:.15rem; min-width:0}
+  .photo-meta b{font-size:.88rem; color:var(--ink)}
+  .photo-meta span{font-size:.72rem; color:var(--ink-2); line-height:1.6;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .photo-file{color:var(--ink-3) !important; font-family:var(--num)}
+  .photo-acts{display:flex; gap:.4rem; flex-wrap:wrap; justify-content:flex-end}
+  .photo-acts .mini{width:auto; padding:.35rem .8rem; border-radius:999px}
+  @media (max-width:620px){
+    .photo-row{grid-template-columns:80px minmax(0,1fr)}
+    .photo-thumb{width:80px}
+    .photo-acts{grid-column:1/-1; justify-content:flex-start}
+  }
 </style>
 </head>
 <body>
@@ -123,12 +144,15 @@
 (function(){
   var SRC = 'src/content.json', KEY = 'shuishang-admin-draft';
   var live = false;   // true = 有後端，可以直接存；false = 靜態檔案模式
+  var photos = null;  // 圖片欄位清單，第一次切到「圖片」分頁才載入
+  var photoMax = 4000000;
   var TABS = [
     {id:'taste',   label:'品味 美食',   kind:'venue', path:['venues','taste']},
     {id:'culture', label:'回歸 景點',   kind:'venue', path:['venues','culture']},
     {id:'grow',    label:'生長 店家',   kind:'venue', path:['venues','grow']},
     {id:'crops',   label:'三大農產',    kind:'crop',  path:['crops']},
     {id:'news',    label:'相關報導',    kind:'news',  path:['news']},
+    {id:'photo',   label:'圖片',        kind:'photo'},
     {id:'fb',      label:'使用者回饋',  kind:'fb'}
   ];
   var NEWS_KINDS = [
@@ -344,12 +368,18 @@
       if(t.kind === 'fb'){
         var un = (fb || []).filter(function(x){ return !x.read; }).length;
         b.textContent = t.label + '（' + (fb ? fb.length : '…') + (un ? ' · ' + un + ' 未讀' : '') + '）';
+      } else if(t.kind === 'photo'){
+        b.textContent = photos
+          ? t.label + '（' + photos.filter(function(x){ return x.file; }).length + '/' + photos.length + '）'
+          : t.label + '（…）';
       } else {
         b.textContent = t.label + '（' + coll(t).length + '）';
       }
       b.onclick = function(){
         tab = t; sel = -1;
-        if(t.kind === 'fb' && fb === null) loadFeedback(); else render();
+        if(t.kind === 'fb' && fb === null) loadFeedback();
+        else if(t.kind === 'photo' && photos === null) loadPhotos();
+        else render();
       };
       $('tabs').appendChild(b);
     });
@@ -636,12 +666,109 @@
 
   function render(){
     renderTabs();
-    var isFb = tab.kind === 'fb';
-    // 回饋是唯讀資料，用不到新增按鈕與存檔流程
-    $('add').hidden = isFb;
-    $('save').hidden = isFb || !live;
-    if(isFb){ renderFeedback(); return; }
+    // 回饋是唯讀資料、圖片是各自即時上傳，兩者都用不到新增與存檔流程
+    var plain = tab.kind === 'fb' || tab.kind === 'photo';
+    $('add').hidden = plain;
+    $('save').hidden = plain || !live;
+    if(tab.kind === 'fb'){ renderFeedback(); return; }
+    if(tab.kind === 'photo'){ renderPhotos(); return; }
     renderList(); renderForm(); renderPreview();
+  }
+
+  // ── 圖片 ───────────────────────────────────────────────
+  function loadPhotos(){
+    fetch('api/photos', {cache:'no-store'})
+      .then(function(r){ if(r.status === 401){ show('login'); throw new Error('__auth__'); } return r.json(); })
+      .then(function(j){ photos = j.items || []; photoMax = j.max || photoMax; render(); })
+      .catch(function(e){ if(e.message !== '__auth__'){ photos = []; render(); alert('讀不到圖片清單：' + e.message); } });
+  }
+  function kb(n){ return n < 1024 ? n + ' B' : n < 1048576 ? (n/1024).toFixed(0) + ' KB' : (n/1048576).toFixed(1) + ' MB'; }
+
+  function renderPhotos(){
+    $('list').innerHTML = ''; $('form').innerHTML = ''; $('prevWrap').hidden = true;
+    var box = $('form');
+    if(!live){
+      box.appendChild(el('p', 'empty', '圖片上傳需要後端。用 npm start 打開網站，再從那邊進後台。'));
+      return;
+    }
+    if(!photos){ box.appendChild(el('p', 'empty', '載入中…')); return; }
+
+    var head = el('p', 'hint', '直接上傳就生效，不用按儲存。上限 ' + kb(photoMax) + '，接受 JPG／PNG／WebP。');
+    head.style.marginBottom = '1rem';
+    box.appendChild(head);
+
+    var groups = [];
+    photos.forEach(function(x){ if(groups.indexOf(x.group) < 0) groups.push(x.group); });
+    groups.forEach(function(g){
+      box.appendChild(el('h3', 'lbl', g));
+      var wrap = document.createElement('div');
+      wrap.className = 'photos';
+      photos.filter(function(x){ return x.group === g; }).forEach(function(x){
+        wrap.appendChild(photoRow(x));
+      });
+      box.appendChild(wrap);
+    });
+  }
+
+  function photoRow(x){
+    var row = document.createElement('div');
+    row.className = 'photo-row';
+
+    var thumb = document.createElement('div');
+    thumb.className = 'photo-thumb';
+    if(x.file){
+      // 加時間戳，換圖後才不會看到瀏覽器快取的舊圖
+      thumb.style.backgroundImage = 'url(assets/photos/' + x.file + '?t=' + (x.at || 0) + ')';
+    } else {
+      thumb.appendChild(el('span', 'photo-none', '未放'));
+    }
+    row.appendChild(thumb);
+
+    var mid = document.createElement('div');
+    mid.className = 'photo-meta';
+    mid.appendChild(el('b', '', x.label));
+    mid.appendChild(el('span', '', x.hint));
+    mid.appendChild(el('span', 'photo-file',
+      x.file ? x.file + '　' + kb(x.size || 0) + (x.own ? '' : '（內建，不能刪）') : '欄位名稱：' + x.slot));
+    row.appendChild(mid);
+
+    var acts = document.createElement('div');
+    acts.className = 'photo-acts';
+
+    var pick = document.createElement('input');
+    pick.type = 'file'; pick.accept = 'image/jpeg,image/png,image/webp'; pick.hidden = true;
+    pick.onchange = function(){ if(pick.files[0]) upload(x, pick.files[0], row); pick.value = ''; };
+
+    var up = el('button', 'mini', x.file ? '換一張' : '上傳');
+    up.type = 'button'; up.onclick = function(){ pick.click(); };
+    acts.appendChild(up);
+
+    if(x.file && x.own){
+      var del = el('button', 'mini', '刪除');
+      del.type = 'button';
+      del.onclick = function(){
+        if(!confirm('確定要刪掉「' + x.label + '」的圖片？')) return;
+        fetch('api/photo?slot=' + encodeURIComponent(x.slot), {method:'DELETE'})
+          .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || r.status); return j; }); })
+          .then(function(){ loadPhotos(); })
+          .catch(function(e){ alert('刪不掉：' + e.message); });
+      };
+      acts.appendChild(del);
+    }
+    acts.appendChild(pick);
+    row.appendChild(acts);
+    return row;
+  }
+
+  function upload(x, file, row){
+    if(file.size > photoMax){ alert('這張 ' + kb(file.size) + '，超過上限 ' + kb(photoMax) + '。'); return; }
+    row.classList.add('busy');
+    fetch('api/photo?slot=' + encodeURIComponent(x.slot), {
+      method:'PUT', headers:{'content-type': file.type || 'application/octet-stream'}, body:file
+    })
+      .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || r.status); return j; }); })
+      .then(function(){ loadPhotos(); })
+      .catch(function(e){ row.classList.remove('busy'); alert('上傳失敗：' + e.message); });
   }
 
   // ── 動作 ───────────────────────────────────────────────

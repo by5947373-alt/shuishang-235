@@ -4,11 +4,11 @@
 // 用 lib/render.mjs 重新產生所有頁面，跟本機跑 `node build.js` 是同一份程式碼。
 // 開機時也會重新產生一次，所以即使容器的檔案系統是暫時的也能自我修復。
 import { createServer } from 'node:http';
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
-import { existsSync, readFileSync } from 'node:fs';
+import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join, normalize, extname } from 'node:path';
 import { createHmac, timingSafeEqual, randomUUID } from 'node:crypto';
-import { writeSite, renderSite, ROOT } from './lib/render.mjs';
+import { writeSite, renderSite, photoSlots, findPhoto, PHOTO_EXT, ROOT } from './lib/render.mjs';
 import * as gh from './lib/github.mjs';
 import * as chat from './lib/chat.mjs';
 
@@ -17,6 +17,9 @@ const DATA_DIR = process.env.DATA_DIR || join(ROOT, 'data');
 const CONTENT_FILE = join(DATA_DIR, 'content.json');
 // 使用者回饋含訪客 email，只留在磁碟上，不會被同步到 GitHub。
 const FEEDBACK_FILE = join(DATA_DIR, 'feedback.json');
+// 後台上傳的圖放 volume，重新部署才不會消失（repo 裡的 assets/photos/ 是唯讀的預設值）
+const PHOTO_DIR = join(DATA_DIR, 'photos');
+const PHOTO_MAX = Number(process.env.PHOTO_MAX_BYTES || 4_000_000);
 const FEEDBACK_KEEP = 500;          // 最多保留幾筆
 const FEEDBACK_PER_HOUR = 5;        // 同一個 IP 一小時最多幾筆
 const SEED_FILE = join(ROOT, 'src', 'content.json');
@@ -45,7 +48,7 @@ async function pushNow() {
   pushing = true;
   clearTimeout(pushTimer);
   try {
-    const files = { 'src/content.json': JSON.stringify(content, null, 2) + '\n', ...renderSite(content, SITE_URL) };
+    const files = { 'src/content.json': JSON.stringify(content, null, 2) + '\n', ...renderSite(content, SITE_URL, PHOTO_DIR) };
     const n = ['taste', 'culture', 'grow'].reduce((a, c) => a + (content.venues?.[c]?.length || 0), 0);
     const msg = `後台更新內容（${n} 個據點・${content.crops?.length || 0} 項農產・${content.news?.length || 0} 則報導）`;
     const r = await gh.commitFiles(files, msg);
@@ -67,6 +70,7 @@ let content = null;
 
 async function loadContent() {
   await mkdir(DATA_DIR, { recursive: true });
+  await mkdir(PHOTO_DIR, { recursive: true });
   if (!existsSync(CONTENT_FILE)) {
     await writeFile(CONTENT_FILE, readFileSync(SEED_FILE, 'utf8'), 'utf8');
     console.log('首次啟動：已從 src/content.json 建立', CONTENT_FILE);
@@ -268,6 +272,39 @@ function readBody(req, limit = 1_000_000) {
   });
 }
 
+/** 圖片要拿原始位元組 —— readBody 會轉成 utf8，二進位會被破壞。
+ *
+ *  超過上限時「不」馬上 req.destroy()：那樣會在回應送出前砍掉連線，
+ *  客戶端只會看到 Failed to fetch，而不是「圖片太大」這種看得懂的訊息。
+ *  手機照片動輒 8MB，這條路很容易走到。改成停止累積、讓連線正常結束，
+ *  再回 413。超過上限四倍才真的斷線 —— 那已經不是誤傳了。 */
+function readBodyRaw(req, limit) {
+  return new Promise((resolve, reject) => {
+    let n = 0; let over = false; let chunks = [];
+    req.on('data', (c) => {
+      n += c.length;
+      if (n > limit) {
+        if (!over) { over = true; chunks = []; }      // 不再佔記憶體
+        if (n > limit * 4) { reject(new Error('檔案太大')); req.destroy(); }
+        return;
+      }
+      chunks.push(c);
+    });
+    req.on('end', () => (over ? reject(new Error('檔案太大')) : resolve(Buffer.concat(chunks))));
+    req.on('error', reject);
+  });
+}
+
+/** 靠檔頭判斷真的是圖片，不能只信副檔名或 content-type ——
+ *  兩者都是使用者說了算，可以拿來塞 HTML 或腳本。 */
+function sniffImage(buf) {
+  if (buf.length > 3 && buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF) return '.jpg';
+  if (buf.length > 8 && buf.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]))) return '.png';
+  if (buf.length > 12 && buf.subarray(0, 4).toString('latin1') === 'RIFF'
+      && buf.subarray(8, 12).toString('latin1') === 'WEBP') return '.webp';
+  return null;
+}
+
 /** 找不到頁面時回自訂的 404 頁；讀不到就退回純文字。 */
 async function notFound(res) {
   try {
@@ -286,8 +323,14 @@ async function serveStatic(req, res, pathname) {
     return notFound(res);
   const ext = extname(rel).toLowerCase();
   if (!TYPES[ext]) return notFound(res);
+  // 後台上傳的圖在 volume 上，優先於 repo 裡的同名檔
+  let file = join(ROOT, rel);
+  if (rel.startsWith('assets/photos/')) {
+    const up = join(PHOTO_DIR, rel.slice('assets/photos/'.length));
+    if (existsSync(up)) file = up;
+  }
   try {
-    const body = await readFile(join(ROOT, rel));
+    const body = await readFile(file);
     send(res, 200, body, TYPES[ext], { 'cache-control': ext === '.html' ? 'no-cache' : 'public, max-age=3600' });
   } catch {
     await notFound(res);
@@ -460,6 +503,61 @@ const server = createServer(async (req, res) => {
       return json(res, 405, { error: '不支援的方法' });
     }
 
+    // ── 圖片管理 ──────────────────────────────────────────
+    if (url.pathname === '/api/photos') {
+      if (!isAuthed(req)) return json(res, 401, { error: '請先登入。' });
+      const items = photoSlots(content).map((x) => {
+        const file = findPhoto(x.slot, PHOTO_DIR);
+        let size = null, at = null, own = false;
+        if (file) {
+          const up = join(PHOTO_DIR, file);
+          const path2 = existsSync(up) ? up : join(ROOT, 'assets', 'photos', file);
+          own = existsSync(up);                       // true = 後台上傳的，可以刪
+          try { const st = statSync(path2); size = st.size; at = st.mtimeMs; } catch { /* 剛好被刪掉 */ }
+        }
+        return { ...x, file, size, at, own };
+      });
+      return json(res, 200, { items, max: PHOTO_MAX });
+    }
+
+    if (url.pathname === '/api/photo') {
+      if (!isAuthed(req)) return json(res, 401, { error: '請先登入。' });
+      const slot = url.searchParams.get('slot') || '';
+      // 只認清單裡的欄位名 —— 不能讓使用者自己指定路徑
+      if (!photoSlots(content).some((x) => x.slot === slot))
+        return json(res, 400, { error: '不認得這個圖片欄位。' });
+
+      if (req.method === 'PUT') {
+        let buf;
+        try { buf = await readBodyRaw(req, PHOTO_MAX); }
+        catch { return json(res, 413, { error: `圖片太大，上限 ${Math.round(PHOTO_MAX / 1e6)}MB。` }); }
+        const ext = sniffImage(buf);
+        if (!ext) return json(res, 400, { error: '只接受 JPG、PNG、WebP 圖片。' });
+        // 換格式時要把舊的刪掉，否則兩個副檔名都存在、findPhoto 會挑到舊的
+        for (const e of PHOTO_EXT) {
+          const old = join(PHOTO_DIR, slot + e);
+          if (e !== ext && existsSync(old)) await rm(old, { force: true });
+        }
+        await writeFile(join(PHOTO_DIR, slot + ext), buf);
+        const files = writeSite(content, SITE_URL, PHOTO_DIR);   // 頁面要重新產生才會接上圖
+        console.log(`[${new Date().toISOString()}] 圖片上傳 ${slot}${ext}（${buf.length} bytes）`);
+        return json(res, 200, { ok: true, file: slot + ext, size: buf.length, files: Object.keys(files).length });
+      }
+
+      if (req.method === 'DELETE') {
+        let gone = false;
+        for (const e of PHOTO_EXT) {
+          const f = join(PHOTO_DIR, slot + e);
+          if (existsSync(f)) { await rm(f, { force: true }); gone = true; }
+        }
+        if (!gone) return json(res, 404, { error: '這個欄位沒有上傳過的圖片。' });
+        writeSite(content, SITE_URL, PHOTO_DIR);
+        console.log(`[${new Date().toISOString()}] 圖片刪除 ${slot}`);
+        return json(res, 200, { ok: true, file: findPhoto(slot, PHOTO_DIR) });
+      }
+      return json(res, 405, { error: '不支援的方法' });
+    }
+
     if (url.pathname === '/api/content') {
       if (req.method === 'GET') {
         if (!isAuthed(req)) return json(res, 401, { error: '請先登入。' });
@@ -476,7 +574,7 @@ const server = createServer(async (req, res) => {
         const body = JSON.stringify(next, null, 2) + '\n';
         await writeFile(CONTENT_FILE, body, 'utf8');
         content = next;
-        const files = writeSite(content, SITE_URL);  // 立刻重新產生所有頁面
+        const files = writeSite(content, SITE_URL, PHOTO_DIR);  // 立刻重新產生所有頁面
         rebuildChatSystem();                         // 客服的參考資料也跟著更新
         console.log(`[${new Date().toISOString()}] 內容已更新，重新產生 ${Object.keys(files).length} 個檔案`);
         schedulePush();                              // 停手一段時間後同步回 GitHub
@@ -496,7 +594,7 @@ const server = createServer(async (req, res) => {
 await loadContent();
 await loadFeedback();
 rebuildChatSystem();
-writeSite(content, SITE_URL);                        // 開機就把頁面重新產生一次
+writeSite(content, SITE_URL, PHOTO_DIR);             // 開機就把頁面重新產生一次
 console.log(`內容：${CONTENT_FILE}`);
 console.log(`使用者建議：${FEEDBACK_FILE}（目前 ${feedback.length} 筆）`);
 console.log(SITE_URL ? `對外網址：${SITE_URL}（og:image / canonical / sitemap.xml 已啟用）`

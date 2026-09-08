@@ -126,6 +126,13 @@ assets/ 」的步驟都必須跑在 `writeSite()` **之前**，否則頁面會�
   穩定鍵去對應，對不到就安全退回。
 - **使用者要編輯的內容**才放 content.json，而且要能從後台改。
 
+## 圖片有兩個來源
+
+`findPhoto(slot, photoDir)` 先找 volume（後台上傳的），再找 repo 的
+`assets/photos/`。`photoSlots(content)` 是欄位清單，後台和伺服器共用同一份。
+
+插畫**不畫表情**（使用者要求）。鴨子留了一顆眼點，因為完全沒有眼睛看起來像沒畫完。
+
 ## 卡片角落的 Q 版插畫
 
 12 張手繪 SVG 在 `lib/art.mjs`，`content.json` 的 venue 用 `art` 欄位指定要哪一張，
