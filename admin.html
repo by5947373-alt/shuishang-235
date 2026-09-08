@@ -82,6 +82,16 @@
     .photo-thumb{width:80px}
     .photo-acts{grid-column:1/-1; justify-content:flex-start}
   }
+  /* ── 卡片圖示挑選 ── */
+  .icons{display:grid; grid-template-columns:repeat(auto-fill,minmax(74px,1fr)); gap:.5rem; margin-top:.3rem}
+  .icon-pick{font:inherit; cursor:pointer; display:grid; justify-items:center; gap:.2rem;
+    padding:.5rem .3rem; background:var(--paper); color:var(--ink-2);
+    border:2px solid var(--hair); border-radius:12px}
+  .icon-pick:hover{border-color:var(--line); background:var(--sunk)}
+  .icon-pick.on{border-color:var(--brand); background:var(--sunk); color:var(--ink)}
+  .icon-pick svg{position:static; float:none; width:38px; height:38px}
+  .icon-pick span{font-size:.62rem; letter-spacing:.04em; font-family:var(--num)}
+  .prev-wrap .venue{position:relative}
 </style>
 </head>
 <body>
@@ -145,6 +155,7 @@
   var SRC = 'src/content.json', KEY = 'shuishang-admin-draft';
   var live = false;   // true = 有後端，可以直接存；false = 靜態檔案模式
   var photos = null;  // 圖片欄位清單，第一次切到「圖片」分頁才載入
+  var icons = null;   // 卡片圖示，第一次編輯據點時才載入
   var photoMax = 4000000;
   var TABS = [
     {id:'taste',   label:'品味 美食',   kind:'venue', path:['venues','taste']},
@@ -531,6 +542,8 @@
       row.appendChild(k); row.appendChild(val); row.appendChild(x);
       f.appendChild(row);
     });
+    f.appendChild(iconPicker(v, tab.id));
+
     var addm = document.createElement('button');
     addm.type='button'; addm.className='btn'; addm.textContent='＋ 加一列資訊';
     addm.style.justifySelf='start';
@@ -612,6 +625,11 @@
       var a = el('article', 'venue sticker');
       a.style.setProperty('--acc', 'var(--' + tab.id + ')');
       a.style.setProperty('--acc-soft', 'var(--' + tab.id + '-soft)');
+      if(icons){
+        var art = document.createElement('div');
+        art.innerHTML = iconSvg(iconKey(item, tab.id));
+        if(art.firstChild) a.appendChild(art.firstChild);
+      }
       a.appendChild(el('p', 'venue-idx', 'NO. ' + String(sel+1).padStart(2, '0')));
       a.appendChild(el('h3', null, item.name || '（未命名）'));
       if(item.feature) a.appendChild(el('p', 'feat', item.feature));
@@ -659,7 +677,11 @@
     var f = $('form'); f.innerHTML = '';
     var item = coll(tab)[sel];
     if(!item){ f.appendChild(el('p', 'empty', '左邊挑一筆來編輯，或按「＋ 新增一筆」。')); return; }
-    if(tab.kind === 'venue') venueForm(item);
+    if(tab.kind === 'venue'){
+      // 圖示清單只有編輯據點時才用得到，第一次才去拿
+      if(live && !icons){ loadIcons(function(){ renderForm(); renderPreview(); }); }
+      venueForm(item);
+    }
     else if(tab.kind === 'crop') cropForm(item);
     else newsForm(item);
   }
@@ -673,6 +695,71 @@
     if(tab.kind === 'fb'){ renderFeedback(); return; }
     if(tab.kind === 'photo'){ renderPhotos(); return; }
     renderList(); renderForm(); renderPreview();
+  }
+
+  // ── 卡片圖示 ───────────────────────────────────────────
+  function loadIcons(then){
+    if(icons) { then && then(); return; }
+    fetch('api/icons', {cache:'no-store'})
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(j){ icons = j; then ? then() : render(); })
+      .catch(function(){ icons = {icons:[], byName:{}, fallback:{}}; then && then(); });
+  }
+  /** 這一筆實際會用哪張圖示 —— 跟後端的 artFor() 同一套順序。 */
+  function iconKey(v, cat){
+    if(!icons) return null;
+    var has = function(k){ return icons.icons.some(function(x){ return x.key === k; }); };
+    if(v.art && has(v.art)) return v.art;
+    var byName = icons.byName[v.name];
+    if(byName && has(byName)) return byName;
+    return icons.fallback[cat] || null;
+  }
+  function iconSvg(key){
+    var f = icons && icons.icons.filter(function(x){ return x.key === key; })[0];
+    return f ? f.svg : '';
+  }
+
+  function iconPicker(v, cat){
+    var w = document.createElement('div'); w.className = 'fld';
+    var l = document.createElement('label'); l.textContent = '卡片圖示';
+    w.appendChild(l);
+
+    if(!live){
+      w.appendChild(el('p', 'hint', '挑圖示需要後端。用 npm start 打開網站，再從那邊進後台。'));
+      return w;
+    }
+    var grid = document.createElement('div'); grid.className = 'icons';
+    w.appendChild(grid);
+    var note = el('p', 'hint', ''); w.appendChild(note);
+
+    function paint(){
+      grid.innerHTML = '';
+      var cur = iconKey(v, cat);
+      var auto = icons.byName[v.name] || icons.fallback[cat];
+
+      // 自動：跟著店名走，改店名圖示也會跟著換
+      var a = document.createElement('button');
+      a.type = 'button'; a.className = 'icon-pick' + (v.art ? '' : ' on');
+      a.innerHTML = iconSvg(auto);
+      a.appendChild(el('span', '', '自動'));
+      a.title = '依店名自動選';
+      a.onclick = function(){ delete v.art; mark(true); paint(); renderPreview(); };
+      grid.appendChild(a);
+
+      icons.icons.forEach(function(x){
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'icon-pick' + (v.art === x.key ? ' on' : '');
+        b.innerHTML = x.svg;
+        b.appendChild(el('span', '', x.key));
+        b.onclick = function(){ v.art = x.key; mark(true); paint(); renderPreview(); };
+        grid.appendChild(b);
+      });
+      note.textContent = v.art
+        ? '已指定「' + v.art + '」。'
+        : '自動模式：目前用「' + (cur || '—') + '」，改店名可能會換成別張。';
+    }
+    paint();
+    return w;
   }
 
   // ── 圖片 ───────────────────────────────────────────────

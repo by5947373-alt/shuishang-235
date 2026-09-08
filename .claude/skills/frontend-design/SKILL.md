@@ -133,6 +133,10 @@ assets/ 」的步驟都必須跑在 `writeSite()` **之前**，否則頁面會�
 
 插畫**不畫表情**（使用者要求）。鴨子留了一顆眼點，因為完全沒有眼睛看起來像沒畫完。
 
+後台可以逐店挑圖示，寫進 `content.json` 的 `art`。這條路安全 ——
+後台寫的是 `data/content.json`，本來就是伺服器讀的那份；
+會出事的是往 `src/content.json` 種子檔加欄位。
+
 ## 卡片角落的 Q 版插畫
 
 12 張手繪 SVG 在 `lib/art.mjs`，`content.json` 的 venue 用 `art` 欄位指定要哪一張，

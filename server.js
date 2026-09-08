@@ -9,6 +9,7 @@ import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join, normalize, extname } from 'node:path';
 import { createHmac, timingSafeEqual, randomUUID } from 'node:crypto';
 import { writeSite, renderSite, photoSlots, findPhoto, PHOTO_EXT, ROOT } from './lib/render.mjs';
+import { ART, BY_NAME, FALLBACK } from './lib/art.mjs';
 import * as gh from './lib/github.mjs';
 import * as chat from './lib/chat.mjs';
 
@@ -501,6 +502,16 @@ const server = createServer(async (req, res) => {
         return json(res, 200, { ok: true, left: feedback.length });
       }
       return json(res, 405, { error: '不支援的方法' });
+    }
+
+    // 卡片圖示：後台的挑選介面要拿到所有圖示與預設對應
+    if (url.pathname === '/api/icons') {
+      if (!isAuthed(req)) return json(res, 401, { error: '請先登入。' });
+      return json(res, 200, {
+        icons: Object.entries(ART).map(([key, svg]) => ({ key, svg })),
+        byName: BY_NAME,       // 沒指定 art 時，用店名對應
+        fallback: FALLBACK,    // 店名也對不到時，用分類通用款
+      });
     }
 
     // ── 圖片管理 ──────────────────────────────────────────
