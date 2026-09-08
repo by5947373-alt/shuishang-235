@@ -1,4 +1,4 @@
-/* ══ 23.5° 剛剛好的城市 ══════════════════════════════════
+/* ══ 剛好的生活 ══════════════════════════════════
    風格：親子・食農教育。奶油底色、撕紙浪、積木色塊、圓角。
    對比規則：亮色（橘、芥末、粉）只做填色與裝飾；
              文字一律用 -ink 系列，全部通過 WCAG AA。 */
@@ -55,6 +55,8 @@
 
   --disp:"Fredoka","Noto Sans TC",system-ui,sans-serif;
   --head:"Noto Sans TC","PingFang TC",system-ui,sans-serif;
+  /* 標題用的手寫楷體，跟標準字的筆觸呼應。只給大標，小字用 --head 才讀得清楚 */
+  --brush:"LXGW WenKai TC","Noto Sans TC","PingFang TC",system-ui,sans-serif;
   --sans:"Noto Sans TC","PingFang TC",system-ui,sans-serif;
   --num:"Nunito","Noto Sans TC",system-ui,sans-serif;
 
@@ -75,6 +77,8 @@ body{
   line-height:1.9; letter-spacing:.01em;
 }
 h1,h2,h3,h4{font-family:var(--head); font-weight:700; line-height:1.45; text-wrap:balance; margin:0; letter-spacing:.02em}
+/* h4 留給頁尾、農產那些小標，手寫體在那個尺寸會糊 */
+h1,h2,h3{font-family:var(--brush); letter-spacing:.04em}
 p{margin:0}
 img,svg{max-width:100%}
 a{color:inherit}
@@ -97,7 +101,7 @@ a{color:inherit}
 .brand-logo{display:block; width:auto; height:clamp(36px,4.4vw,50px)}
 .nav{display:flex; gap:.1rem; flex-wrap:wrap; padding-bottom:.3rem}
 .nav a{display:grid; justify-items:center; gap:.15rem; text-decoration:none; line-height:1.35;
-  font-size:var(--fs-sm); font-weight:500; letter-spacing:.1em; color:var(--ink);
+  font-size:var(--fs-sm); font-weight:700; letter-spacing:.1em; color:var(--ink);
   padding:.4rem .8rem; border-radius:var(--pill); transition:color .2s,background .2s}
 .nav a em{font-family:var(--disp); font-style:normal; font-size:.66rem; font-weight:600;
   letter-spacing:.14em; text-transform:lowercase; color:var(--orange-ink)}
@@ -111,7 +115,7 @@ a{color:inherit}
 .hero-in{width:var(--col); margin-inline:auto; padding:clamp(3.5rem,9vw,7rem) 0 clamp(3.5rem,9vw,6.5rem);
   display:grid; gap:3rem; align-items:center; position:relative; z-index:2}
 @media (min-width:960px){.hero-in{grid-template-columns:1fr 1fr}}
-.hero h1{font-size:var(--fs-3xl); line-height:1.2; letter-spacing:.01em; font-weight:900; color:var(--ink)}
+.hero h1{font-size:var(--fs-3xl); line-height:1.2; letter-spacing:.01em; font-weight:700; color:var(--ink)}
 .hero h1 .deg{font-family:var(--disp); color:var(--orange-mid); font-weight:700; letter-spacing:0; display:block; font-size:1.1em}
 .hero-kicker{display:inline-block; font-family:var(--disp); font-size:var(--fs-sm); font-weight:600;
   letter-spacing:.16em; text-transform:uppercase; color:var(--ink-deep);
@@ -390,7 +394,7 @@ a{color:inherit}
 .chat-head{display:flex; align-items:center; gap:.8rem; padding:1.1rem 1.3rem;
   background:var(--deepsea); color:#F4EAD9; border-bottom:1px solid var(--gold)}
 .chat-head div{display:grid; margin-right:auto; line-height:1.5}
-.chat-head b{font-family:var(--head); font-size:var(--fs-md); font-weight:500; letter-spacing:.1em}
+.chat-head b{font-family:var(--head); font-size:var(--fs-md); font-weight:700; letter-spacing:.1em}
 .chat-head span{font-size:var(--fs-xs); color:#E6D3C4; letter-spacing:.06em}
 .chat-x{font:inherit; font-size:1rem; cursor:pointer; background:none; border:0; color:#F4EAD9; padding:.2rem .3rem}
 .chat-log{flex:1; overflow-y:auto; padding:1.3rem; display:grid; gap:.8rem; align-content:start}
