@@ -126,6 +126,14 @@ assets/ 」的步驟都必須跑在 `writeSite()` **之前**，否則頁面會�
   穩定鍵去對應，對不到就安全退回。
 - **使用者要編輯的內容**才放 content.json，而且要能從後台改。
 
+## 標準字
+
+`assets/logo.png` 是手寫圖檔，`.brand-logo` 用高度定尺寸、寬度自動 ——
+換一張比例不同的圖不用改 CSS。原始檔在 `src/logo-master.png`。
+
+**標準字寫的是「剛好的生活」，但站名是「23.5° 剛剛好的城市」**，
+title、og:site_name、頁尾都還是後者。這是刻意保留的現況，不是漏改。
+
 ## 圖片有兩個來源
 
 `findPhoto(slot, photoDir)` 先找 volume（後台上傳的），再找 repo 的

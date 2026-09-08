@@ -92,11 +92,9 @@ a{color:inherit}
 .site-head{position:sticky; top:0; z-index:60; background:color-mix(in srgb,var(--cream) 88%,transparent);
   backdrop-filter:blur(14px)}
 .head-in{width:var(--col); margin-inline:auto; display:flex; align-items:center; gap:1.4rem; min-height:88px; flex-wrap:wrap}
-.brand{display:flex; align-items:center; gap:.7rem; text-decoration:none; margin-right:auto; padding:.5rem 0}
-.brand-mark{flex:none; width:46px; height:46px}
-.brand-txt{display:grid; line-height:1.3}
-.brand-txt b{font-family:var(--disp); font-size:1.4rem; font-weight:600; color:var(--orange-ink); letter-spacing:.05em}
-.brand-txt span{font-family:var(--head); font-size:var(--fs-xs); letter-spacing:.24em; color:var(--ink-2)}
+.brand{display:flex; align-items:center; text-decoration:none; margin-right:auto; padding:.5rem 0}
+/* 標準字是手寫圖檔，用高度定尺寸、寬度自己跟著跑，換圖也不用改 CSS */
+.brand-logo{display:block; width:auto; height:clamp(36px,4.4vw,50px)}
 .nav{display:flex; gap:.1rem; flex-wrap:wrap; padding-bottom:.3rem}
 .nav a{display:grid; justify-items:center; gap:.15rem; text-decoration:none; line-height:1.35;
   font-size:var(--fs-sm); font-weight:500; letter-spacing:.1em; color:var(--ink);
@@ -528,9 +526,7 @@ a{color:inherit}
 @media (max-width:680px){
   html{scroll-padding-top:132px}
   .head-in{min-height:0; padding:.55rem 0; gap:.5rem}
-  .brand-mark{width:38px; height:38px}
-  .brand-txt b{font-size:1.15rem}
-  .brand-txt span{letter-spacing:.16em}
+  .brand-logo{height:32px}
   .nav{gap:.15rem}
   .nav a{padding:.3rem .58rem; font-size:.84rem; letter-spacing:.05em}
   .nav a em{display:none}
