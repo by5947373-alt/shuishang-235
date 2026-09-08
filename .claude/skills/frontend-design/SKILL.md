@@ -150,6 +150,24 @@ assets/ 」的步驟都必須跑在 `writeSite()` **之前**，否則頁面會�
 本來就會跟插畫重疊，但文字沒有。要驗真正的文字有沒有被壓到，
 用 `Range.selectNodeContents(textNode)` 再取 `getClientRects()`。
 
+## 照片欄位：路徑一定要絕對
+
+`.ph` 和 `.vhero` 的照片是用 `--src` 這個 custom property 傳進去的。
+
+**路徑一定要寫 `/assets/photos/x.jpg`（開頭斜線）。**
+custom property 裡的相對 `url()` 是相對於「使用它的樣式表」解析的，
+不是相對於文件 —— 寫 `assets/photos/x.jpg` 會變成
+`/assets/assets/photos/x.jpg`，404。
+
+**這個 bug 不放真照片看不出來**：沒有照片時顯示的是備用底色，
+版面完全正常，只有在真的放圖進去才會發現圖沒出現。實際踩過，
+是比對線上與本機的網路請求才抓到的。驗證方式是真的放一張圖進去，
+用 `new Image()` 拉一次確認 `naturalWidth` 有值。
+
+`dropMissingPhotos()` 會在產生時檢查檔案在不在，不在就把整個 `--src`
+拿掉，免得每次載入都對不存在的檔案發 404。檔案放進 `assets/photos/`
+重新建置就會自動接回去。
+
 ## 照片欄位
 
 `.ph` 沒放圖時顯示斜紋蜜桃底，不是破圖 —— 因為 `background-image`
