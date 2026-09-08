@@ -93,12 +93,15 @@ scripts: assets/map.js
 
 ### 店家卡片的 Q 版插畫
 
-12 張手繪 SVG 在 `lib/art.mjs`。`content.json` 的 venue 用 `art` 欄位指定，
-例如 `"art": "duck"`。可用的名字：duck / soup / croissant / ricebowl /
-rocket / train / tooth / coffee / teacup / brush / pineapple / lotus。
+12 張手繪 SVG 在 `lib/art.mjs`，用**店名**對應（`BY_NAME`）。
+對不到就退回分類通用款，不會破圖。
 
-沒指定或指定了不存在的名字，會退回該分類的通用款，不會破圖。
-新增店家時如果沒有合適的插畫，就先讓它用通用款，之後再補畫。
+**為什麼不放 content.json：** 伺服器讀的是 volume 上的 `data/content.json`，
+`src/content.json` 只是第一次開機的種子檔，種子檔裡新加的欄位線上不會有。
+而且後台一存檔，自動同步會把線上內容推回 git，種子檔多加的欄位會被蓋掉。
+（這個實際踩過：本機 12 張都對，線上全部退回通用款。）
+
+新增店家時在 `BY_NAME` 補一行；沒補也不會壞，只是用通用款。
 
 ### 一家店一頁（自動產生）
 
