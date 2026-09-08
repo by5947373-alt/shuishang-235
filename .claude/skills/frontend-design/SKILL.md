@@ -110,6 +110,30 @@ assets/ 」的步驟都必須跑在 `writeSite()` **之前**，否則頁面會�
 
 新增一家店只要動 content.json，頁面和 sitemap 都會自己長出來。
 
+## 卡片角落的 Q 版插畫
+
+12 張手繪 SVG 在 `lib/art.mjs`，`content.json` 的 venue 用 `art` 欄位指定要哪一張，
+沒指定就退回分類的通用款（`artFor()`）。
+
+畫法要跟站上其他插畫一致：`viewBox="0 0 64 64"`、暖棕粗線 2.4、扁平填色、圓角收邊。
+**一定要加點狀眼睛與腮紅**（`face()` / `blush()` 兩個 helper）——
+少了表情就只是圖示，對親子客群差很多。
+
+畫完一定要放大並排檢視，不要只看程式碼。第一版有四張認不出來
+（牙膏像葉子、顏料像鉛筆、火車像貨車、香菇像盆栽），是並排看才發現的。
+
+擺放位置：
+- `.venue`（分類頁卡片）右下角，絕對定位。`.meta div` 要留 `padding-right` 讓地址換行。
+- `.vh-card`（單店頁）右上角，**用 `float` 不要用絕對定位**。
+  絕對定位要靠 `padding-right` 幫文字讓位，標題會被擠出
+  「23.5° 天／文科學與太空探索」這種斷行；float 讓文字自然繞排。
+
+### 量重疊時的陷阱
+
+用 `getBoundingClientRect()` 比對區塊盒會誤判 —— float 和 padding 的盒子
+本來就會跟插畫重疊，但文字沒有。要驗真正的文字有沒有被壓到，
+用 `Range.selectNodeContents(textNode)` 再取 `getClientRects()`。
+
 ## 照片欄位
 
 `.ph` 沒放圖時顯示斜紋蜜桃底，不是破圖 —— 因為 `background-image`

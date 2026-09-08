@@ -91,6 +91,15 @@ scripts: assets/map.js
 根目錄的 `.html` 是建置產物，**不要直接編輯** —— 下次執行 `build.py` 會被覆蓋。
 要改版面請改 `src/`。
 
+### 店家卡片的 Q 版插畫
+
+12 張手繪 SVG 在 `lib/art.mjs`。`content.json` 的 venue 用 `art` 欄位指定，
+例如 `"art": "duck"`。可用的名字：duck / soup / croissant / ricebowl /
+rocket / train / tooth / coffee / teacup / brush / pineapple / lotus。
+
+沒指定或指定了不存在的名字，會退回該分類的通用款，不會破圖。
+新增店家時如果沒有合適的插畫，就先讓它用通用款，之後再補畫。
+
 ### 一家店一頁（自動產生）
 
 `taste-01.html` … `grow-04.html` 共 12 頁，**從 content.json 產生，不要手寫**。
